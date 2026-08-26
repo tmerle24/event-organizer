@@ -32,11 +32,14 @@ docker exec orgdate-pgsql psql -U orgdate -d orgdate -c "CREATE DATABASE orgdate
 php artisan test
 ```
 
-App-Icons und Favicons aus der Bildmarke neu erzeugen:
+Marken-Assets neu erzeugen:
 
 ```bash
-bash brand/generate-icons.sh
+bash brand/generate-icons.sh        # App-Icons + Favicons aus der Bildmarke
+python3 brand/generate-lockups.py   # Logo-Lockups aus dem Wortmarken-Pfad
 ```
+
+Die Share-Bilder liegen fertig in `public/og/`, ihre Quellen in `brand/og/`.
 
 ## KI ist optional
 

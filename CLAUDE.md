@@ -322,10 +322,51 @@ Props: `variant` (`horizontal` | `stacked` | `symbol`), `size` (`sm`/`md`/`lg`),
 Die Wortmarke steht immer in Versalien, Outfit 600, Tracking +0.05em. Nie in
 Gemischtsatz, nie kursiv, nie in einer anderen Schrift.
 
-**Assets:** `brand/logo/*.svg` (Symbol, offen, bestätigt, invers, mono),
-`brand/tokens/`, sowie `brand/generate-icons.sh` → erzeugt alle App-Icon-Größen
-und `public/icons/` + `public/favicon.ico` aus dem Symbol (braucht
-`rsvg-convert` und ImageMagick).
+**Assets** unter `brand/`:
+
+```
+brand/
+  logo/     Symbol (normal, offen, bestätigt, invers, mono)
+            Lockups horizontal + gestapelt, je normal/invers/mono
+            wordmark-path.txt — die Wortmarke als Pfad
+  icon/     App-Icons 16…1024 + maskable + favicon.ico
+  og/       Share-Bilder als SVG-Quelle + make_og.py
+  tokens/   colors.css, tailwind.colors.js
+  generate-icons.sh      Symbol → alle Icon-Größen + public/icons/
+  generate-lockups.py    Wortmarken-Pfad → alle Lockups
+```
+
+Die Lockups halten die Maße aus Abschnitt 2.5 ein: horizontal liegen Symbolmitte
+und optische Mitte der Versalhöhe auf einer Linie, Abstand = halbe Symbolbreite;
+gestapelt beträgt der Abstand ein Drittel der Symbolhöhe. **Die Wortmarke liegt
+in allen Dateien als Pfad vor**, keine Schriftdatei nötig — im Web rendert
+`Logo.vue` sie dagegen live in Outfit, das ist deutlich kleiner als 4,8 KB Pfad.
+
+`generate-icons.sh` braucht `rsvg-convert` und ImageMagick, `make_og.py` braucht
+zusätzlich `cairosvg`, `fonttools` und `fonts/Outfit.ttf`.
+
+---
+
+## Link-Vorschau
+
+`public/og/og-image.png` (1200×630) hängt in `app.blade.php` an jeder Seite.
+Bedingungen, unter denen die Vorschau still bricht — alle vier hängen an
+Bedingungen, die man beim Umbauen leicht verletzt, deshalb stehen sie in
+`tests/Feature/ShareImageTest.php`:
+
+- **Absolute URL**, sonst ignoriert der WhatsApp-Crawler das Bild
+- **Unter 600 KB** (aktuell 29 KB), sonst bleibt die Vorschau leer
+- **PNG**, kein WebP oder SVG
+- **Serverseitig gerendert** — der Crawler führt kein JavaScript aus
+
+Der Vorschautext (`brand.share_text`) ist deckungsgleich mit der Zeile im Bild,
+damit Bild und Text dasselbe sagen. Beim Testen einen Query-Parameter anhängen
+(`?v=2`), WhatsApp cached die Vorschau pro URL sehr lange.
+
+**Event-Seiten zeigen bewusst die generische Marken-Vorschau**, nicht Titel und
+Termin: Vorschau-Bots holen die Seite, ohne dass die empfangende Person das
+ausgelöst hat. Eigene Bilder pro Event wären möglich (`brand/og/README.md`
+skizziert das Layout), gehören aber hinter einen Cache und nicht in den Request.
 
 ---
 
@@ -560,12 +601,6 @@ eines dieser Verhalten, muss der Text mitgeändert werden.
       transaktionalen Mails, das Verzeichnis von Verarbeitungstätigkeiten
       (Spec Abschnitt 8) und Abschnitt 5 der Datenschutzerklärung
       (Drittlandübermittlung an Anthropic)
-- [ ] `brand/logo/orgdate-logo-horizontal.svg` und `-stacked.svg` mit
-      **ausgeschriebener Wortmarke als Pfad** (Brand Guide Abschnitt 9). Im Web
-      rendert `Logo.vue` die Wortmarke live in Outfit, für externe Assets
-      (Signaturen, Print) braucht es den Pfad-Export aus einem Design-Tool —
-      auf dieser Maschine ist keine Font-Toolchain vorhanden.
-- [ ] Echtes OG-Image 1200×630 (aktuell zeigt der Meta-Tag das 512er App-Icon)
 - [ ] Erinnerungs-Mail 24h vorher (Spec: bewusst hinter der Cut-Line)
 - [ ] Retention-Warnmail 14 Tage vor Löschung (`retention_warned_at` ist im
       Schema, der Versand fehlt)

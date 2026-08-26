@@ -1,3 +1,11 @@
+@php
+    // Event-Seiten zeigen bewusst die generische Marken-Vorschau statt Titel und
+    // Termin: Link-Vorschau-Bots holen die Seite ohne Zutun der Person, die den
+    // Link bekommen hat.
+    $ogLocale = [
+        'de' => 'de_DE', 'en' => 'en_GB', 'fr' => 'fr_FR', 'es' => 'es_ES', 'nl' => 'nl_NL',
+    ][app()->getLocale()] ?? 'de_DE';
+@endphp
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
     <head>
@@ -20,17 +28,27 @@
             <meta name="robots" content="noindex, nofollow" />
         @endif
 
+        {{--
+            Link-Vorschau. Der WhatsApp-Crawler führt kein JavaScript aus, deshalb
+            stehen die Tags serverseitig im HTML. Bild muss absolut, https und
+            unter 600 KB sein — siehe brand/og/README.md.
+        --}}
         <meta property="og:type" content="website" />
         <meta property="og:site_name" content="{{ config('app.name') }}" />
-        <meta property="og:title" content="{{ config('app.name') }} — {{ config('brand.tagline') }}" />
-        <meta property="og:description" content="{{ config('brand.claim') }}" />
-        <meta property="og:image" content="{{ url('/icons/icon-512.png') }}" />
+        <meta property="og:title" content="{{ config('app.name') }}" />
+        <meta property="og:description" content="{{ config('brand.share_text') }}" />
         <meta property="og:url" content="{{ url()->current() }}" />
+        <meta property="og:locale" content="{{ $ogLocale }}" />
+        <meta property="og:image" content="{{ url('/og/og-image.png') }}" />
+        <meta property="og:image:type" content="image/png" />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
+        <meta property="og:image:alt" content="{{ config('app.name') }} – {{ config('brand.tagline') }}" />
 
-        <meta name="twitter:card" content="summary" />
+        <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content="{{ config('app.name') }}" />
-        <meta name="twitter:description" content="{{ config('brand.claim') }}" />
-        <meta name="twitter:image" content="{{ url('/icons/icon-512.png') }}" />
+        <meta name="twitter:description" content="{{ config('brand.share_text') }}" />
+        <meta name="twitter:image" content="{{ url('/og/og-image.png') }}" />
 
         @routes
         @vite(['resources/js/app.js'])
