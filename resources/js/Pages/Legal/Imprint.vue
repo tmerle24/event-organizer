@@ -41,7 +41,7 @@ onMounted(() => {
         <section>
           <h2 class="od-h3">Anbieter</h2>
           <p class="od-small mt-1" style="color: var(--od-slate)">
-            TM Systems Till Merlé<br />
+            Till Merlé<br />
             Birkenstr. 19<br />
             61440 Oberursel<br />
             Germany
@@ -74,7 +74,7 @@ onMounted(() => {
         <section>
           <h2 class="od-h3">Verantwortlich für den Inhalt nach § 18 Abs. 2 MStV</h2>
           <p class="od-small mt-1" style="color: var(--od-slate)">
-            TM Systems Till Merlé, Birkenstr. 19, 61440 Oberursel, Germany
+            Till Merlé, Birkenstr. 19, 61440 Oberursel, Germany
           </p>
         </section>
 

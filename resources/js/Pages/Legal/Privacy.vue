@@ -34,7 +34,7 @@ onMounted(() => {
         <section>
           <h2 class="od-h3">1. Verantwortlicher</h2>
           <p class="od-small mt-1" style="color: var(--od-slate)">
-            TM Systems Till Merlé<br />
+            Till Merlé<br />
             Birkenstr. 19, 61440 Oberursel, Germany<br />
             E-Mail:
             <a v-if="email" :href="`mailto:${email}`" class="underline" style="color: var(--od-violet)">{{ email }}</a>

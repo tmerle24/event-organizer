@@ -624,7 +624,7 @@ Aufbewahrung), Wiederherstellung mit `restore.sh`.
 
 `Pages/Legal/Imprint.vue` und `Privacy.vue` sind bewusst deutschsprachig
 (Anbieter sitzt in Deutschland), nur die Überschriften laufen über `t()` — so
-wie bei SimpleVoter. Anbieterdaten: TM Systems Till Merlé, Birkenstr. 19,
+wie bei SimpleVoter. Anbieterdaten: Till Merlé, Birkenstr. 19,
 61440 Oberursel.
 
 **E-Mail und Telefon werden erst im `onMounted` zusammengesetzt** und stehen
