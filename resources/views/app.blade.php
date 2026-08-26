@@ -1,7 +1,4 @@
 @php
-    // Event-Seiten zeigen bewusst die generische Marken-Vorschau statt Titel und
-    // Termin: Link-Vorschau-Bots holen die Seite ohne Zutun der Person, die den
-    // Link bekommen hat.
     $ogLocale = [
         'de' => 'de_DE', 'en' => 'en_GB', 'fr' => 'fr_FR', 'es' => 'es_ES', 'nl' => 'nl_NL',
     ][app()->getLocale()] ?? 'de_DE';
@@ -23,7 +20,7 @@
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 
         <title inertia>{{ config('app.name') }}</title>
-        <meta name="description" content="{{ config('brand.claim') }}" />
+        <meta name="description" content="{{ $ogDescription ?? config('brand.claim') }}" />
         <link rel="canonical" href="{{ url()->current() }}" />
         {{-- Event-Seiten sind privat und gehoeren nicht in den Index. --}}
         @if (request()->is('e/*') || request()->is('t/*'))
@@ -37,8 +34,9 @@
         --}}
         <meta property="og:type" content="website" />
         <meta property="og:site_name" content="{{ config('app.name') }}" />
-        <meta property="og:title" content="{{ config('app.name') }}" />
-        <meta property="og:description" content="{{ config('brand.share_text') }}" />
+        {{-- Auf Event-Seiten stehen hier Titel und Termin, sonst die Marke. --}}
+        <meta property="og:title" content="{{ $ogTitle ?? config('app.name') }}" />
+        <meta property="og:description" content="{{ $ogDescription ?? config('brand.share_text') }}" />
         <meta property="og:url" content="{{ url()->current() }}" />
         <meta property="og:locale" content="{{ $ogLocale }}" />
         <meta property="og:image" content="{{ url('/og/og-image.png') }}" />
@@ -48,8 +46,8 @@
         <meta property="og:image:alt" content="{{ config('app.name') }} – {{ config('brand.tagline') }}" />
 
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="{{ config('app.name') }}" />
-        <meta name="twitter:description" content="{{ config('brand.share_text') }}" />
+        <meta name="twitter:title" content="{{ $ogTitle ?? config('app.name') }}" />
+        <meta name="twitter:description" content="{{ $ogDescription ?? config('brand.share_text') }}" />
         <meta name="twitter:image" content="{{ url('/og/og-image.png') }}" />
 
         @routes

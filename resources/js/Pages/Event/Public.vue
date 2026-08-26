@@ -12,6 +12,7 @@ import ConfirmModal from '@/Components/ConfirmModal.vue'
 import Toast from '@/Components/Toast.vue'
 import { useParticipantToken } from '@/composables/useDeviceToken'
 import { formatFull, timezoneNote } from '@/composables/useDateFormat'
+import { mapsLink } from '@/composables/useMapsLink'
 
 const props = defineProps({
   event: { type: Object, required: true },
@@ -201,7 +202,17 @@ function note(option) {
       <div class="od-card p-4 sm:p-5">
         <h1 class="od-h1">{{ event.title }}</h1>
         <p v-if="event.description" class="mt-1 text-sm text-[var(--od-slate)]">{{ event.description }}</p>
-        <p v-if="event.location" class="mt-1 text-sm text-[var(--od-slate)]">📍 {{ event.location }}</p>
+        <p v-if="event.location" class="mt-1 text-sm text-[var(--od-slate)]">
+          📍
+          <!-- Klickbar, sieht aber weiter aus wie Text: Unterstreichung erst
+               beim Überfahren, Farbe bleibt Slate. -->
+          <a
+            :href="mapsLink(event.location)"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="text-inherit hover:underline"
+          >{{ event.location }}</a>
+        </p>
 
         <p
           v-if="event.status === 'cancelled'"

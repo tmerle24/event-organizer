@@ -1,6 +1,7 @@
 <script setup>
 import { ref, computed, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { mapsLink } from '@/composables/useMapsLink'
 
 /**
  * Die editierbare Feldzeile aus Spec Abschnitt 4, Schritt 1: das Ergebnis der
@@ -83,7 +84,15 @@ async function save() {
           {{ event.participant_count_hint }} · {{ t('manage.fields.participants_hint') }}
           <span v-if="guessed('participant_count')" class="text-xs italic">({{ t('manage.fields.guessed') }})</span>
         </span>
-        <span v-if="event.location">📍 {{ event.location }}</span>
+        <span v-if="event.location">
+          📍
+          <a
+            :href="mapsLink(event.location)"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="text-inherit hover:underline"
+          >{{ event.location }}</a>
+        </span>
       </div>
 
       <p v-if="event.description" class="w-full text-sm text-[var(--od-slate)]">{{ event.description }}</p>

@@ -388,10 +388,26 @@ Der Vorschautext (`brand.share_text`) ist deckungsgleich mit der Zeile im Bild,
 damit Bild und Text dasselbe sagen. Beim Testen einen Query-Parameter anhängen
 (`?v=2`), WhatsApp cached die Vorschau pro URL sehr lange.
 
-**Event-Seiten zeigen bewusst die generische Marken-Vorschau**, nicht Titel und
-Termin: Vorschau-Bots holen die Seite, ohne dass die empfangende Person das
-ausgelöst hat. Eigene Bilder pro Event wären möglich (`brand/og/README.md`
-skizziert das Layout), gehören aber hinter einen Cache und nicht in den Request.
+**Event-Seiten zeigen Titel und Termin** (`SharePreview`, per
+`withViewData()` an das Blade-Root gereicht). Wer den Link in einen Gruppenchat
+bekommt, weiß damit sofort Bescheid, ohne zu klicken:
+
+| Zustand | Vorschautext |
+|---|---|
+| Termin steht | `Freitag, 4. September 2026, 18:00 · Im Garten` |
+| noch offen | `3 Termine stehen zur Wahl. Trag ein, wann du kannst.` |
+| abgesagt / vorbei | entsprechender Hinweis |
+
+Der erste Stand war hier bewusst anders: generische Marken-Vorschau, damit
+Vorschau-Bots nichts über das Event verraten. Der Nutzen für eine Einladung
+wiegt schwerer — der Link ist ohnehin der Schlüssel zum Event. Texte in
+`lang/{locale}/share.php`.
+
+**Die Manage-Seite bleibt generisch.** Der Verwaltungslink gehört nicht in einen
+Gruppenchat; eine Vorschau, die ihn attraktiv macht, hilft niemandem.
+
+Eigene Bilder pro Event wären möglich (`brand/og/README.md` skizziert das
+Layout), gehören aber hinter einen Cache und nicht in den Request.
 
 ---
 

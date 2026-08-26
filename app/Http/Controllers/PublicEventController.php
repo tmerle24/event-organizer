@@ -6,6 +6,7 @@ use App\Models\Availability;
 use App\Models\Event;
 use App\Models\Participant;
 use App\Services\EventPresenter;
+use App\Services\SharePreview;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
@@ -17,13 +18,18 @@ use Inertia\Inertia;
  */
 class PublicEventController extends Controller
 {
-    public function __construct(private readonly EventPresenter $presenter) {}
+    public function __construct(
+        private readonly EventPresenter $presenter,
+        private readonly SharePreview $share,
+    ) {}
 
     public function show(Request $request, Event $event)
     {
+        // withViewData reicht die Werte an app.blade.php durch — die
+        // Link-Vorschau muss im HTML stehen, nicht erst nach dem JS-Start.
         return Inertia::render('Event/Public', [
             'event' => $this->presenter->forPublic($event, $this->resolveParticipant($request, $event)),
-        ]);
+        ])->withViewData($this->share->forEvent($event));
     }
 
     public function state(Request $request, Event $event)

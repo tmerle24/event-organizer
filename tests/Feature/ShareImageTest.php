@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\Event;
+use Carbon\CarbonImmutable;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -66,10 +67,81 @@ class ShareImageTest extends TestCase
     }
 
     /**
-     * Event-Seiten zeigen bewusst die generische Marken-Vorschau: Vorschau-Bots
-     * holen die Seite, ohne dass die empfangende Person das ausgelöst hat.
+     * Wer den Link bekommt, soll ohne Klick wissen, worum es geht und wann es
+     * stattfindet. Das war zunächst anders gelöst — Event-Seiten zeigten die
+     * generische Marken-Vorschau, damit Vorschau-Bots nichts verraten. Der
+     * Nutzen für eine Einladung wiegt schwerer; der Link ist ohnehin der
+     * Schlüssel zum Event.
      */
-    public function test_event_pages_do_not_leak_their_title_into_the_preview(): void
+    public function test_a_shared_event_link_shows_title_and_date(): void
+    {
+        $event = Event::create([
+            'title' => 'Team-BBQ',
+            'mode' => Event::MODE_BOTH,
+            'timezone' => 'Europe/Berlin',
+            'status' => Event::STATUS_DECIDED,
+            'location' => 'Im Garten',
+        ]);
+
+        $option = $event->dateOptions()->create([
+            'starts_at_utc' => CarbonImmutable::create(2026, 9, 4, 16, 0, 0, 'UTC'),
+            'day' => '2026-09-04',
+            'sort' => 0,
+        ]);
+        $event->update(['decided_option_id' => $option->id]);
+
+        $response = $this->get("/t/{$event->public_token}");
+
+        $response->assertOk();
+        $response->assertSee('property="og:title" content="Team-BBQ"', false);
+        // 16:00 UTC sind 18:00 in Berlin — die Vorschau zeigt die Event-Zeitzone.
+        $response->assertSee('18:00', false);
+        $response->assertSee('Im Garten', false);
+    }
+
+    public function test_an_undecided_event_says_how_many_dates_are_up(): void
+    {
+        $event = Event::create([
+            'title' => 'Kegelabend',
+            'mode' => Event::MODE_DATES,
+            'timezone' => 'Europe/Berlin',
+            'status' => Event::STATUS_COLLECTING,
+        ]);
+
+        foreach ([3, 5] as $offset) {
+            $event->dateOptions()->create([
+                'starts_at_utc' => now()->addDays($offset),
+                'day' => now()->addDays($offset)->toDateString(),
+                'sort' => $offset,
+            ]);
+        }
+
+        $response = $this->get("/t/{$event->public_token}");
+
+        $response->assertOk();
+        $response->assertSee('property="og:title" content="Kegelabend"', false);
+        // Gegen die Übersetzung prüfen, nicht gegen deutschen Text: die
+        // Testumgebung läuft nicht zwingend in derselben Sprache.
+        $response->assertSee(trans_choice('share.collecting_with_options', 2, ['count' => 2]), false);
+    }
+
+    public function test_a_cancelled_event_says_so_in_the_preview(): void
+    {
+        $event = Event::create([
+            'title' => 'Fällt aus',
+            'timezone' => 'Europe/Berlin',
+            'status' => Event::STATUS_CANCELLED,
+        ]);
+
+        $this->get("/t/{$event->public_token}")
+            ->assertSee(__('share.cancelled'), false);
+    }
+
+    /**
+     * Der Verwaltungslink gehört nicht in einen Gruppenchat — die Manage-Seite
+     * bleibt deshalb bei der generischen Vorschau.
+     */
+    public function test_the_manage_page_keeps_the_generic_preview(): void
     {
         $event = Event::create([
             'title' => 'Geheime Überraschungsparty',
@@ -77,11 +149,11 @@ class ShareImageTest extends TestCase
             'status' => Event::STATUS_COLLECTING,
         ]);
 
-        $response = $this->get("/t/{$event->public_token}");
+        $response = $this->get("/e/{$event->manage_token}");
 
         $response->assertOk();
         $response->assertSee('property="og:title" content="'.config('app.name').'"', false);
-        $response->assertDontSee('property="og:title" content="Geheime Überraschungsparty"', false);
+        $response->assertDontSee('Geheime Überraschungsparty', false);
         $response->assertSee('name="robots" content="noindex, nofollow"', false);
     }
 }
