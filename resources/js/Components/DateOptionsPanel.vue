@@ -15,6 +15,12 @@ const { t } = useI18n()
 const busy = ref(false)
 const notify = ref(true)
 const showGenerator = ref(false)
+/*
+ * Sobald der Termin steht, ist die Auswahl erledigt und die Planung ist das,
+ * was zählt. Die anderen Termine bleiben erreichbar — die Entscheidung lässt
+ * sich zurücknehmen — aber sie stehen nicht mehr im Weg.
+ */
+const showOptions = ref(false)
 const newDate = ref({ day: '', time: '18:00', all_day: false })
 
 const generator = ref({
@@ -34,6 +40,13 @@ const ordered = computed(() => {
 })
 
 const decided = computed(() => props.event.date_options.find((o) => o.id === props.event.decided_option_id) || null)
+
+/** Alles außer dem bestätigten Termin — nur darauf bezieht sich der Umschalter. */
+const otherCount = computed(
+  () => props.event.date_options.filter((o) => o.id !== props.event.decided_option_id).length
+)
+
+const optionsVisible = computed(() => !decided.value || showOptions.value)
 const readOnly = computed(() => ['closed', 'cancelled'].includes(props.event.status))
 
 /* Nur ein starkes Signal pro Zeile: Mint fuer "passt allen", Apricot fuer den
@@ -114,8 +127,8 @@ function toggleWeekday(day) {
 <template>
   <section class="od-card p-4 sm:p-5">
     <header class="flex items-center justify-between gap-3">
-      <h2 class="font-display font-semibold">{{ t('manage.dates.title') }}</h2>
-      <span v-if="event.answered_count > 0" class="od-meta">
+      <h2 class="od-h3">{{ decided ? t('manage.dates.title_decided') : t('manage.dates.title') }}</h2>
+      <span v-if="event.answered_count > 0 && !decided" class="od-meta">
         {{ t('manage.dates.need_more', event.answered_count) }}
       </span>
     </header>
@@ -136,11 +149,22 @@ function toggleWeekday(day) {
       </div>
     </div>
 
+    <button
+      v-if="decided && otherCount"
+      type="button"
+      class="od-btn od-btn-quiet mt-4 px-0 text-[13px]"
+      :aria-expanded="showOptions"
+      @click="showOptions = !showOptions"
+    >
+      {{ t('manage.dates.other_options', otherCount) }} ·
+      {{ showOptions ? t('manage.dates.hide') : t('manage.dates.show') }}
+    </button>
+
     <p v-if="!event.date_options.length" class="mt-4 text-sm text-[var(--od-slate)]">
       {{ t('manage.dates.empty') }}
     </p>
 
-    <ul v-else class="mt-4 space-y-2">
+    <ul v-else-if="optionsVisible" class="mt-4 space-y-2">
       <li
         v-for="option in ordered"
         :key="option.id"
@@ -214,13 +238,13 @@ function toggleWeekday(day) {
 
     <p
       v-if="event.date_options.length && event.best_match_id === null && !decided"
-      class="mt-3 text-xs text-[var(--od-slate)]"
+      class="od-meta mt-3"
     >
       {{ t('manage.dates.not_enough') }}
     </p>
 
-    <!-- Termine ergaenzen -->
-    <div v-if="!readOnly" class="mt-5 border-t border-[var(--od-line)] pt-4">
+    <!-- Termine ergaenzen — nach der Entscheidung nur noch auf Wunsch sichtbar -->
+    <div v-if="!readOnly && optionsVisible" class="mt-5 border-t border-[var(--od-line)] pt-4">
       <div class="flex flex-col gap-2 sm:flex-row sm:items-end">
         <div class="flex-1">
           <label class="text-xs font-semibold text-[var(--od-slate)]" for="d-day">{{ t('manage.dates.day') }}</label>

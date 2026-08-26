@@ -86,7 +86,11 @@
       "not_enough": "Still open – no rush.",
       "need_more": "One answer is in | {count} have answered so far",
       "notify": "Let the others know",
-      "undecide": "Pick another one"
+      "undecide": "Pick another one",
+      "other_options": "One other date was on the table | {count} other dates were on the table",
+      "show": "show",
+      "hide": "hide",
+      "title_decided": "The date"
     },
     "counts": {
       "yes": "can",

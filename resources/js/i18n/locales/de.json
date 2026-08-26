@@ -86,7 +86,11 @@
       "not_enough": "Noch offen – kein Stress.",
       "need_more": "Eine Rückmeldung ist schon da | {count} haben schon geantwortet",
       "notify": "Den anderen Bescheid sagen",
-      "undecide": "Doch anders"
+      "undecide": "Doch anders",
+      "other_options": "Ein anderer Termin stand zur Wahl | {count} andere Termine standen zur Wahl",
+      "show": "ansehen",
+      "hide": "ausblenden",
+      "title_decided": "Der Termin"
     },
     "counts": {
       "yes": "kann",

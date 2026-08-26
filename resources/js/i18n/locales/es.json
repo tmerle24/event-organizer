@@ -86,7 +86,11 @@
       "not_enough": "Sigue abierto, sin prisa.",
       "need_more": "Ya hay una respuesta | {count} ya han respondido",
       "notify": "Avisar a los demás",
-      "undecide": "Elegir otra"
+      "undecide": "Elegir otra",
+      "other_options": "Había otra fecha a elegir | Había {count} fechas más a elegir",
+      "show": "ver",
+      "hide": "ocultar",
+      "title_decided": "La fecha"
     },
     "counts": {
       "yes": "puede",

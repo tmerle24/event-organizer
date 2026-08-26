@@ -86,7 +86,11 @@
       "not_enough": "Encore ouvert – rien ne presse.",
       "need_more": "Une réponse est arrivée | {count} ont déjà répondu",
       "notify": "Prévenir les autres",
-      "undecide": "Choisir une autre"
+      "undecide": "Choisir une autre",
+      "other_options": "Une autre date était proposée | {count} autres dates étaient proposées",
+      "show": "voir",
+      "hide": "masquer",
+      "title_decided": "La date"
     },
     "counts": {
       "yes": "dispo",

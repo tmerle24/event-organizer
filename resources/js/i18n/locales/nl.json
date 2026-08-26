@@ -86,7 +86,11 @@
       "not_enough": "Nog open – geen haast.",
       "need_more": "Eén reactie is binnen | {count} hebben al gereageerd",
       "notify": "De anderen laten weten",
-      "undecide": "Toch een andere"
+      "undecide": "Toch een andere",
+      "other_options": "Er stond nog een datum open | Er stonden {count} andere datums open",
+      "show": "bekijken",
+      "hide": "verbergen",
+      "title_decided": "De datum"
     },
     "counts": {
       "yes": "kan",

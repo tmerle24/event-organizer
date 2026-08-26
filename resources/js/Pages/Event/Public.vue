@@ -37,6 +37,11 @@ const editing = ref(false)
 const toast = ref('')
 const toastTone = ref('ok')
 const confirmLeave = ref(false)
+/*
+ * Steht der Termin, ist die Abstimmung erledigt: die Liste klappt zu, damit
+ * das, was noch zu tun ist, nicht unter sechs abgehakten Terminen liegt.
+ */
+const showDateList = ref(false)
 
 const baseUrl = computed(() => `/t/${event.value.public_token}`)
 const readOnly = computed(() => ['closed', 'cancelled'].includes(event.value.status))
@@ -56,6 +61,12 @@ const ordered = computed(() => {
 
 /** Nur Optionen, bei denen sich die eigene Antwort geaendert hat, werden gesendet. */
 const dirty = computed(() => Object.keys(answers.value).length > 0)
+
+const otherCount = computed(
+  () => event.value.date_options.filter((o) => o.id !== event.value.decided_option_id).length
+)
+
+const dateListVisible = computed(() => !decided.value || showDateList.value)
 
 let poller = null
 
@@ -257,11 +268,22 @@ function note(option) {
       <section v-if="showDates" class="od-card p-4 sm:p-5">
         <h2 class="font-display font-semibold">{{ t('public.who') }}</h2>
 
+        <button
+          v-if="decided && otherCount"
+          type="button"
+          class="od-btn od-btn-quiet mt-2 px-0 text-[13px]"
+          :aria-expanded="showDateList"
+          @click="showDateList = !showDateList"
+        >
+          {{ t('manage.dates.other_options', otherCount) }} ·
+          {{ showDateList ? t('manage.dates.hide') : t('manage.dates.show') }}
+        </button>
+
         <p v-if="!event.date_options.length" class="mt-3 text-sm text-[var(--od-slate)]">
           {{ t('public.no_dates') }}
         </p>
 
-        <ul v-else class="mt-3 space-y-2">
+        <ul v-else-if="dateListVisible" class="mt-3 space-y-2">
           <li
             v-for="option in ordered"
             :key="option.id"
@@ -302,7 +324,7 @@ function note(option) {
         </ul>
 
         <button
-          v-if="me && !readOnly && event.date_options.length"
+          v-if="me && !readOnly && event.date_options.length && dateListVisible"
           type="button"
           class="od-btn od-btn-primary mt-4 w-full py-2.5"
           :disabled="busy || !dirty"
