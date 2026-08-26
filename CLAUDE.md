@@ -491,8 +491,8 @@ bash deploy.sh                # erkennt Erstinstallation vs. Update
 
 `.github/workflows/deploy.yml` löst das bei jedem Push auf `main` per SSH aus
 (Secrets: `SSH_HOST`, `SSH_USER`, `SSH_KEY`, `SSH_PORT`).
-`deploy.sh` steht auf `APP_DIR=/var/www/orgdate`; `REPO_URL` vor dem ersten
-Deploy auf das echte Remote setzen.
+`deploy.sh` steht auf `APP_DIR=/var/www/orgdate` und
+`REPO_URL=git@github.com:tmerle24/event-organizer.git`.
 
 Produktions-`.env`:
 ```env
@@ -504,6 +504,37 @@ DB_CONNECTION=pgsql
 
 Backups: `backup.sh` (täglich per Cron nach Cloudflare R2, 30 Tage
 Aufbewahrung), Wiederherstellung mit `restore.sh`.
+
+---
+
+## Rechtsseiten
+
+`Pages/Legal/Imprint.vue` und `Privacy.vue` sind bewusst deutschsprachig
+(Anbieter sitzt in Deutschland), nur die Überschriften laufen über `t()` — so
+wie bei SimpleVoter. Anbieterdaten: TM Systems Till Merlé, Birkenstr. 19,
+61440 Oberursel.
+
+**E-Mail und Telefon werden erst im `onMounted` zusammengesetzt** und stehen
+nirgends als fertiger String:
+
+- Nicht im ausgelieferten HTML — deshalb liegt die Adresse **nicht** in den
+  geteilten Inertia-Props. Eine geteilte Prop landet im `data-page`-Attribut
+  **jeder** Seite und hebelt den Schutz komplett aus.
+- Nicht im JS-Bundle — `'hello' + '@' + 'orgdate.com'` würde esbuild beim Build
+  wieder zu einem Literal zusammenfalten. Deshalb
+  `['hello', 'orgdate.com'].join(String.fromCharCode(64))`.
+
+Nach Änderungen an diesen Seiten gegenprüfen:
+
+```bash
+curl -s http://localhost:8080/impressum | grep -c "hello@orgdate"   # muss 0 sein
+grep -rl "hello@orgdate\.com" public/build/assets/*.js             # darf nichts finden
+```
+
+Der Datenschutztext beschreibt das echte Verhalten der App: Tokens im
+LocalStorage statt Login, `creator_ip` zur Missbrauchsprävention, die optionale
+Übermittlung des Freitexts an die Claude-API, 12 Monate Retention. Ändert sich
+eines dieser Verhalten, muss der Text mitgeändert werden.
 
 ---
 
@@ -525,10 +556,10 @@ Aufbewahrung), Wiederherstellung mit `restore.sh`.
 
 ## Offene Punkte
 
-- [ ] Impressum und Datenschutzerklärung befüllen
-      (`resources/js/Pages/Legal/*.vue` zeigen bisher nur die Kontaktadresse)
-- [ ] Juristische Prüfung: Double-Opt-in für die transaktionalen Mails,
-      Verzeichnis von Verarbeitungstätigkeiten (Spec Abschnitt 8)
+- [ ] Juristische Prüfung der Rechtstexte, insbesondere Double-Opt-in für die
+      transaktionalen Mails, das Verzeichnis von Verarbeitungstätigkeiten
+      (Spec Abschnitt 8) und Abschnitt 5 der Datenschutzerklärung
+      (Drittlandübermittlung an Anthropic)
 - [ ] `brand/logo/orgdate-logo-horizontal.svg` und `-stacked.svg` mit
       **ausgeschriebener Wortmarke als Pfad** (Brand Guide Abschnitt 9). Im Web
       rendert `Logo.vue` die Wortmarke live in Outfit, für externe Assets
@@ -538,4 +569,4 @@ Aufbewahrung), Wiederherstellung mit `restore.sh`.
 - [ ] Erinnerungs-Mail 24h vorher (Spec: bewusst hinter der Cut-Line)
 - [ ] Retention-Warnmail 14 Tage vor Löschung (`retention_warned_at` ist im
       Schema, der Versand fehlt)
-- [ ] DNS/TLS für orgdate.com, `REPO_URL` in `deploy.sh` setzen
+- [ ] DNS/TLS für orgdate.com

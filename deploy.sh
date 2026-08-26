@@ -15,7 +15,7 @@ set -e
 
 # ── Projekt-spezifische Werte — vor dem ersten Deploy anpassen ──────
 APP_DIR="/var/www/orgdate"
-REPO_URL="git@github.com:tmerle24/orgdate.git"
+REPO_URL="git@github.com:tmerle24/event-organizer.git"
 BRANCH="main"
 QUEUE_WORKER_NAME="orgdate-queue"        # Supervisor-Programm (php artisan queue:work)
 
