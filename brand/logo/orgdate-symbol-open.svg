@@ -1,8 +1,1 @@
-<!-- Offene Variante: Einladung, noch nicht entschieden (Brand Guide Abschnitt 3) -->
-<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="ORGDATE">
-  <path d="M80 71.96A60 60 0 0 0 50 20"
-        fill="none" stroke="#AFA9EC" stroke-width="16" stroke-linecap="round"/>
-  <path d="M50 20A60 60 0 0 0 20 71.96A60 60 0 0 0 80 71.96"
-        fill="none" stroke="#5B4BE8" stroke-width="16" stroke-linejoin="round" stroke-linecap="round"/>
-  <circle cx="50" cy="54" r="9.5" fill="#16D6A4"/>
-</svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 76 76" width="76" height="76" role="img" aria-label="ORGDATE"><title>ORGDATE Bildmarke offen</title><g transform="translate(-12.000,-12.000) scale(1.00000)"><path d="M50 20A60 60 0 0 0 20 71.96A60 60 0 0 0 80 71.96" fill="none" stroke="#5B4BE8" stroke-width="16.0" stroke-linejoin="round" stroke-linecap="round"/><path d="M78.69 59.49A60 60 0 0 0 60.15 27.37" fill="none" stroke="#AFA9EC" stroke-width="16.0" stroke-linecap="round"/><circle cx="50" cy="54" r="9.5" fill="#16D6A4"/></g></svg>

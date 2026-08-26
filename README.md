@@ -32,14 +32,13 @@ docker exec orgdate-pgsql psql -U orgdate -d orgdate -c "CREATE DATABASE orgdate
 php artisan test
 ```
 
-Marken-Assets neu erzeugen:
+## Marken-Assets
 
-```bash
-bash brand/generate-icons.sh        # App-Icons + Favicons aus der Bildmarke
-python3 brand/generate-lockups.py   # Logo-Lockups aus dem Wortmarken-Pfad
-```
-
-Die Share-Bilder liegen fertig in `public/og/`, ihre Quellen in `brand/og/`.
+Logos, Icons und Share-Bilder liegen fertig unter `brand/` bzw. ausgeliefert in
+`public/icon/` und `public/og/`. Die Quellen sind die drei Generatoren
+`brand/logo/make_logos.py`, `brand/icon/make_icons.py` und
+`brand/og/make_og.py` — sie brauchen `cairosvg`, `pillow`, `fonttools` und
+`fonts/Outfit.ttf`. Einzelne SVGs bitte nicht von Hand nachziehen.
 
 ## KI ist optional
 

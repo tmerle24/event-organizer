@@ -322,28 +322,53 @@ Props: `variant` (`horizontal` | `stacked` | `symbol`), `size` (`sm`/`md`/`lg`),
 Die Wortmarke steht immer in Versalien, Outfit 600, Tracking +0.05em. Nie in
 Gemischtsatz, nie kursiv, nie in einer anderen Schrift.
 
-**Assets** unter `brand/`:
+**Assets** unter `brand/` — alle vom Design geliefert, nicht hier abgeleitet.
+Die drei `make_*.py` sind die Quellen; wer etwas ändert, ändert sie und
+generiert neu, statt einzelne SVGs von Hand zu editieren.
 
 ```
 brand/
-  logo/     Symbol (normal, offen, bestätigt, invers, mono)
-            Lockups horizontal + gestapelt, je normal/invers/mono
-            wordmark-path.txt — die Wortmarke als Pfad
-  icon/     App-Icons 16…1024 + maskable + favicon.ico
-  og/       Share-Bilder als SVG-Quelle + make_og.py
+  logo/     Symbol (normal, weiß, mono, offen, klein) + Lockups horizontal
+            und gestapelt, je normal/invers/mono · make_logos.py
+  icon/     Favicons, App-Icons 16…1024, maskable, light, transparent,
+            favicon.ico · make_icons.py · README.md
+  og/       Share-Bilder als SVG-Quelle · make_og.py · README.md
   tokens/   colors.css, tailwind.colors.js
-  generate-icons.sh      Symbol → alle Icon-Größen + public/icons/
-  generate-lockups.py    Wortmarken-Pfad → alle Lockups
 ```
 
-Die Lockups halten die Maße aus Abschnitt 2.5 ein: horizontal liegen Symbolmitte
-und optische Mitte der Versalhöhe auf einer Linie, Abstand = halbe Symbolbreite;
-gestapelt beträgt der Abstand ein Drittel der Symbolhöhe. **Die Wortmarke liegt
-in allen Dateien als Pfad vor**, keine Schriftdatei nötig — im Web rendert
-`Logo.vue` sie dagegen live in Outfit, das ist deutlich kleiner als 4,8 KB Pfad.
+**Die Wortmarke liegt in allen SVGs als Pfad vor**, keine Schriftdatei nötig.
+Im Web rendert `Logo.vue` sie dagegen live in Outfit — das spart rund 5 KB
+gegenüber dem Pfad.
 
-`generate-icons.sh` braucht `rsvg-convert` und ImageMagick, `make_og.py` braucht
-zusätzlich `cairosvg`, `fonttools` und `fonts/Outfit.ttf`.
+`Logo.vue` hält exakt dieselben Maße wie `make_logos.py`:
+
+| | Wert |
+|---|---|
+| viewBox | `12 12 76 76` — die sichtbare Form, nicht das 100er-Konstruktionsraster |
+| Schriftgrad horizontal | 52/76 der sichtbaren Symbolhöhe |
+| Schriftgrad gestapelt | 34/76 |
+| Abstand horizontal | halbe Symbolbreite |
+| Abstand gestapelt | ein Viertel der Symbolhöhe |
+| Strichstärke | 16, unter 24px 17 (sonst läuft der Ring beim Rastern zu) |
+| Punktradius | 9.5, unter 24px 10 |
+
+`orgdate-symbol-confirmed.svg` ist die einzige handgepflegte Datei: Abschnitt 3
+des Guides nennt den Zustand „bestätigt", das gelieferte Set enthält ihn nicht.
+Gehört bei nächster Gelegenheit in `make_logos.py`.
+
+**Icons sind pro Größe gezeichnet, nicht herunterskaliert** — Strichstärke und
+Punktradius wachsen zu kleinen Größen hin (Tabelle in `brand/icon/README.md`).
+Neu skalieren aus einer großen Datei macht das kaputt.
+
+`apple-touch-icon.png`, `icon-1024.png` und die Maskable-Icons sind bewusst
+**unrund**: iOS, die Stores und Android legen ihre eigene Maske darüber, eine
+mitgelieferte Rundung würde doppelt beschnitten.
+
+Ausgeliefert wird aus `public/icon/`; `favicon.ico` liegt zusätzlich im
+Wurzelverzeichnis, weil Browser den Pfad auch ohne `<link>` anfragen.
+
+Zum Neuerzeugen brauchen die Skripte `cairosvg`, `pillow`, `fonttools` und
+`fonts/Outfit.ttf` (Variable Font).
 
 ---
 
@@ -604,4 +629,13 @@ eines dieser Verhalten, muss der Text mitgeändert werden.
 - [ ] Erinnerungs-Mail 24h vorher (Spec: bewusst hinter der Cut-Line)
 - [ ] Retention-Warnmail 14 Tage vor Löschung (`retention_warned_at` ist im
       Schema, der Versand fehlt)
+- [ ] `orgdate-symbol-confirmed.svg` in `brand/logo/make_logos.py` aufnehmen
+      (Guide Abschnitt 3 nennt den Zustand, das gelieferte Set enthält ihn nicht)
+- [ ] `safari-pinned-tab.svg` fehlt — verlangt eine einfarbige, strichlose
+      Vektorform, der Ring müsste dafür in eine gefüllte Kontur umgewandelt
+      werden. Aktuelle Safari-Versionen nutzen stattdessen Manifest und
+      Apple-Touch-Icon, deshalb niedrige Priorität.
+- [ ] Der Guide nennt in Abschnitt 8 für das Favicon Strichstärke 17 / Punkt 10.
+      Bei 16 px reicht das nicht; die geprüfte Tabelle steht in
+      `brand/icon/README.md` und sollte in den Guide zurückfließen.
 - [ ] DNS/TLS für orgdate.com
