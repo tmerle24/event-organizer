@@ -460,9 +460,11 @@ server {
     }
 
     # Marken-Assets ändern sich selten, aber unter gleichem Namen.
+    # Hier bewusst KEIN "access_log off": Wenn eine Link-Vorschau kein Bild
+    # zeigt, ist die erste Frage immer "holt der Crawler es überhaupt ab?" —
+    # und die beantwortet nur der Log. Das Volumen ist vernachlässigbar.
     location ~* ^/(icon|og)/ {
         add_header Cache-Control "public, max-age=2592000" always;
-        access_log off;
         try_files \$uri =404;
     }
 

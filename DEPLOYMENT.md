@@ -102,6 +102,16 @@ php artisan config:cache && php artisan route:cache && php artisan view:cache
 **Zertifikat erneuern** — macht certbot selbst über seinen systemd-Timer.
 Prüfen mit `sudo certbot renew --dry-run`.
 
+**Vorschaubild fehlt** — erste Frage: holt der Crawler es überhaupt ab?
+
+```bash
+sudo grep "/og/" /var/log/nginx/<domain>.access.log | tail -20
+```
+
+Ist die Ausgabe leer, prüfe zuerst, ob im vHost `access_log off;` im
+`location ~* ^/(icon|og)/`-Block steht — dann wird schlicht nichts
+protokolliert und die leere Ausgabe bedeutet nichts.
+
 **Vorschaubild fehlt in Teams, funktioniert aber in WhatsApp** — dann kommt der
 Abrufer nicht durch den TLS-Handshake. certbot stellt inzwischen ECDSA-Zertifikate
 aus; wer nur RSA-Cipher-Suites beherrscht, bekommt gar keine Verbindung. Prüfen:
