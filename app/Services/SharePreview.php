@@ -21,6 +21,7 @@ class SharePreview
     public function forEvent(Event $event): array
     {
         return [
+            'pageTitle' => $event->title.' – '.config('app.name'),
             'ogTitle' => $event->title,
             'ogDescription' => $this->description($event),
         ];

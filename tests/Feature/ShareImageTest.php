@@ -74,6 +74,23 @@ class ShareImageTest extends TestCase
      * Nutzen für eine Einladung wiegt schwerer; der Link ist ohnehin der
      * Schlüssel zum Event.
      */
+    public function test_pages_carry_a_real_title_in_the_delivered_html(): void
+    {
+        // Inertia setzt den Titel sonst erst im Browser — ein Crawler sieht
+        // dann auf jeder Seite nur den App-Namen.
+        $this->get('/')->assertSee('<title inertia>'.config('app.name').' – '.config('brand.tagline'), false);
+        $this->get('/impressum')->assertSee('<title inertia>Impressum – '.config('app.name'), false);
+
+        $event = Event::create([
+            'title' => 'Sommerfest',
+            'timezone' => 'Europe/Berlin',
+            'status' => Event::STATUS_COLLECTING,
+        ]);
+
+        $this->get("/t/{$event->public_token}")
+            ->assertSee('<title inertia>Sommerfest – '.config('app.name'), false);
+    }
+
     public function test_a_shared_event_link_shows_title_and_date(): void
     {
         $event = Event::create([

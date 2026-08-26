@@ -10,10 +10,22 @@ use App\Http\Controllers\TaskController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
-Route::get('/', fn () => Inertia::render('Landing'))->name('home');
+/*
+ * withViewData setzt den <title> im ausgelieferten HTML. Inertia setzt ihn im
+ * Browser noch einmal über <Head> — ein Crawler sieht aber nur das, was der
+ * Server schickt.
+ */
+Route::get('/', fn () => Inertia::render('Landing')
+    ->withViewData(['pageTitle' => config('app.name').' – '.config('brand.tagline')]))
+    ->name('home');
 
-Route::get('/datenschutz', fn () => Inertia::render('Legal/Privacy'))->name('legal.privacy');
-Route::get('/impressum', fn () => Inertia::render('Legal/Imprint'))->name('legal.imprint');
+Route::get('/datenschutz', fn () => Inertia::render('Legal/Privacy')
+    ->withViewData(['pageTitle' => 'Datenschutz – '.config('app.name')]))
+    ->name('legal.privacy');
+
+Route::get('/impressum', fn () => Inertia::render('Legal/Imprint')
+    ->withViewData(['pageTitle' => 'Impressum – '.config('app.name')]))
+    ->name('legal.imprint');
 
 Route::post('/events', [EventController::class, 'store'])
     ->middleware('throttle:20,1')

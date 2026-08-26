@@ -27,7 +27,14 @@
 
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 
-        <title inertia>{{ config('app.name') }}</title>
+        {{--
+            Serverseitiger Titel. Inertia setzt ihn im Browser über <Head>, aber
+            ein Crawler führt kein JavaScript aus und sah bisher auf jeder Seite
+            nur "ORGDATE". Manche Clients — Teams etwa — beschriften einen
+            eingefügten Link mit dem <title>; ohne echten Titel bleibt dort die
+            nackte URL stehen.
+        --}}
+        <title inertia>{{ $pageTitle ?? config('app.name') }}</title>
         <meta name="description" content="{{ $ogDescription ?? config('brand.claim') }}" />
         <link rel="canonical" href="{{ url()->current() }}" />
         {{-- Event-Seiten sind privat und gehoeren nicht in den Index. --}}
