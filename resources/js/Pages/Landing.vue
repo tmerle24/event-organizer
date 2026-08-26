@@ -15,9 +15,6 @@ const appName = computed(() => usePage().props.appName || 'ORGDATE')
 const input = ref('')
 const mode = ref('dates')
 const website = ref('') // Honeypot
-// Optionaler fester Termin — nur bei einer Organisationsliste sichtbar, dort
-// gibt es keine Terminfindung.
-const fixed = ref({ date: '', time: '' })
 const busy = ref(false)
 const toast = ref('')
 const toastTone = ref('ok')
@@ -51,8 +48,6 @@ async function submit() {
       mode: mode.value,
       timezone: viewerTimezone(),
       website: website.value,
-      fixed_date: mode.value === 'list' && fixed.value.date ? fixed.value.date : null,
-      fixed_time: mode.value === 'list' && fixed.value.date ? fixed.value.time || null : null,
     })
 
     rememberEvent({
@@ -128,22 +123,6 @@ function onKeydown(event) {
             </label>
           </div>
         </fieldset>
-
-        <div v-if="mode === 'list'" class="mt-4">
-          <label class="od-meta" for="fixed-date">
-            {{ t('landing.fixed_date') }} <span class="font-normal">({{ t('common.optional') }})</span>
-          </label>
-          <div class="mt-1 flex flex-col gap-2 sm:flex-row">
-            <input id="fixed-date" v-model="fixed.date" type="date" class="od-input" />
-            <input
-              v-if="fixed.date"
-              v-model="fixed.time"
-              type="time"
-              class="od-input sm:w-36"
-              :aria-label="t('manage.dates.time')"
-            />
-          </div>
-        </div>
 
         <button type="submit" class="od-btn od-btn-primary mt-5 w-full py-3.5 text-base" :disabled="!canSubmit">
           {{ busy ? t('landing.creating') : t('landing.submit') }}
