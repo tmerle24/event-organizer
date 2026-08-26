@@ -62,6 +62,33 @@ async function addTask(sectionId) {
   newTask.value[sectionId ?? 'none'] = ''
 }
 
+/*
+ * Ein leeres Feld bedeutet "nichts geändert", nicht "löschen": sonst würde ein
+ * versehentlich geleertes Feld in einen 422 laufen und die Aufgabe bliebe
+ * kommentarlos stehen. Zum Entfernen gibt es das ✕.
+ */
+async function rename(task, event) {
+  const title = event.target.value.trim()
+
+  if (!title || title === task.title) {
+    event.target.value = task.title
+    return
+  }
+
+  await call('patch', `${props.baseUrl}/tasks/${task.id}`, withToken({ title }))
+}
+
+async function renameSection(section, event) {
+  const title = event.target.value.trim()
+
+  if (!title || title === section.title) {
+    event.target.value = section.title
+    return
+  }
+
+  await call('patch', `${props.baseUrl}/sections/${section.id}`, { title })
+}
+
 async function toggleDone(task) {
   await call('patch', `${props.baseUrl}/tasks/${task.id}`, withToken({
     status: task.status === 'done' ? 'open' : 'done',
@@ -105,7 +132,20 @@ async function removeSection(section) {
 
     <div v-for="section in sections" :key="section.id" class="mt-5">
       <div class="flex items-center justify-between gap-2">
-        <h3 class="od-h3" style="color: var(--od-slate)">{{ section.title }}</h3>
+        <input
+          v-if="canManage && !readOnly"
+          :value="section.title"
+          :disabled="busy"
+          class="od-h3 min-w-0 flex-1 border border-transparent bg-transparent px-1.5 py-0.5 hover:border-[var(--od-line)] focus:border-[var(--od-violet)] focus:outline-none"
+          style="color: var(--od-slate); border-radius: var(--od-radius-sm)"
+          maxlength="80"
+          :aria-label="t('manage.plan.section_label')"
+          @focus="emit('focus-change', true)"
+          @blur="emit('focus-change', false); renameSection(section, $event)"
+          @keyup.enter="$event.target.blur()"
+          @keyup.esc="$event.target.value = section.title; $event.target.blur()"
+        />
+        <h3 v-else class="od-h3" style="color: var(--od-slate)">{{ section.title }}</h3>
         <button
           v-if="canManage && !readOnly"
           type="button"
@@ -129,12 +169,22 @@ async function removeSection(section) {
             :checked="task.status === 'done'"
             :disabled="busy || readOnly"
             class="h-4 w-4 shrink-0"
-            :aria-label="task.title"
+            :aria-label="`${t('manage.plan.done_label')}: ${task.title}`"
             @change="toggleDone(task)"
           />
-          <span class="min-w-0 flex-1 text-sm" :class="{ 'text-[var(--od-slate)] line-through': task.status === 'done' }">
-            {{ task.title }}
-          </span>
+          <input
+            :value="task.title"
+            :disabled="busy || readOnly"
+            class="min-w-0 flex-1 border border-transparent bg-transparent px-1.5 py-1 text-sm hover:border-[var(--od-line)] focus:border-[var(--od-violet)] focus:outline-none disabled:hover:border-transparent"
+            :class="{ 'text-[var(--od-slate)] line-through': task.status === 'done' }"
+            :style="{ borderRadius: 'var(--od-radius-sm)' }"
+            maxlength="160"
+            :aria-label="t('manage.plan.task_label')"
+            @focus="emit('focus-change', true)"
+            @blur="emit('focus-change', false); rename(task, $event)"
+            @keyup.enter="$event.target.blur()"
+            @keyup.esc="$event.target.value = task.title; $event.target.blur()"
+          />
 
           <select
             v-if="canManage && !readOnly"
@@ -240,12 +290,22 @@ async function removeSection(section) {
             :checked="task.status === 'done'"
             :disabled="busy || readOnly"
             class="h-4 w-4 shrink-0"
-            :aria-label="task.title"
+            :aria-label="`${t('manage.plan.done_label')}: ${task.title}`"
             @change="toggleDone(task)"
           />
-          <span class="min-w-0 flex-1 text-sm" :class="{ 'text-[var(--od-slate)] line-through': task.status === 'done' }">
-            {{ task.title }}
-          </span>
+          <input
+            :value="task.title"
+            :disabled="busy || readOnly"
+            class="min-w-0 flex-1 border border-transparent bg-transparent px-1.5 py-1 text-sm hover:border-[var(--od-line)] focus:border-[var(--od-violet)] focus:outline-none disabled:hover:border-transparent"
+            :class="{ 'text-[var(--od-slate)] line-through': task.status === 'done' }"
+            :style="{ borderRadius: 'var(--od-radius-sm)' }"
+            maxlength="160"
+            :aria-label="t('manage.plan.task_label')"
+            @focus="emit('focus-change', true)"
+            @blur="emit('focus-change', false); rename(task, $event)"
+            @keyup.enter="$event.target.blur()"
+            @keyup.esc="$event.target.value = task.title; $event.target.blur()"
+          />
 
           <select
             v-if="canManage && !readOnly"

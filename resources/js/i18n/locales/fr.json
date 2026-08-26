@@ -126,7 +126,10 @@
       "unassigned": "Personne",
       "assign": "Attribuer",
       "no_tasks": "Pas encore de tâches.",
-      "other_tasks": "Autres tâches"
+      "other_tasks": "Autres tâches",
+      "task_label": "Renommer la tâche",
+      "section_label": "Renommer la section",
+      "done_label": "Terminé"
     },
     "danger": {
       "title": "Événement",

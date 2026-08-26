@@ -126,7 +126,10 @@
       "unassigned": "Nobody",
       "assign": "Assign",
       "no_tasks": "No tasks yet.",
-      "other_tasks": "Other tasks"
+      "other_tasks": "Other tasks",
+      "task_label": "Rename task",
+      "section_label": "Rename section",
+      "done_label": "Done"
     },
     "danger": {
       "title": "Event",

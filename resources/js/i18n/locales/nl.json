@@ -126,7 +126,10 @@
       "unassigned": "Niemand",
       "assign": "Toewijzen",
       "no_tasks": "Nog geen taken.",
-      "other_tasks": "Overige taken"
+      "other_tasks": "Overige taken",
+      "task_label": "Taak hernoemen",
+      "section_label": "Onderdeel hernoemen",
+      "done_label": "Klaar"
     },
     "danger": {
       "title": "Evenement",

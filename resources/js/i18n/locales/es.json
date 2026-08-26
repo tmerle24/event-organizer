@@ -126,7 +126,10 @@
       "unassigned": "Nadie",
       "assign": "Asignar",
       "no_tasks": "Aún no hay tareas.",
-      "other_tasks": "Otras tareas"
+      "other_tasks": "Otras tareas",
+      "task_label": "Renombrar tarea",
+      "section_label": "Renombrar sección",
+      "done_label": "Hecho"
     },
     "danger": {
       "title": "Evento",

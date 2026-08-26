@@ -126,7 +126,10 @@
       "unassigned": "Niemand",
       "assign": "Zuweisen",
       "no_tasks": "Noch keine Aufgaben.",
-      "other_tasks": "Weitere Aufgaben"
+      "other_tasks": "Weitere Aufgaben",
+      "task_label": "Aufgabe umbenennen",
+      "section_label": "Bereich umbenennen",
+      "done_label": "Erledigt"
     },
     "danger": {
       "title": "Event",
