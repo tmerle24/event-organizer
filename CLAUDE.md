@@ -551,14 +551,45 @@ docker exec orgdate-pgsql psql -U orgdate -d orgdate -c "CREATE DATABASE orgdate
 
 ## Deployment
 
+**Erstinstallation** auf einem frischen Ubuntu-Server:
+
 ```bash
-bash deploy.sh                # erkennt Erstinstallation vs. Update
+bash install.sh          # Wizard: Domain, DB, TLS, SMTP, Crons, Firewall
 ```
 
-`.github/workflows/deploy.yml` löst das bei jedem Push auf `main` per SSH aus
-(Secrets: `SSH_HOST`, `SSH_USER`, `SSH_KEY`, `SSH_PORT`).
-`deploy.sh` steht auf `APP_DIR=/var/www/orgdate` und
-`REPO_URL=git@github.com:tmerle24/event-organizer.git`.
+**Updates**:
+
+```bash
+bash deploy.sh           # --no-npm, --no-migrate
+```
+
+Die Aufteilung ist bewusst: `install.sh` macht alles Einmalige (Pakete,
+PostgreSQL-Rolle, nginx-vHost, certbot, Supervisor, Cron, ufw) und ruft für den
+App-Teil `deploy.sh` auf. Composer, npm, Migrationen und Caches stehen dadurch
+**nur an einer Stelle** — sonst laufen Erstinstallation und spätere Deploys
+auseinander.
+
+`install.sh` schreibt `.deploy.conf` ins App-Verzeichnis; `deploy.sh` liest sie
+und benutzt dieselben Werte. Ohne die Datei greifen die Vorgaben im Skriptkopf.
+
+Details, Pfade und Troubleshooting: [DEPLOYMENT.md](DEPLOYMENT.md).
+
+Ein paar Dinge, die beim Testen im Container aufgefallen sind und im Skript
+festgehalten sind, damit sie nicht zurückkommen:
+
+- **`sudo -v` taugt nicht als Vorprüfung.** Hat der Benutzer einen
+  NOPASSWD-Eintrag, legt sudo keinen Zeitstempel an und fragt trotzdem nach
+  einem Passwort. Stattdessen `sudo -n true || sudo true`.
+- **`set -o pipefail` und Zuweisungen aus Pipelines vertragen sich nicht.**
+  `X=$(foo | awk ...)` reißt das Skript mit, sobald `foo` fehlt — deshalb
+  überall `|| true` dahinter.
+- **ufw wird nie ohne SSH-Regel aktiviert.** Das sperrt einen sonst vom eigenen
+  Server aus. Lässt die Regel sich nicht anlegen, bleibt die Firewall aus und
+  es gibt eine Warnung.
+- **APP_KEY entsteht mit `openssl`, nicht mit `artisan key:generate`** — an der
+  Stelle gibt es noch kein `vendor/`.
+- Firewall, Supervisor und certbot dürfen die Installation **nicht abbrechen**.
+  Die App läuft auch ohne sie; ein Abbruch nach 90 % der Arbeit hilft niemandem.
 
 Produktions-`.env`:
 ```env

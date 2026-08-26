@@ -25,3 +25,6 @@ _ide_helper.php
 Homestead.json
 Homestead.yaml
 Thumbs.db
+
+# Von install.sh erzeugt, serverspezifisch
+.deploy.conf

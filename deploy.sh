@@ -13,11 +13,17 @@
 #
 set -e
 
-# ── Projekt-spezifische Werte — vor dem ersten Deploy anpassen ──────
-APP_DIR="/var/www/orgdate"
-REPO_URL="git@github.com:tmerle24/event-organizer.git"
-BRANCH="main"
-QUEUE_WORKER_NAME="orgdate-queue"        # Supervisor-Programm (php artisan queue:work)
+# ── Projekt-spezifische Werte ───────────────────────────────────────
+# install.sh legt .deploy.conf im App-Verzeichnis an; die Werte hier sind
+# nur der Fallback, wenn ohne install.sh deployt wird.
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+[ -f "$SCRIPT_DIR/.deploy.conf" ] && . "$SCRIPT_DIR/.deploy.conf"
+
+APP_DIR="${APP_DIR:-/var/www/orgdate}"
+REPO_URL="${REPO_URL:-git@github.com:tmerle24/event-organizer.git}"
+BRANCH="${BRANCH:-main}"
+QUEUE_WORKER_NAME="${QUEUE_WORKER_NAME:-orgdate-queue}"   # Supervisor-Programm
+WEB_USER="${WEB_USER:-www-data}"
 
 SKIP_NPM=false
 SKIP_MIGRATE=false
@@ -94,12 +100,21 @@ php artisan view:cache
 php artisan event:cache
 
 echo "═══ 8/9 Scheduler-Cron sicherstellen (Retention-Löschung läuft darüber) ═══"
-CRON_LINE="* * * * * cd $APP_DIR && php artisan schedule:run >> /dev/null 2>&1"
-(crontab -l 2>/dev/null | grep -qF "$APP_DIR" && echo "  → Cron-Eintrag bereits vorhanden") || \
-    (crontab -l 2>/dev/null; echo "$CRON_LINE") | crontab -
+# install.sh legt den Scheduler unter /etc/cron.d ab. Nur wenn es den Eintrag
+# nicht gibt, kommt hier ein Benutzer-Crontab dazu — sonst liefe der Scheduler
+# doppelt.
+if compgen -G "/etc/cron.d/*-scheduler" >/dev/null; then
+    echo "  → Scheduler läuft bereits über /etc/cron.d"
+elif ! command -v crontab >/dev/null; then
+    echo "  → crontab nicht vorhanden, übersprungen (Paket 'cron' installieren)"
+else
+    CRON_LINE="* * * * * cd $APP_DIR && php artisan schedule:run >> /dev/null 2>&1"
+    (crontab -l 2>/dev/null | grep -qF "$APP_DIR" && echo "  → Cron-Eintrag bereits vorhanden") || \
+        (crontab -l 2>/dev/null; echo "$CRON_LINE") | crontab -
+fi
 
 echo "═══ 9/9 Rechte, Queue-Worker, Maintenance-Mode AUS ═══"
-sudo chown -R "$(whoami):www-data" "$APP_DIR"
+sudo chown -R "$(whoami):$WEB_USER" "$APP_DIR"
 sudo find "$APP_DIR/storage" -type d -exec chmod 775 {} \;
 sudo find "$APP_DIR/storage" -type f -exec chmod 664 {} \;
 sudo find "$APP_DIR/bootstrap/cache" -type d -exec chmod 775 {} \;

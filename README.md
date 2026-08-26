@@ -48,9 +48,17 @@ Providers darf die Event-Erstellung nie blockieren.
 
 ## Deployment
 
+Server aufsetzen (Ubuntu, fragt alles Nötige ab):
+
+```bash
+bash install.sh
+```
+
+Später aktualisieren:
+
 ```bash
 bash deploy.sh
 ```
 
-Erkennt Erstinstallation und Update automatisch. Bei Push auf `main` löst
-`.github/workflows/deploy.yml` das per SSH aus.
+Bei Push auf `main` löst `.github/workflows/deploy.yml` das per SSH aus.
+Details: [DEPLOYMENT.md](DEPLOYMENT.md).
