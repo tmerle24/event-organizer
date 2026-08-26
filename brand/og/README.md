@@ -2,6 +2,17 @@
 
 Vorschaubilder für geteilte Links (WhatsApp, iMessage, Slack, Signal, LinkedIn, X, Facebook).
 
+> **Ausgeliefert wird `og-image.jpg`** (aus `og-image.png` erzeugt, ohne Alpha,
+> ohne Profil, baseline). Microsofts Vorschau-Dienst lud die PNG-Fassung
+> nachweislich vollständig herunter und zeigte sie trotzdem nicht; das JPEG ist
+> der Versuch, jede Besonderheit aus dem Weg zu räumen. Erzeugen mit:
+>
+> ```bash
+> convert public/og/og-image.png -background white -alpha remove -alpha off \
+>   -strip -colorspace sRGB -interlace none -sampling-factor 4:2:0 \
+>   -quality 88 public/og/og-image.jpg
+> ```
+
 ## Dateien
 
 | Datei | Format | Einsatz |

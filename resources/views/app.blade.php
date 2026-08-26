@@ -1,17 +1,19 @@
 @php
     /*
-     * Versionsstempel an der Bild-URL. Der "?v=2"-Trick an der Seiten-URL
-     * hilft nur gegen den Vorschau-Cache der Seite — die Bild-URL bleibt
-     * dabei identisch, und Microsofts Bild-Proxy hat einen eigenen Cache
-     * darauf. Lag dort einmal ein 404 (das Bild kam erst später auf den
-     * Server), bleibt er hängen, egal wie oft die Seite neu gecrawlt wird.
+     * Bewusst eine nackte absolute URL: JPEG, kein Query-String, kein Alpha,
+     * kein Farbprofil, baseline statt progressiv.
+     *
+     * Hintergrund: Microsofts Vorschau-Dienst lädt das Bild nachweislich
+     * vollständig (nginx-Log: 200, volle Bytezahl) und zeigt es trotzdem
+     * nicht. Woran seine Pipeline hängen bleibt, lässt sich von außen nicht
+     * beobachten — also bleibt nur, jede Besonderheit zu entfernen. Ein
+     * Versionsstempel war hier mal dran; der ist raus, weil ein Query-String
+     * an einer Bild-URL für ältere Pipelines ein bekannter Stolperstein ist
+     * und wir ihn nicht brauchen: das Bild ändert sich praktisch nie.
+     *
+     * Ändert es sich doch, bekommt die Datei einen neuen Namen.
      */
-    $ogImage = url('/og/og-image.png');
-    $ogImageStamp = @filemtime(public_path('og/og-image.png'));
-
-    if ($ogImageStamp) {
-        $ogImage .= '?v='.$ogImageStamp;
-    }
+    $ogImage = url('/og/og-image.jpg');
 
     $ogLocale = [
         'de' => 'de_DE', 'en' => 'en_GB', 'fr' => 'fr_FR', 'es' => 'es_ES', 'nl' => 'nl_NL',
@@ -60,7 +62,7 @@
         @if (str_starts_with(config('app.url'), 'https://'))
             <meta property="og:image:secure_url" content="{{ str_replace('http://', 'https://', $ogImage) }}" />
         @endif
-        <meta property="og:image:type" content="image/png" />
+        <meta property="og:image:type" content="image/jpeg" />
         <meta property="og:image:width" content="1200" />
         <meta property="og:image:height" content="630" />
         <meta property="og:image:alt" content="{{ config('app.name') }} – {{ config('brand.tagline') }}" />
