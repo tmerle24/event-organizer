@@ -200,7 +200,29 @@ function note(option) {
 
     <main class="mx-auto max-w-2xl space-y-4 px-6 pb-10">
       <div class="od-card p-4 sm:p-5">
-        <h1 class="od-h1">{{ event.title }}</h1>
+        <div class="flex items-start justify-between gap-3">
+          <h1 class="od-h1 min-w-0 flex-1">{{ event.title }}</h1>
+
+          <!--
+            Kalender-Symbol statt Textknopf: die Aktion gehört zum Termin oben,
+            nicht ans Ende der Seite. Erscheint nur, wenn es einen bestätigten
+            Termin gibt — ohne den lässt sich kein Kalendereintrag erzeugen.
+          -->
+          <a
+            v-if="decided && !readOnly"
+            :href="`${baseUrl}/event.ics`"
+            class="od-btn od-btn-ghost shrink-0 px-2.5 py-2"
+            :title="t('public.add_to_calendar')"
+            :aria-label="t('public.add_to_calendar')"
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <rect x="3" y="5" width="18" height="16" rx="3" stroke="currentColor" stroke-width="1.8" />
+              <path d="M8 3v4M16 3v4M3 10h18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+              <path d="M12 14v4M10 16h4" stroke="var(--od-violet)" stroke-width="1.8" stroke-linecap="round" />
+            </svg>
+          </a>
+        </div>
+
         <p v-if="event.description" class="mt-1 text-sm text-[var(--od-slate)]">{{ event.description }}</p>
         <p v-if="event.location" class="mt-1 text-sm text-[var(--od-slate)]">
           📍
@@ -235,7 +257,6 @@ function note(option) {
           <p v-if="note(decided)" class="od-meta">
             {{ t('public.your_time', note(decided)) }}
           </p>
-          <a :href="`${baseUrl}/event.ics`" class="od-btn od-btn-ghost od-small mt-3">{{ t('public.add_to_calendar') }}</a>
         </div>
       </div>
 
