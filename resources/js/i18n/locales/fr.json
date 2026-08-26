@@ -9,20 +9,20 @@
     "add": "Ajouter",
     "close": "Fermer",
     "copy": "Copier",
-    "copied": "Copié !",
+    "copied": "Copié",
     "share": "Partager",
     "back": "Retour",
     "loading": "Chargement …",
     "optional": "facultatif",
     "yes": "Oui",
     "no": "Non",
-    "error": "Une erreur est survenue.",
-    "confirm": "Vraiment ?",
+    "error": "Ça n'est pas passé. On réessaie ?",
+    "confirm": "Sûr ?",
     "print": "Imprimer / PDF"
   },
   "landing": {
     "tagline": "Trouvez une date. Faites un plan. C'est réglé.",
-    "sub": "Sans inscription. Partagez un lien, chacun répond.",
+    "sub": "Sans inscription. Tu envoies un lien, chacun remplit.",
     "placeholder": "Qu'est-ce que vous organisez ?",
     "example": "ex. « Barbecue d'équipe à 8 en septembre, vendredi ou samedi soir »",
     "mode": {
@@ -53,11 +53,11 @@
     "title": "Gérer l'événement",
     "your_link": "Votre lien de partage",
     "link_hint": "Envoyez ce lien à tout le monde. Toute personne qui l'a peut répondre.",
-    "manage_warning": "L'adresse de cette page est votre lien d'administration — ne la partagez pas.",
+    "manage_warning": "L’adresse de cette page est ton lien d’administration – garde-la pour toi.",
     "save_link": "M'envoyer le lien d'administration",
     "save_link_hint": "Au cas où vous changiez de navigateur ou effaciez l'historique.",
     "email_placeholder": "vous{'@'}mail.com",
-    "email_sent": "Lien envoyé.",
+    "email_sent": "Le lien est parti.",
     "fields": {
       "title": "Titre",
       "description": "Description",
@@ -79,14 +79,14 @@
       "all_day": "Toute la journée",
       "time": "Heure",
       "day": "Jour",
-      "confirm": "Confirmer cette date",
-      "confirmed": "Confirmé",
-      "blocked": "Un participant indispensable n'est pas libre",
-      "best": "Meilleure option",
-      "not_enough": "Pas encore assez de réponses.",
-      "need_more": "Encore {count} réponse(s) avant une recommandation.",
-      "notify": "Informer les participants par e-mail",
-      "undecide": "Annuler la confirmation"
+      "confirm": "Prendre cette date",
+      "confirmed": "C’est fixé",
+      "blocked": "Ne convient pas à quelqu’un qui devrait être là",
+      "best": "Ça convient à tout le monde",
+      "not_enough": "Encore ouvert – rien ne presse.",
+      "need_more": "Une réponse est arrivée | {count} ont déjà répondu",
+      "notify": "Prévenir les autres",
+      "undecide": "Choisir une autre"
     },
     "counts": {
       "yes": "dispo",
@@ -106,11 +106,11 @@
       "invite": "Inviter par e-mail",
       "invite_placeholder": "un{'@'}mail.com, deux{'@'}mail.com",
       "invite_send": "Envoyer les invitations",
-      "invited": "{count} invitation(s) envoyée(s)."
+      "invited": "Invitation partie | {count} invitations parties"
     },
     "plan": {
       "title": "Organisation",
-      "intro": "La date est fixée 🎉 Envie d'organiser l'événement ?",
+      "intro": "La date est fixée. On répartit qui apporte quoi ?",
       "start": "Commencer l'organisation",
       "add_section": "Ajouter une section",
       "section_placeholder": "Nom de la section",
@@ -127,10 +127,10 @@
     "danger": {
       "title": "Événement",
       "cancel": "Annuler l'événement",
-      "cancel_confirm": "Annuler l'événement ? Toutes les personnes avec une adresse e-mail seront prévenues.",
+      "cancel_confirm": "Annuler l’événement ? Tous ceux qui ont laissé un e-mail sont prévenus.",
       "reopen": "Rétablir l'événement",
       "delete": "Supprimer définitivement",
-      "delete_confirm": "Supprimer définitivement ? Toutes les dates, réponses et tâches seront perdues.",
+      "delete_confirm": "Supprimer définitivement ? Dates, réponses et tâches seront perdues.",
       "deleted": "Événement supprimé."
     },
     "status": {
@@ -158,20 +158,21 @@
   },
   "public": {
     "intro": "Indiquez quand vous êtes disponible.",
+    "intro_list": "Dites qui vous êtes – vous pourrez ensuite prendre une tâche.",
     "name": "Votre nom",
     "name_placeholder": "Comment vous appelez-vous ?",
     "email": "E-mail",
     "email_hint": "Uniquement pour être prévenu. Facultatif.",
     "join": "C'est parti",
-    "hello": "Bonjour, {name} !",
+    "hello": "Salut, {name}",
     "not_you": "Ce n'est pas vous ?",
     "leave": "Retirer ma participation",
     "leave_confirm": "Vos réponses et tâches seront supprimées. Continuer ?",
     "your_answer": "Votre réponse",
-    "save_answers": "Enregistrer les réponses",
-    "answers_saved": "Enregistré. Vous pouvez modifier à tout moment.",
+    "save_answers": "Ça me va",
+    "answers_saved": "C’est noté. Tu peux changer quand tu veux.",
     "who": "Qui est disponible",
-    "decided_banner": "La date est fixée :",
+    "decided_banner": "La date est fixée",
     "cancelled_banner": "Cet événement a été annulé.",
     "closed_banner": "Cet événement est terminé.",
     "add_to_calendar": "Ajouter au calendrier",
@@ -195,6 +196,7 @@
     "home": "Accueil",
     "privacy": "Confidentialité",
     "imprint": "Mentions légales",
-    "rights": "Gratuit et sans inscription."
+    "rights": "Gratuit, sans inscription.",
+    "made_with": "Fait avec"
   }
 }

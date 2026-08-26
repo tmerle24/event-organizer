@@ -19,7 +19,7 @@ class IcsBuilder
             throw new \RuntimeException('Event has no decided date option.');
         }
 
-        $uid = 'plandu-'.$event->public_token.'-'.$option->id.'@'.parse_url(config('app.url'), PHP_URL_HOST);
+        $uid = 'orgdate-'.$event->public_token.'-'.$option->id.'@'.parse_url(config('app.url'), PHP_URL_HOST);
         $stamp = CarbonImmutable::now('UTC')->format('Ymd\THis\Z');
 
         if ($option->all_day) {

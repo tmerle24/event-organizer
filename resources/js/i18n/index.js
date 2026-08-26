@@ -6,7 +6,7 @@ import es from './locales/es.json'
 import nl from './locales/nl.json'
 
 const SUPPORTED_LOCALES = ['de', 'en', 'fr', 'es', 'nl']
-const STORAGE_KEY = 'plandu_locale'
+const STORAGE_KEY = 'orgdate_locale'
 
 /**
  * 1. Gespeicherte Auswahl aus LocalStorage

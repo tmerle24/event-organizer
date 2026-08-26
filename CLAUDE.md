@@ -1,11 +1,12 @@
-# Plandu (Event-Organizer) – CLAUDE.md
+# ORGDATE – CLAUDE.md
 
 Architektur, Konventionen und Entscheidungen dieses Projekts für Claude Code.
 
-> **Arbeitsname:** „Plandu". Der endgültige Name steht noch nicht fest. Er wird
-> **ausschließlich** über `APP_NAME` in der `.env` gesetzt — im Code steht kein
-> hartcodierter Brand-Name (Logo, Footer und `<title>` lesen `appName` aus den
-> geteilten Inertia-Props). Umbenennen = eine Zeile in der `.env`.
+**Marke:** ORGDATE · **Domain:** orgdate.com · **Kontakt:** hello@orgdate.com
+
+Der verbindliche Brand Guide liegt als [BRANDING.md](BRANDING.md) im Repo. Alles
+zu Logo, Farbe, Typografie und Tonalität kommt von dort — bei Widersprüchen
+gewinnt der Guide, nicht dieser Text.
 
 ---
 
@@ -32,7 +33,7 @@ Vollständige Spezifikation: `event-planner-spec-v0.2.md` im Repo-Root.
 |---|---|
 | Backend | Laravel 13, PHP 8.4 |
 | Frontend-Bridge | Inertia.js v2 (`inertiajs/inertia-laravel` ^2.0 + `@inertiajs/vue3` ^2.0) |
-| Datenbank | **PostgreSQL 16** (lokal via `docker compose`, Port **5433**) |
+| Datenbank | **PostgreSQL 16** (lokal via `docker compose`, Container `orgdate-pgsql`, Port **5433**) |
 | Frontend | Vue 3, ausschließlich `<script setup>` |
 | Styling | Tailwind CSS v4 + `@tailwindcss/vite` (CSS-first, kein `tailwind.config.js`) |
 | i18n | vue-i18n v9 (DE/EN/FR/ES/NL) + Laravel `__()` für Mails/Templates |
@@ -47,6 +48,9 @@ Vollständige Spezifikation: `event-planner-spec-v0.2.md` im Repo-Root.
 
 **Port 5433 statt 5432:** Auf der Entwicklungsmaschine belegt bereits ein anderes
 Projekt (`namibway-pgsql`) den Standard-Port.
+
+**Eine Schrift:** Outfit für alles (300/400/500/600). **Bold 700 wird nicht
+benutzt** — zu laut für den Markencharakter.
 
 ---
 
@@ -243,8 +247,8 @@ resources/js/
     DateOptionsPanel.vue       # Terminvorschläge, Ranking, Bestätigung
     ParticipantsPanel.vue      # Umbenennen, Pflicht, Merge, Einladen
     PlanPanel.vue              # Sektionen, Aufgaben, Vorschläge (Manage + Public)
-    AvailabilityButtons.vue    # ✓ / ? / ✕ + „offen" durch erneutes Klicken
-    CountBar.vue               # Balken + Zahlen, nie eine Quote
+    AvailabilityButtons.vue    # ✓ / ~ / ✕ + „offen" durch erneutes Klicken
+    CountBar.vue               # Balken + Zahlen, nie eine Quote; Mint nur bei „passt allen"
     ConfirmModal.vue           # statt window.confirm()
     Toast.vue
   Pages/
@@ -256,30 +260,92 @@ resources/js/
 
 ---
 
-## Design-Tokens (`resources/css/app.css`, Tailwind v4 `@theme`)
+## Design-Tokens (`resources/css/app.css`)
+
+Aus dem Brand Guide, Abschnitt 4.1. Die Tokens stehen in `:root`, nicht in
+`@theme` — im Code wird durchgängig `var(--od-*)` benutzt, nie ein Hex-Wert
+(Ausnahme: der Print-Block, dort sind CSS-Variablen nicht zuverlässig da).
 
 ```css
---color-pl-ink:         #1f2430  /* Primärfarbe, Text + Buttons */
---color-pl-muted:       #77808f
---color-pl-line:        #e5e7eb
---color-pl-bg:          #faf9f7
---color-pl-surface:     #ffffff
---color-pl-accent:      #0f9d76  /* Akzent = „kann" */
---color-pl-accent-dark: #0b7d5d
---color-pl-accent-soft: #e7f4ef
---color-pl-maybe:       #c2810c
---color-pl-no:          #b8394a
---color-pl-open:        #9aa3b0  /* „offen" — bewusst neutral, nie rot */
-
---font-display: 'Outfit'   /* Headlines */
---font-body:    'Inter'
---font-mono:    'IBM Plex Mono'  /* Zahlen */
+--od-violet:      #5B4BE8   /* Primär: Buttons, Links, Aktivzustände, Ja-Stimmen */
+--od-violet-dark: #3A2CB8   /* Hover, Pressed */
+--od-violet-soft: #AFA9EC   /* Sekundäre Marker, "vielleicht" */
+--od-mint:        #16D6A4   /* "Passt allen" — NUR der gefundene Termin */
+--od-mint-tint:   #EAFBF3
+--od-apricot:     #FFB25C   /* Bestätigung, Feiermoment */
+--od-sand:        #FFF4E6
+--od-ink:         #14122B
+--od-slate:       #6E6B85   /* Metainfos, Hinweise, auch Fehlerzustände */
+--od-mist:        #F2F1FA
+--od-white:       #FFFFFF
+--od-line:        #E4E2F2   /* abgeleitet: Borders */
+--od-violet-tint: #EEECFC   /* abgeleitet: Badge-/Aktivflächen */
 ```
 
-Farben immer als `var(--color-pl-*)`, nie hartcodiert (Ausnahme: Print-Block,
-dort sind CSS-Variablen nicht zuverlässig verfügbar).
+`--od-line` und `--od-violet-tint` nennt der Guide nicht; beide bleiben in der
+Violett-Familie und sind als abgeleitet im CSS kommentiert.
+
+**Drei Farbregeln, die nicht verhandelbar sind:**
+
+1. **Kein Rot im System.** Fehler, offene Punkte, Absagen und Löschaktionen
+   laufen in Slate. Es gibt in ORGDATE nichts, was man falsch machen kann.
+2. **Mint ist reserviert.** Es markiert ausschließlich den Termin, der allen
+   passt — im Logo wie im UI. Taucht Mint anderswo auf, verliert das Signal
+   seine Bedeutung. Die Antwort-Buttons laufen deshalb komplett in Violett.
+3. **Apricot nur nach einer Bestätigung**, und nur kurz. Danach kehrt das UI
+   zur ruhigen Grundstimmung zurück.
+
+**Typo-Klassen** statt Tailwind-Stufen: `.od-display` (40/1.15/600), `.od-h1`
+(28/1.25/500), `.od-h2`, `.od-h3`, `.od-body`, `.od-small`, `.od-meta`.
+`.od-measure` begrenzt Fließtext auf 68 Zeichen.
+
+**Bausteine:** `.od-card`, `.od-panel`, `.od-input`, `.od-btn` mit
+`.od-btn-primary` / `.od-btn-ghost` / `.od-btn-quiet`. Radien: `--od-radius-sm`
+10px (Buttons/Inputs), `-md` 12px (Zeilen), `-lg` 16px (Karten), `-xl` 28px.
+
+**Eine Primäraktion pro Screen.** Im Terminscreen bekommt nur die Zeile, die
+allen passt, den gefüllten Button (`isPrimaryChoice()` in `DateOptionsPanel`);
+alles andere ist Ghost oder Quiet.
 
 ---
+
+## Logo
+
+`Components/Logo.vue` zeichnet das Symbol „The Common Point" inline: ein
+Reuleaux-Dreieck aus drei Kreisbögen mit gesetztem Mittelpunkt. Die Geometrie
+ist exakt aus Brand Guide 2.2 übernommen (Bogenradius 60, Strichstärke 16,
+Punkt bei cx 50 / cy 54 / r 9.5) und darf nicht gedreht oder verzerrt werden.
+
+Props: `variant` (`horizontal` | `stacked` | `symbol`), `size` (`sm`/`md`/`lg`),
+`inverse` (Negativ auf Violett), `open` (ein Bogen hell — Einladungszustand).
+
+Die Wortmarke steht immer in Versalien, Outfit 600, Tracking +0.05em. Nie in
+Gemischtsatz, nie kursiv, nie in einer anderen Schrift.
+
+**Assets:** `brand/logo/*.svg` (Symbol, offen, bestätigt, invers, mono),
+`brand/tokens/`, sowie `brand/generate-icons.sh` → erzeugt alle App-Icon-Größen
+und `public/icons/` + `public/favicon.ico` aus dem Symbol (braucht
+`rsvg-convert` und ImageMagick).
+
+---
+
+## Tonalität
+
+Locker, entlastend, nie belehrend. Duzen. Kurze Sätze. Brand Guide Abschnitt 6:
+
+- **Positiv zählen.** „Eine Rückmeldung ist schon da" statt „5 fehlen noch".
+  Der Presenter liefert dafür `answered_count` mit, nicht nur `answers_needed`.
+- **Keine Countdowns, Fristen oder Mahnungen.** Unter dem Quorum steht
+  „Noch offen – kein Stress.", nicht „zu wenige Rückmeldungen".
+- **Ergebnis statt Prozess.** „Passt allen" statt „optimaler Termin",
+  „Steht" statt „erfolgreich bestätigt".
+- **Kein Fachvokabular** — keine Umfrage-, Polling- oder Scheduling-Begriffe.
+- Keine Ausrufezeichen in Systemmeldungen, kein „bitte", kein „erfolgreich".
+- Fehler nennen, was passiert ist und was jetzt hilft, in einem Satz:
+  „Das hat nicht geklappt. Nochmal versuchen?"
+
+Zahlen werden pluralisiert (vue-i18n `Singular | Plural`, Aufruf
+`t(key, count)`), nicht mit „(en)" abgekürzt.
 
 ## Zeit & Zeitzonen
 
@@ -403,16 +469,16 @@ composer dev                  # Laravel + Queue + Logs + Vite (Port 8080)
 App: **http://localhost:8080**
 
 ```bash
-php artisan test              # läuft gegen die DB plandu_test (echtes Postgres)
+php artisan test              # läuft gegen die DB orgdate_test (echtes Postgres)
 npm run build
 ```
 
 **Tests laufen bewusst gegen PostgreSQL, nicht gegen SQLite** — `timestampTz`,
 JSON-Casts und Unique-Constraints verhalten sich sonst anders als in Produktion.
-Die Testdatenbank einmalig anlegen:
+Die Testdatenbank (`orgdate_test`) einmalig anlegen:
 
 ```bash
-docker exec plandu-pgsql psql -U plandu -d plandu -c "CREATE DATABASE plandu_test OWNER plandu;"
+docker exec orgdate-pgsql psql -U orgdate -d orgdate -c "CREATE DATABASE orgdate_test OWNER orgdate;"
 ```
 
 ---
@@ -425,14 +491,14 @@ bash deploy.sh                # erkennt Erstinstallation vs. Update
 
 `.github/workflows/deploy.yml` löst das bei jedem Push auf `main` per SSH aus
 (Secrets: `SSH_HOST`, `SSH_USER`, `SSH_KEY`, `SSH_PORT`).
-Vor dem ersten Deploy in `deploy.sh` anpassen: `APP_DIR`, `REPO_URL`,
-`QUEUE_WORKER_NAME`.
+`deploy.sh` steht auf `APP_DIR=/var/www/orgdate`; `REPO_URL` vor dem ersten
+Deploy auf das echte Remote setzen.
 
 Produktions-`.env`:
 ```env
 APP_ENV=production
 APP_DEBUG=false
-APP_URL=https://<domain>
+APP_URL=https://orgdate.com
 DB_CONNECTION=pgsql
 ```
 
@@ -446,22 +512,30 @@ Aufbewahrung), Wiederherstellung mit `restore.sh`.
 - **Controller:** immer JSON bei axios-Calls, nie `redirect()->back()`.
 - **Vue:** ausschließlich `<script setup>`, kein Options API.
 - **Imports:** `ref`, `computed`, `onMounted` etc. immer explizit importieren.
-- **Farben:** CSS-Variablen statt Hex-Werte.
+- **Farben:** `var(--od-*)` statt Hex-Werte. Mint nie außerhalb des gefundenen
+  Termins, nie Rot.
 - **Texte:** alle sichtbaren Strings über `t()` — keine hartcodierten deutschen
   Strings in Templates.
 - **Bestätigungen:** `ConfirmModal` statt `window.confirm()`.
-- **Brand-Name:** nur über `APP_NAME`/`appName`, nie im Code.
+- **Gewichte:** 300/400/500/600. Kein `font-bold`.
+- **Kontakt/Domain:** aus `config/brand.php`, nie hartcodiert im Template — ein
+  `@` in einem i18n-String bringt sonst den vue-i18n-Parser zu Fall.
 
 ---
 
 ## Offene Punkte
 
-- [ ] Endgültigen Namen + Domain festlegen → `APP_NAME`, `APP_URL`, `deploy.sh`
 - [ ] Impressum und Datenschutzerklärung befüllen
-      (`resources/js/Pages/Legal/*.vue` sind derzeit Platzhalter)
+      (`resources/js/Pages/Legal/*.vue` zeigen bisher nur die Kontaktadresse)
 - [ ] Juristische Prüfung: Double-Opt-in für die transaktionalen Mails,
       Verzeichnis von Verarbeitungstätigkeiten (Spec Abschnitt 8)
+- [ ] `brand/logo/orgdate-logo-horizontal.svg` und `-stacked.svg` mit
+      **ausgeschriebener Wortmarke als Pfad** (Brand Guide Abschnitt 9). Im Web
+      rendert `Logo.vue` die Wortmarke live in Outfit, für externe Assets
+      (Signaturen, Print) braucht es den Pfad-Export aus einem Design-Tool —
+      auf dieser Maschine ist keine Font-Toolchain vorhanden.
+- [ ] Echtes OG-Image 1200×630 (aktuell zeigt der Meta-Tag das 512er App-Icon)
 - [ ] Erinnerungs-Mail 24h vorher (Spec: bewusst hinter der Cut-Line)
-- [ ] Retention-Warnmail 14 Tage vor Löschung (`retention_warned_at` ist bereits
-      im Schema, der Versand fehlt noch)
-- [ ] og-image + Favicon-Set (aktuell nur `favicon.svg`)
+- [ ] Retention-Warnmail 14 Tage vor Löschung (`retention_warned_at` ist im
+      Schema, der Versand fehlt)
+- [ ] DNS/TLS für orgdate.com, `REPO_URL` in `deploy.sh` setzen

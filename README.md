@@ -1,19 +1,19 @@
-# Plandu — Termin- & Eventplaner
+# ORGDATE
 
-**Find a time. Make a plan. Get it done.**
+**Termin finden. Plan machen. Fertig.**
 
 Ohne Anmeldung: einen Satz eingeben, Link teilen, alle tragen sich ein. Sobald
 der Termin steht, geht es direkt in die Organisation — wer bringt was mit.
 
-> Arbeitsname. Der endgültige Name wird ausschließlich über `APP_NAME` in der
-> `.env` gesetzt; im Code steht kein hartcodierter Brand-Name.
+Domain: [orgdate.com](https://orgdate.com) · Kontakt: hello@orgdate.com
 
 ## Stack
 
 Laravel 13 · Inertia.js v2 · Vue 3 · Tailwind CSS v4 · PostgreSQL 16 · Vite
 
-Architektur, Konventionen und alle Entscheidungen: **[CLAUDE.md](CLAUDE.md)**
-Produkt-Spezifikation: **[event-planner-spec-v0.2.md](event-planner-spec-v0.2.md)**
+- Architektur und Konventionen: **[CLAUDE.md](CLAUDE.md)**
+- Marke, Logo, Farbe, Tonalität: **[BRANDING.md](BRANDING.md)**
+- Produkt-Spezifikation: **[event-planner-spec-v0.2.md](event-planner-spec-v0.2.md)**
 
 ## Schnellstart
 
@@ -28,8 +28,14 @@ composer dev                             # http://localhost:8080
 Für die Tests einmalig die Testdatenbank anlegen:
 
 ```bash
-docker exec plandu-pgsql psql -U plandu -d plandu -c "CREATE DATABASE plandu_test OWNER plandu;"
+docker exec orgdate-pgsql psql -U orgdate -d orgdate -c "CREATE DATABASE orgdate_test OWNER orgdate;"
 php artisan test
+```
+
+App-Icons und Favicons aus der Bildmarke neu erzeugen:
+
+```bash
+bash brand/generate-icons.sh
 ```
 
 ## KI ist optional

@@ -152,8 +152,8 @@ async function deleteEvent() {
           class="rounded-lg px-2.5 py-1 text-xs font-semibold"
           :style="
             event.status === 'cancelled'
-              ? { background: 'var(--color-pl-no-soft)', color: 'var(--color-pl-no)' }
-              : { background: 'var(--color-pl-accent-soft)', color: 'var(--color-pl-accent-dark)' }
+              ? { background: 'var(--od-mist)', color: 'var(--od-slate)' }
+              : { background: 'var(--od-violet-tint)', color: 'var(--od-violet-dark)' }
           "
         >
           {{ t(`manage.status.${event.status}`) }}
@@ -201,46 +201,46 @@ async function deleteEvent() {
       />
 
       <!-- Verwaltungslink sichern -->
-      <section class="pl-card p-4 sm:p-5">
+      <section class="od-card p-4 sm:p-5">
         <h2 class="font-display font-semibold">{{ t('manage.save_link') }}</h2>
-        <p class="mt-1 text-xs text-[var(--color-pl-muted)]">{{ t('manage.save_link_hint') }}</p>
-        <p class="mt-2 text-xs" style="color: var(--color-pl-maybe)">⚠ {{ t('manage.manage_warning') }}</p>
+        <p class="mt-1 text-xs text-[var(--od-slate)]">{{ t('manage.save_link_hint') }}</p>
+        <p class="mt-2 text-xs" style="color: var(--od-violet-soft)">⚠ {{ t('manage.manage_warning') }}</p>
 
         <div class="mt-3 flex flex-col gap-2 sm:flex-row">
           <input
             v-model="email"
             type="email"
-            class="pl-input text-sm"
+            class="od-input text-sm"
             :placeholder="t('manage.email_placeholder')"
             @focus="editing = true"
             @blur="editing = false"
           />
-          <button type="button" class="pl-btn pl-btn-ghost whitespace-nowrap text-sm" :disabled="busy || !email" @click="sendManageLink">
+          <button type="button" class="od-btn od-btn-ghost whitespace-nowrap text-sm" :disabled="busy || !email" @click="sendManageLink">
             {{ t('common.save') }}
           </button>
         </div>
       </section>
 
-      <section class="pl-card p-4 sm:p-5">
+      <section class="od-card p-4 sm:p-5">
         <h2 class="font-display font-semibold">{{ t('manage.danger.title') }}</h2>
         <div class="mt-3 flex flex-wrap gap-2">
           <button
             v-if="event.status !== 'cancelled'"
             type="button"
-            class="pl-btn pl-btn-ghost text-sm"
+            class="od-btn od-btn-ghost text-sm"
             :disabled="busy"
             @click="ask(t('manage.danger.cancel_confirm'), cancelEvent, true)"
           >
             {{ t('manage.danger.cancel') }}
           </button>
-          <button v-else type="button" class="pl-btn pl-btn-ghost text-sm" :disabled="busy" @click="reopenEvent">
+          <button v-else type="button" class="od-btn od-btn-ghost text-sm" :disabled="busy" @click="reopenEvent">
             {{ t('manage.danger.reopen') }}
           </button>
 
           <button
             type="button"
-            class="pl-btn text-sm text-white"
-            style="background: var(--color-pl-no)"
+            class="od-btn text-sm text-white"
+            style="background: var(--od-slate)"
             :disabled="busy"
             @click="ask(t('manage.danger.delete_confirm'), deleteEvent, true)"
           >

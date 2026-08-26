@@ -9,20 +9,20 @@
     "add": "Toevoegen",
     "close": "Sluiten",
     "copy": "Kopiëren",
-    "copied": "Gekopieerd!",
+    "copied": "Gekopieerd",
     "share": "Delen",
     "back": "Terug",
     "loading": "Laden …",
     "optional": "optioneel",
     "yes": "Ja",
     "no": "Nee",
-    "error": "Er ging iets mis.",
-    "confirm": "Zeker weten?",
+    "error": "Dat lukte niet. Nog een keer?",
+    "confirm": "Zeker?",
     "print": "Printen / PDF"
   },
   "landing": {
     "tagline": "Vind een datum. Maak een plan. Klaar.",
-    "sub": "Zonder account. Deel een link, iedereen vult in.",
+    "sub": "Zonder account. Jij stuurt een link, de rest vult in.",
     "placeholder": "Wat wil je organiseren?",
     "example": "bijv. “Team-BBQ met 8 mensen in september, vrijdag of zaterdagavond”",
     "mode": {
@@ -53,11 +53,11 @@
     "title": "Evenement beheren",
     "your_link": "Jouw deel-link",
     "link_hint": "Stuur deze link naar iedereen. Wie hem heeft, kan invullen.",
-    "manage_warning": "Het adres van deze pagina is je beheerlink — niet doorsturen.",
+    "manage_warning": "Het adres van deze pagina is je beheerlink – hou die voor jezelf.",
     "save_link": "Beheerlink naar mijn e-mail",
     "save_link_hint": "Voor als je van browser wisselt of je geschiedenis wist.",
     "email_placeholder": "jij{'@'}mail.com",
-    "email_sent": "Link verstuurd.",
+    "email_sent": "De link is onderweg.",
     "fields": {
       "title": "Titel",
       "description": "Omschrijving",
@@ -79,14 +79,14 @@
       "all_day": "Hele dag",
       "time": "Tijd",
       "day": "Dag",
-      "confirm": "Deze datum bevestigen",
-      "confirmed": "Bevestigd",
-      "blocked": "Een onmisbare deelnemer kan niet",
-      "best": "Beste match",
-      "not_enough": "Nog te weinig reacties.",
-      "need_more": "Nog {count} reactie(s) tot een aanbeveling.",
-      "notify": "Deelnemers per e-mail informeren",
-      "undecide": "Bevestiging ongedaan maken"
+      "confirm": "Deze datum nemen",
+      "confirmed": "Staat",
+      "blocked": "Past iemand niet die erbij hoort",
+      "best": "Past iedereen",
+      "not_enough": "Nog open – geen haast.",
+      "need_more": "Eén reactie is binnen | {count} hebben al gereageerd",
+      "notify": "De anderen laten weten",
+      "undecide": "Toch een andere"
     },
     "counts": {
       "yes": "kan",
@@ -106,11 +106,11 @@
       "invite": "Per e-mail uitnodigen",
       "invite_placeholder": "een{'@'}mail.com, twee{'@'}mail.com",
       "invite_send": "Uitnodigingen versturen",
-      "invited": "{count} uitnodiging(en) verstuurd."
+      "invited": "Uitnodiging is onderweg | {count} uitnodigingen zijn onderweg"
     },
     "plan": {
       "title": "Planning",
-      "intro": "De datum staat 🎉 Wil je het evenement plannen?",
+      "intro": "De datum staat. Zullen we verdelen wie wat meeneemt?",
       "start": "Planning starten",
       "add_section": "Onderdeel toevoegen",
       "section_placeholder": "Naam van het onderdeel",
@@ -127,10 +127,10 @@
     "danger": {
       "title": "Evenement",
       "cancel": "Evenement afzeggen",
-      "cancel_confirm": "Evenement afzeggen? Iedereen met e-mailadres krijgt bericht.",
+      "cancel_confirm": "Evenement afzeggen? Iedereen met e-mail krijgt bericht.",
       "reopen": "Afzegging ongedaan maken",
       "delete": "Definitief verwijderen",
-      "delete_confirm": "Definitief verwijderen? Alle data, reacties en taken zijn dan weg.",
+      "delete_confirm": "Definitief weg? Data, reacties en taken zijn dan kwijt.",
       "deleted": "Evenement verwijderd."
     },
     "status": {
@@ -158,20 +158,21 @@
   },
   "public": {
     "intro": "Geef aan wanneer je kunt.",
+    "intro_list": "Vertel even wie je bent – daarna kun je een taak oppakken.",
     "name": "Je naam",
     "name_placeholder": "Hoe heet je?",
     "email": "E-mail",
     "email_hint": "Alleen om te horen wanneer het doorgaat. Vrijwillig.",
     "join": "Aan de slag",
-    "hello": "Hoi, {name}!",
+    "hello": "Hoi, {name}",
     "not_you": "Ben jij dit niet?",
     "leave": "Mijn deelname verwijderen",
     "leave_confirm": "Je reacties en taken worden verwijderd. Doorgaan?",
     "your_answer": "Jouw antwoord",
-    "save_answers": "Antwoorden opslaan",
-    "answers_saved": "Opgeslagen. Je kunt het altijd aanpassen.",
+    "save_answers": "Zo is het goed",
+    "answers_saved": "Genoteerd. Je kunt het altijd aanpassen.",
     "who": "Wie kan wanneer",
-    "decided_banner": "De datum staat:",
+    "decided_banner": "De datum staat",
     "cancelled_banner": "Dit evenement is afgezegd.",
     "closed_banner": "Dit evenement is voorbij.",
     "add_to_calendar": "Aan agenda toevoegen",
@@ -195,6 +196,7 @@
     "home": "Start",
     "privacy": "Privacy",
     "imprint": "Colofon",
-    "rights": "Gratis en zonder account."
+    "rights": "Gratis en zonder account.",
+    "made_with": "Gemaakt met"
   }
 }

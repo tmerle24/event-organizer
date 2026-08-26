@@ -13,9 +13,9 @@ jobs:
       postgres:
         image: postgres:16-alpine
         env:
-          POSTGRES_DB: plandu_test
-          POSTGRES_USER: plandu
-          POSTGRES_PASSWORD: plandu
+          POSTGRES_DB: orgdate_test
+          POSTGRES_USER: orgdate
+          POSTGRES_PASSWORD: orgdate
         ports:
           - 5433:5432
         options: >-

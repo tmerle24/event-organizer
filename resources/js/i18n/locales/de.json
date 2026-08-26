@@ -9,20 +9,20 @@
     "add": "Hinzufügen",
     "close": "Schließen",
     "copy": "Kopieren",
-    "copied": "Kopiert!",
+    "copied": "Kopiert",
     "share": "Teilen",
     "back": "Zurück",
     "loading": "Lädt …",
     "optional": "optional",
     "yes": "Ja",
     "no": "Nein",
-    "error": "Da ist etwas schiefgelaufen.",
-    "confirm": "Wirklich?",
+    "error": "Das hat nicht geklappt. Nochmal versuchen?",
+    "confirm": "Sicher?",
     "print": "Drucken / PDF"
   },
   "landing": {
     "tagline": "Termin finden. Plan machen. Fertig.",
-    "sub": "Ohne Anmeldung. Link teilen, alle tragen sich ein.",
+    "sub": "Ohne Anmeldung. Du schickst einen Link, alle tragen sich ein.",
     "placeholder": "Was willst du organisieren?",
     "example": "z. B. „Team-BBQ mit 8 Leuten im September, Fr oder Sa abends“",
     "mode": {
@@ -34,17 +34,17 @@
       "both": "Beides",
       "both_hint": "Termin finden und danach planen"
     },
-    "submit": "Los geht's",
+    "submit": "Los geht’s",
     "creating": "Wird erstellt …",
     "empty": "Schreib kurz, worum es geht.",
     "how": {
       "title": "So läuft's",
       "step1": "Beschreiben",
-      "step1_text": "Ein Satz genügt. Titel, Zeitraum und Terminvorschläge entstehen automatisch.",
+      "step1_text": "Ein Satz reicht. Titel, Zeitraum und Terminvorschläge entstehen von selbst.",
       "step2": "Teilen",
-      "step2_text": "Link verschicken. Teilnehmer tragen sich ohne Konto ein.",
+      "step2_text": "Link verschicken. Die anderen tragen sich ohne Konto ein.",
       "step3": "Planen",
-      "step3_text": "Termin bestätigen und direkt verteilen, wer was mitbringt."
+      "step3_text": "Termin steht – dann verteilt ihr, wer was mitbringt."
     },
     "recent": "Deine Events",
     "recent_hint": "Nur auf diesem Gerät gespeichert."
@@ -53,11 +53,11 @@
     "title": "Event verwalten",
     "your_link": "Dein Teilen-Link",
     "link_hint": "Diesen Link an alle schicken. Wer ihn hat, kann sich eintragen.",
-    "manage_warning": "Die Adresse dieser Seite ist dein Verwaltungslink — nicht weitergeben.",
+    "manage_warning": "Die Adresse dieser Seite ist dein Verwaltungslink – die behältst du besser für dich.",
     "save_link": "Verwaltungslink per E-Mail sichern",
     "save_link_hint": "Falls du den Browser wechselst oder den Verlauf löschst.",
     "email_placeholder": "deine{'@'}mail.de",
-    "email_sent": "Link verschickt.",
+    "email_sent": "Link ist unterwegs.",
     "fields": {
       "title": "Titel",
       "description": "Beschreibung",
@@ -79,14 +79,14 @@
       "all_day": "Ganztägig",
       "time": "Uhrzeit",
       "day": "Tag",
-      "confirm": "Diesen Termin bestätigen",
-      "confirmed": "Bestätigt",
-      "blocked": "Pflichtteilnehmer kann nicht",
-      "best": "Beste Übereinstimmung",
-      "not_enough": "Noch zu wenige Rückmeldungen.",
-      "need_more": "Noch {count} Rückmeldung(en) bis zur Empfehlung.",
-      "notify": "Teilnehmer per E-Mail informieren",
-      "undecide": "Bestätigung zurücknehmen"
+      "confirm": "Diesen Termin nehmen",
+      "confirmed": "Steht",
+      "blocked": "Passt einer Person nicht, die dabei sein sollte",
+      "best": "Passt allen",
+      "not_enough": "Noch offen – kein Stress.",
+      "need_more": "Eine Rückmeldung ist schon da | {count} haben schon geantwortet",
+      "notify": "Den anderen Bescheid sagen",
+      "undecide": "Doch anders"
     },
     "counts": {
       "yes": "kann",
@@ -106,11 +106,11 @@
       "invite": "Per E-Mail einladen",
       "invite_placeholder": "eine{'@'}mail.de, zwei{'@'}mail.de",
       "invite_send": "Einladungen senden",
-      "invited": "{count} Einladung(en) verschickt."
+      "invited": "Einladung ist unterwegs | {count} Einladungen sind unterwegs"
     },
     "plan": {
       "title": "Planung",
-      "intro": "Der Termin steht 🎉 Willst du das Event planen?",
+      "intro": "Der Termin steht. Willst du gleich verteilen, wer was mitbringt?",
       "start": "Planung starten",
       "add_section": "Bereich hinzufügen",
       "section_placeholder": "Name des Bereichs",
@@ -127,10 +127,10 @@
     "danger": {
       "title": "Event",
       "cancel": "Event absagen",
-      "cancel_confirm": "Event absagen? Alle Teilnehmer mit E-Mail werden informiert.",
+      "cancel_confirm": "Event absagen? Alle mit E-Mail bekommen Bescheid.",
       "reopen": "Absage zurücknehmen",
       "delete": "Event endgültig löschen",
-      "delete_confirm": "Endgültig löschen? Alle Termine, Antworten und Aufgaben sind dann weg.",
+      "delete_confirm": "Endgültig löschen? Termine, Antworten und Aufgaben sind dann weg.",
       "deleted": "Event gelöscht."
     },
     "status": {
@@ -158,20 +158,21 @@
   },
   "public": {
     "intro": "Trag ein, wann du kannst.",
+    "intro_list": "Sag kurz, wer du bist – dann kannst du dir eine Aufgabe schnappen.",
     "name": "Dein Name",
     "name_placeholder": "Wie heißt du?",
     "email": "E-Mail",
     "email_hint": "Nur damit du erfährst, wann es losgeht. Freiwillig.",
     "join": "Los geht's",
-    "hello": "Hallo, {name}!",
+    "hello": "Hallo, {name}",
     "not_you": "Nicht du?",
     "leave": "Meine Teilnahme entfernen",
     "leave_confirm": "Deine Antworten und Aufgaben werden gelöscht. Fortfahren?",
     "your_answer": "Deine Antwort",
-    "save_answers": "Antworten speichern",
-    "answers_saved": "Gespeichert. Du kannst jederzeit ändern.",
+    "save_answers": "Passt so",
+    "answers_saved": "Steht. Ändern kannst du das jederzeit.",
     "who": "Wer kann wann",
-    "decided_banner": "Der Termin steht:",
+    "decided_banner": "Der Termin steht",
     "cancelled_banner": "Dieses Event wurde abgesagt.",
     "closed_banner": "Dieses Event ist vorbei.",
     "add_to_calendar": "Zum Kalender hinzufügen",
@@ -195,6 +196,7 @@
     "home": "Start",
     "privacy": "Datenschutz",
     "imprint": "Impressum",
-    "rights": "Kostenlos und ohne Anmeldung."
+    "rights": "Kostenlos und ohne Anmeldung.",
+    "made_with": "Gemacht mit"
   }
 }

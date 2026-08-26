@@ -23,6 +23,10 @@ class HandleInertiaRequests extends Middleware
             ...parent::share($request),
             'appName' => config('app.name'),
             'locale' => app()->getLocale(),
+            'brand' => [
+                'domain' => config('brand.domain'),
+                'email' => config('brand.email'),
+            ],
         ];
     }
 }

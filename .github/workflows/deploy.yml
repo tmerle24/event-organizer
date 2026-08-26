@@ -16,5 +16,5 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           port: ${{ secrets.SSH_PORT }}
           script: |
-            cd /var/www/plandu
+            cd /var/www/orgdate
             bash deploy.sh

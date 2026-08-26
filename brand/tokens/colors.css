@@ -1,0 +1,19 @@
+/* ORGDATE Farb-Tokens — Brand Guide v1.0, Abschnitt 4.1 */
+:root {
+  --od-violet: #5B4BE8;
+  --od-violet-dark: #3A2CB8;
+  --od-violet-soft: #AFA9EC;
+  --od-mint: #16D6A4;
+  --od-mint-tint: #EAFBF3;
+  --od-apricot: #FFB25C;
+  --od-sand: #FFF4E6;
+  --od-ink: #14122B;
+  --od-slate: #6E6B85;
+  --od-mist: #F2F1FA;
+  --od-white: #FFFFFF;
+
+  --od-radius-sm: 10px;
+  --od-radius-md: 12px;
+  --od-radius-lg: 16px;
+  --od-radius-xl: 28px;
+}

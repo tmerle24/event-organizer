@@ -1,4 +1,4 @@
-const KEY = 'plandu_my_events'
+const KEY = 'orgdate_my_events'
 
 /**
  * Merkt sich erstellte Events auf dem Geraet. Ersetzt bewusst kein Konto —

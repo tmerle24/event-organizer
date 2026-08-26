@@ -100,18 +100,16 @@ async function removeSection(section) {
 </script>
 
 <template>
-  <section class="pl-card p-4 sm:p-5">
+  <section class="od-card p-4 sm:p-5">
     <h2 class="font-display font-semibold">{{ t('manage.plan.title') }}</h2>
 
     <div v-for="section in sections" :key="section.id" class="mt-5">
       <div class="flex items-center justify-between gap-2">
-        <h3 class="font-display text-sm font-semibold tracking-wide text-[var(--color-pl-muted)] uppercase">
-          {{ section.title }}
-        </h3>
+        <h3 class="od-h3" style="color: var(--od-slate)">{{ section.title }}</h3>
         <button
           v-if="canManage && !readOnly"
           type="button"
-          class="text-xs text-[var(--color-pl-muted)] hover:text-[var(--color-pl-no)]"
+          class="text-xs text-[var(--od-slate)] hover:text-[var(--od-slate)]"
           :aria-label="t('common.delete')"
           @click="removeSection(section)"
         >
@@ -123,7 +121,8 @@ async function removeSection(section) {
         <li
           v-for="task in tasksOf(section.id)"
           :key="task.id"
-          class="flex flex-wrap items-center gap-2 rounded-xl border border-[var(--color-pl-line)] px-3 py-2"
+          class="flex flex-wrap items-center gap-2 border border-[var(--od-line)] px-3.5 py-2.5"
+          :style="{ borderRadius: 'var(--od-radius-md)' }"
         >
           <input
             type="checkbox"
@@ -133,13 +132,13 @@ async function removeSection(section) {
             :aria-label="task.title"
             @change="toggleDone(task)"
           />
-          <span class="min-w-0 flex-1 text-sm" :class="{ 'text-[var(--color-pl-muted)] line-through': task.status === 'done' }">
+          <span class="min-w-0 flex-1 text-sm" :class="{ 'text-[var(--od-slate)] line-through': task.status === 'done' }">
             {{ task.title }}
           </span>
 
           <select
             v-if="canManage && !readOnly"
-            class="rounded-lg border border-[var(--color-pl-line)] px-2 py-1 text-xs"
+            class="rounded-lg border border-[var(--od-line)] px-2 py-1 text-xs"
             :value="task.assignee_participant_id || ''"
             @change="assign(task, $event.target.value)"
           >
@@ -153,8 +152,8 @@ async function removeSection(section) {
               class="rounded-lg px-2 py-1 text-xs"
               :style="
                 me && task.assignee_participant_id === me.id
-                  ? { background: 'var(--color-pl-accent-soft)', color: 'var(--color-pl-accent-dark)' }
-                  : { background: 'var(--color-pl-bg)', color: 'var(--color-pl-muted)' }
+                  ? { background: 'var(--od-violet-tint)', color: 'var(--od-violet-dark)' }
+                  : { background: 'var(--od-mist)', color: 'var(--od-slate)' }
               "
             >
               {{ me && task.assignee_participant_id === me.id ? t('public.mine') : task.assignee_name }}
@@ -164,7 +163,7 @@ async function removeSection(section) {
               v-if="me && !readOnly && (!task.assignee_participant_id || task.assignee_participant_id === me.id)"
               type="button"
               class="rounded-lg px-2 py-1 text-xs font-semibold"
-              :style="{ color: 'var(--color-pl-accent-dark)', background: 'var(--color-pl-accent-soft)' }"
+              :style="{ color: 'var(--od-violet-dark)', background: 'var(--od-violet-tint)' }"
               :disabled="busy"
               @click="claim(task)"
             >
@@ -175,7 +174,7 @@ async function removeSection(section) {
           <button
             v-if="canManage && !readOnly"
             type="button"
-            class="text-xs text-[var(--color-pl-muted)] hover:text-[var(--color-pl-no)]"
+            class="text-xs text-[var(--od-slate)] hover:text-[var(--od-slate)]"
             :aria-label="t('common.delete')"
             @click="removeTask(task)"
           >
@@ -186,12 +185,12 @@ async function removeSection(section) {
 
       <!-- Vorschlaege: inaktive Liste mit "Uebernehmen" pro Zeile -->
       <div v-if="canManage && !readOnly && suggestionsOf(section).length" class="mt-2 flex flex-wrap items-center gap-1.5">
-        <span class="text-xs text-[var(--color-pl-muted)]">{{ t('manage.plan.suggestions') }}:</span>
+        <span class="text-xs text-[var(--od-slate)]">{{ t('manage.plan.suggestions') }}:</span>
         <button
           v-for="title in suggestionsOf(section)"
           :key="title"
           type="button"
-          class="rounded-lg border border-dashed border-[var(--color-pl-line)] px-2 py-1 text-xs text-[var(--color-pl-muted)] hover:border-[var(--color-pl-accent)] hover:text-[var(--color-pl-accent-dark)]"
+          class="rounded-lg border border-dashed border-[var(--od-line)] px-2 py-1 text-xs text-[var(--od-slate)] hover:border-[var(--od-violet)] hover:text-[var(--od-violet-dark)]"
           :disabled="busy"
           @click="adopt(section, [title])"
         >
@@ -200,7 +199,7 @@ async function removeSection(section) {
         <button
           v-if="suggestionsOf(section).length > 1"
           type="button"
-          class="text-xs font-semibold text-[var(--color-pl-accent)] hover:underline"
+          class="text-xs font-semibold text-[var(--od-violet)] hover:underline"
           :disabled="busy"
           @click="adopt(section, suggestionsOf(section))"
         >
@@ -211,13 +210,13 @@ async function removeSection(section) {
       <div v-if="!readOnly" class="mt-2 flex gap-2">
         <input
           v-model="newTask[section.id]"
-          class="pl-input py-1.5 text-sm"
+          class="od-input py-1.5 text-sm"
           :placeholder="t('manage.plan.task_placeholder')"
           @focus="emit('focus-change', true)"
           @blur="emit('focus-change', false)"
           @keyup.enter="addTask(section.id)"
         />
-        <button type="button" class="pl-btn pl-btn-ghost px-3 py-1.5 text-sm" :disabled="busy" @click="addTask(section.id)">
+        <button type="button" class="od-btn od-btn-ghost px-3 py-1.5 text-sm" :disabled="busy" @click="addTask(section.id)">
           +
         </button>
       </div>
@@ -225,7 +224,7 @@ async function removeSection(section) {
 
     <!-- Aufgaben ohne Bereich (z.B. nach dem Loeschen einer Sektion) -->
     <div v-if="looseTasks.length || !sections.length" class="mt-5">
-      <h3 v-if="sections.length" class="font-display text-sm font-semibold tracking-wide text-[var(--color-pl-muted)] uppercase">
+      <h3 v-if="sections.length" class="od-h3" style="color: var(--od-slate)">
         {{ t('manage.plan.other_tasks') }}
       </h3>
 
@@ -233,7 +232,8 @@ async function removeSection(section) {
         <li
           v-for="task in looseTasks"
           :key="task.id"
-          class="flex flex-wrap items-center gap-2 rounded-xl border border-[var(--color-pl-line)] px-3 py-2"
+          class="flex flex-wrap items-center gap-2 border border-[var(--od-line)] px-3.5 py-2.5"
+          :style="{ borderRadius: 'var(--od-radius-md)' }"
         >
           <input
             type="checkbox"
@@ -243,13 +243,13 @@ async function removeSection(section) {
             :aria-label="task.title"
             @change="toggleDone(task)"
           />
-          <span class="min-w-0 flex-1 text-sm" :class="{ 'text-[var(--color-pl-muted)] line-through': task.status === 'done' }">
+          <span class="min-w-0 flex-1 text-sm" :class="{ 'text-[var(--od-slate)] line-through': task.status === 'done' }">
             {{ task.title }}
           </span>
 
           <select
             v-if="canManage && !readOnly"
-            class="rounded-lg border border-[var(--color-pl-line)] px-2 py-1 text-xs"
+            class="rounded-lg border border-[var(--od-line)] px-2 py-1 text-xs"
             :value="task.assignee_participant_id || ''"
             @change="assign(task, $event.target.value)"
           >
@@ -258,14 +258,14 @@ async function removeSection(section) {
           </select>
 
           <template v-else>
-            <span v-if="task.assignee_name" class="rounded-lg bg-[var(--color-pl-bg)] px-2 py-1 text-xs text-[var(--color-pl-muted)]">
+            <span v-if="task.assignee_name" class="rounded-lg bg-[var(--od-mist)] px-2 py-1 text-xs text-[var(--od-slate)]">
               {{ me && task.assignee_participant_id === me.id ? t('public.mine') : task.assignee_name }}
             </span>
             <button
               v-if="me && !readOnly && (!task.assignee_participant_id || task.assignee_participant_id === me.id)"
               type="button"
               class="rounded-lg px-2 py-1 text-xs font-semibold"
-              :style="{ color: 'var(--color-pl-accent-dark)', background: 'var(--color-pl-accent-soft)' }"
+              :style="{ color: 'var(--od-violet-dark)', background: 'var(--od-violet-tint)' }"
               :disabled="busy"
               @click="claim(task)"
             >
@@ -276,7 +276,7 @@ async function removeSection(section) {
           <button
             v-if="canManage && !readOnly"
             type="button"
-            class="text-xs text-[var(--color-pl-muted)] hover:text-[var(--color-pl-no)]"
+            class="text-xs text-[var(--od-slate)] hover:text-[var(--od-slate)]"
             :aria-label="t('common.delete')"
             @click="removeTask(task)"
           >
@@ -288,26 +288,26 @@ async function removeSection(section) {
       <div v-if="!readOnly" class="mt-2 flex gap-2">
         <input
           v-model="newTask['none']"
-          class="pl-input py-1.5 text-sm"
+          class="od-input py-1.5 text-sm"
           :placeholder="canManage ? t('manage.plan.task_placeholder') : t('public.add_own')"
           @focus="emit('focus-change', true)"
           @blur="emit('focus-change', false)"
           @keyup.enter="addTask(null)"
         />
-        <button type="button" class="pl-btn pl-btn-ghost px-3 py-1.5 text-sm" :disabled="busy" @click="addTask(null)">+</button>
+        <button type="button" class="od-btn od-btn-ghost px-3 py-1.5 text-sm" :disabled="busy" @click="addTask(null)">+</button>
       </div>
     </div>
 
-    <div v-if="canManage && !readOnly" class="mt-5 flex gap-2 border-t border-[var(--color-pl-line)] pt-4">
+    <div v-if="canManage && !readOnly" class="mt-5 flex gap-2 border-t border-[var(--od-line)] pt-4">
       <input
         v-model="newSection"
-        class="pl-input py-1.5 text-sm"
+        class="od-input py-1.5 text-sm"
         :placeholder="t('manage.plan.section_placeholder')"
         @focus="emit('focus-change', true)"
         @blur="emit('focus-change', false)"
         @keyup.enter="addSection"
       />
-      <button type="button" class="pl-btn pl-btn-ghost whitespace-nowrap px-3 py-1.5 text-sm" :disabled="busy" @click="addSection">
+      <button type="button" class="od-btn od-btn-ghost whitespace-nowrap px-3 py-1.5 text-sm" :disabled="busy" @click="addSection">
         {{ t('manage.plan.add_section') }}
       </button>
     </div>

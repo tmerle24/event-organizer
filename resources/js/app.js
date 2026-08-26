@@ -11,7 +11,7 @@ import { i18n, currentLocale } from './i18n';
 window.axios.defaults.headers.common['X-App-Locale'] = currentLocale();
 
 createInertiaApp({
-    title: (title) => title || import.meta.env.VITE_APP_NAME || 'Plandu',
+    title: (title) => title || import.meta.env.VITE_APP_NAME || 'ORGDATE',
     resolve: (name) =>
         resolvePageComponent(`./Pages/${name}.vue`, import.meta.glob('./Pages/**/*.vue')),
     setup({ el, App, props, plugin }) {
@@ -22,6 +22,6 @@ createInertiaApp({
             .mount(el);
     },
     progress: {
-        color: '#0f9d76',
+        color: '#5B4BE8',
     },
 });

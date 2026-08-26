@@ -15,7 +15,7 @@ defineProps({
     <div
       v-if="message"
       class="fixed bottom-5 left-1/2 z-50 -translate-x-1/2 rounded-xl px-4 py-2.5 text-sm font-medium text-white shadow-lg"
-      :style="{ background: tone === 'error' ? 'var(--color-pl-no)' : 'var(--color-pl-ink)' }"
+      :style="{ background: tone === 'error' ? 'var(--od-slate)' : 'var(--od-ink)' }"
       role="status"
     >
       {{ message }}

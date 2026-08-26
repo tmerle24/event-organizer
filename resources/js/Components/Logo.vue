@@ -1,28 +1,94 @@
 <script setup>
-import { usePage } from '@inertiajs/vue3'
 import { computed } from 'vue'
 
 /**
- * Inline-SVG statt Bilddatei: der Brand-Name kommt aus APP_NAME, damit der
- * endgueltige Name spaeter an genau einer Stelle geaendert wird.
+ * ORGDATE-Logo, Brand Guide Abschnitt 2.
+ *
+ * Symbol "The Common Point": Reuleaux-Dreieck aus drei Kreisbögen (die
+ * Beteiligten und ihre Verfügbarkeiten) mit gesetztem Mittelpunkt (der
+ * gefundene Termin). Die Geometrie ist exakt aus Abschnitt 2.2 übernommen und
+ * darf nicht gedreht, gespiegelt oder verzerrt werden.
+ *
+ * Die Wortmarke steht immer in Versalien, Outfit 600, Tracking +0.05em.
  */
 const props = defineProps({
+  // horizontal | stacked | symbol (Lockups aus Abschnitt 2.5)
+  variant: { type: String, default: 'horizontal' },
   size: { type: String, default: 'md' },
-  light: { type: Boolean, default: false },
+  // Negativ auf Primärfarbe: Bögen und Wortmarke weiß, Punkt bleibt Mint.
+  inverse: { type: Boolean, default: false },
+  // "offen": ein Bogen hell — Einladung, noch nicht entschieden (Abschnitt 3)
+  open: { type: Boolean, default: false },
 })
 
-const name = computed(() => usePage().props.appName || 'Plandu')
-const textClass = computed(() => (props.size === 'lg' ? 'text-2xl' : 'text-lg'))
-const box = computed(() => (props.size === 'lg' ? 32 : 26))
+const SYMBOL_PX = { sm: 20, md: 26, lg: 36 }
+const WORD_PX = { sm: 15, md: 19, lg: 27 }
+
+const symbolSize = computed(() => SYMBOL_PX[props.size] ?? SYMBOL_PX.md)
+const wordSize = computed(() => WORD_PX[props.size] ?? WORD_PX.md)
+const strokeColor = computed(() => (props.inverse ? '#FFFFFF' : 'var(--od-violet)'))
+const wordColor = computed(() => (props.inverse ? '#FFFFFF' : 'var(--od-ink)'))
+
+/* Abstand Symbol → Wortmarke = halbe Symbolbreite (horizontal) bzw. ein
+   Drittel der Symbolhöhe (gestapelt). */
+const gap = computed(() =>
+  props.variant === 'stacked' ? `${symbolSize.value / 3}px` : `${symbolSize.value / 2}px`
+)
 </script>
 
 <template>
-  <span class="inline-flex items-center gap-2 font-display font-bold" :class="[textClass, light ? 'text-white' : 'text-[var(--color-pl-ink)]']">
-    <svg :width="box" :height="box" viewBox="0 0 32 32" fill="none" aria-hidden="true">
-      <rect x="2" y="5" width="28" height="25" rx="7" :fill="light ? '#ffffff' : 'var(--color-pl-ink)'" />
-      <path d="M9 2v6M23 2v6" :stroke="light ? '#ffffff' : 'var(--color-pl-ink)'" stroke-width="3" stroke-linecap="round" />
-      <path d="M10.5 19.5l4 4 7.5-8.5" stroke="var(--color-pl-accent)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+  <span
+    class="inline-flex"
+    :class="variant === 'stacked' ? 'flex-col items-center' : 'items-center'"
+    :style="{ gap }"
+  >
+    <svg
+      :width="symbolSize"
+      :height="symbolSize"
+      viewBox="0 0 100 100"
+      xmlns="http://www.w3.org/2000/svg"
+      role="img"
+      aria-label="ORGDATE"
+      class="shrink-0"
+    >
+      <template v-if="open">
+        <!-- Offene Variante: der obere rechte Bogen bleibt hell. -->
+        <path
+          d="M80 71.96A60 60 0 0 0 50 20"
+          fill="none"
+          stroke="var(--od-violet-soft)"
+          stroke-width="16"
+          stroke-linecap="round"
+        />
+        <path
+          d="M50 20A60 60 0 0 0 20 71.96A60 60 0 0 0 80 71.96"
+          fill="none"
+          :stroke="strokeColor"
+          stroke-width="16"
+          stroke-linejoin="round"
+          stroke-linecap="round"
+        />
+      </template>
+      <path
+        v-else
+        d="M50 20A60 60 0 0 0 20 71.96A60 60 0 0 0 80 71.96A60 60 0 0 0 50 20Z"
+        fill="none"
+        :stroke="strokeColor"
+        stroke-width="16"
+        stroke-linejoin="round"
+      />
+      <circle cx="50" cy="54" r="9.5" fill="var(--od-mint)" />
     </svg>
-    <span>{{ name }}</span>
+
+    <span
+      v-if="variant !== 'symbol'"
+      class="font-display leading-none"
+      :style="{
+        fontSize: `${wordSize}px`,
+        fontWeight: 600,
+        letterSpacing: '0.05em',
+        color: wordColor,
+      }"
+    >ORGDATE</span>
   </span>
 </template>

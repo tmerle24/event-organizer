@@ -85,6 +85,9 @@ class EventPresenter
             'participant_count' => $event->participants->count(),
             'best_match_id' => $this->ranking->bestMatchId($event),
             'answers_needed' => $this->answersNeeded($event),
+            // Positiv zaehlen (Brand Guide Abschnitt 6): das UI zeigt, wie
+            // viele schon geantwortet haben, nie wie viele noch fehlen.
+            'answered_count' => $this->answeredCount($event),
 
             'date_options' => $event->dateOptions->map(function ($option) use ($ranked) {
                 $stats = $ranked[$option->id] ?? null;
@@ -135,6 +138,13 @@ class EventPresenter
      * Wie viele Antworten noch fehlen, bevor ueberhaupt ein Best Match
      * ausgewiesen wird (Spec Abschnitt 5). 0 = Quorum erreicht.
      */
+    private function answeredCount(Event $event): int
+    {
+        return $event->participants
+            ->filter(fn ($p) => $p->availabilities->isNotEmpty())
+            ->count();
+    }
+
     private function answersNeeded(Event $event): int
     {
         $total = $event->participants->count();
@@ -143,10 +153,6 @@ class EventPresenter
             return 1;
         }
 
-        $answered = $event->participants
-            ->filter(fn ($p) => $p->availabilities->isNotEmpty())
-            ->count();
-
-        return max(0, (int) ceil($total * RankingService::BEST_MATCH_QUORUM) - $answered);
+        return max(0, (int) ceil($total * RankingService::BEST_MATCH_QUORUM) - $this->answeredCount($event));
     }
 }

@@ -187,91 +187,105 @@ function note(option) {
     </header>
 
     <main class="mx-auto max-w-2xl space-y-4 px-6 pb-10">
-      <div class="pl-card p-4 sm:p-5">
-        <h1 class="font-display text-2xl font-bold">{{ event.title }}</h1>
-        <p v-if="event.description" class="mt-1 text-sm text-[var(--color-pl-muted)]">{{ event.description }}</p>
-        <p v-if="event.location" class="mt-1 text-sm text-[var(--color-pl-muted)]">📍 {{ event.location }}</p>
+      <div class="od-card p-4 sm:p-5">
+        <h1 class="od-h1">{{ event.title }}</h1>
+        <p v-if="event.description" class="mt-1 text-sm text-[var(--od-slate)]">{{ event.description }}</p>
+        <p v-if="event.location" class="mt-1 text-sm text-[var(--od-slate)]">📍 {{ event.location }}</p>
 
         <p
           v-if="event.status === 'cancelled'"
-          class="mt-3 rounded-xl px-3 py-2 text-sm font-semibold"
-          style="background: var(--color-pl-no-soft); color: var(--color-pl-no)"
+          class="od-small mt-3 px-3 py-2"
+          style="background: var(--od-mist); color: var(--od-slate); border-radius: var(--od-radius-sm)"
         >
           {{ t('public.cancelled_banner') }}
         </p>
-        <p v-else-if="event.status === 'closed'" class="mt-3 text-sm text-[var(--color-pl-muted)]">
+        <p v-else-if="event.status === 'closed'" class="mt-3 text-sm text-[var(--od-slate)]">
           {{ t('public.closed_banner') }}
         </p>
 
         <div
           v-else-if="decided"
-          class="mt-3 rounded-xl p-3"
-          style="background: var(--color-pl-accent-soft); border: 1px solid var(--color-pl-accent)"
+          class="od-settle mt-4 p-4"
+          style="background: var(--od-sand); border: 1px solid var(--od-apricot); border-radius: var(--od-radius-lg)"
         >
-          <p class="text-xs font-semibold tracking-wide uppercase" style="color: var(--color-pl-accent-dark)">
-            {{ t('public.decided_banner') }}
-          </p>
-          <p class="font-display mt-0.5 text-lg font-bold">{{ formatFull(decided) }}</p>
-          <p v-if="note(decided)" class="text-xs text-[var(--color-pl-muted)]">
+          <p class="od-small" style="color: var(--od-slate)">{{ t('public.decided_banner') }}</p>
+          <p class="od-h2 mt-0.5">{{ formatFull(decided) }}</p>
+          <p v-if="note(decided)" class="od-meta">
             {{ t('public.your_time', note(decided)) }}
           </p>
-          <a :href="`${baseUrl}/event.ics`" class="pl-btn pl-btn-ghost mt-2 text-sm">{{ t('public.add_to_calendar') }}</a>
+          <a :href="`${baseUrl}/event.ics`" class="od-btn od-btn-ghost od-small mt-3">{{ t('public.add_to_calendar') }}</a>
         </div>
       </div>
 
       <!-- Eintragen: erste Antwort erzeugt den Teilnehmer -->
-      <form v-if="!me && !readOnly && !resolving" class="pl-card p-4 sm:p-5" @submit.prevent="join">
-        <p class="text-sm">{{ t('public.intro') }}</p>
+      <form v-if="!me && !readOnly && !resolving" class="od-card p-4 sm:p-5" @submit.prevent="join">
+        <p class="text-sm">{{ showDates ? t('public.intro') : t('public.intro_list') }}</p>
 
-        <label class="mt-3 block text-xs font-semibold text-[var(--color-pl-muted)]" for="p-name">
+        <label class="mt-3 block text-xs font-semibold text-[var(--od-slate)]" for="p-name">
           {{ t('public.name') }}
         </label>
         <input
           id="p-name"
           v-model="form.display_name"
-          class="pl-input mt-1"
+          class="od-input mt-1"
           maxlength="80"
           required
           :placeholder="t('public.name_placeholder')"
         />
 
-        <label class="mt-3 block text-xs font-semibold text-[var(--color-pl-muted)]" for="p-email">
+        <label class="mt-3 block text-xs font-semibold text-[var(--od-slate)]" for="p-email">
           {{ t('public.email') }} <span class="font-normal">({{ t('common.optional') }})</span>
         </label>
-        <input id="p-email" v-model="form.email" type="email" class="pl-input mt-1" maxlength="180" />
-        <p class="mt-1 text-xs text-[var(--color-pl-muted)]">{{ t('public.email_hint') }}</p>
+        <input id="p-email" v-model="form.email" type="email" class="od-input mt-1" maxlength="180" />
+        <p class="mt-1 text-xs text-[var(--od-slate)]">{{ t('public.email_hint') }}</p>
 
         <input v-model="form.website" type="text" name="website" tabindex="-1" autocomplete="off" class="hidden" aria-hidden="true" />
 
-        <button type="submit" class="pl-btn pl-btn-accent mt-4 w-full py-2.5" :disabled="busy || !form.display_name.trim()">
+        <button type="submit" class="od-btn od-btn-primary mt-4 w-full py-2.5" :disabled="busy || !form.display_name.trim()">
           {{ t('public.join') }}
         </button>
       </form>
 
       <div v-else-if="me" class="flex items-center justify-between px-1 text-sm">
         <span>{{ t('public.hello', { name: me.display_name }) }}</span>
-        <button type="button" class="text-xs text-[var(--color-pl-muted)] hover:text-[var(--color-pl-no)]" @click="confirmLeave = true">
+        <button type="button" class="text-xs text-[var(--od-slate)] hover:text-[var(--od-slate)]" @click="confirmLeave = true">
           {{ t('public.leave') }}
         </button>
       </div>
 
       <!-- Verfuegbarkeit -->
-      <section v-if="showDates" class="pl-card p-4 sm:p-5">
+      <section v-if="showDates" class="od-card p-4 sm:p-5">
         <h2 class="font-display font-semibold">{{ t('public.who') }}</h2>
 
-        <p v-if="!event.date_options.length" class="mt-3 text-sm text-[var(--color-pl-muted)]">
+        <p v-if="!event.date_options.length" class="mt-3 text-sm text-[var(--od-slate)]">
           {{ t('public.no_dates') }}
         </p>
 
         <ul v-else class="mt-3 space-y-2">
-          <li v-for="option in ordered" :key="option.id" class="rounded-xl border border-[var(--color-pl-line)] p-3">
+          <li
+            v-for="option in ordered"
+            :key="option.id"
+            class="border p-3.5"
+            :style="{
+              borderColor: option.id === event.decided_option_id ? 'var(--od-apricot)' : 'var(--od-line)',
+              borderRadius: 'var(--od-radius-md)',
+              background: option.id === event.decided_option_id ? 'var(--od-sand)' : 'var(--od-white)',
+            }"
+          >
             <div class="flex flex-wrap items-center justify-between gap-2">
               <div class="min-w-0">
-                <p class="font-display font-semibold" :class="{ 'opacity-60': option.blocked }">
+                <p class="od-h3 flex items-center gap-2" :class="{ 'opacity-60': option.blocked }">
+                  <span
+                    v-if="option.id === event.decided_option_id || option.id === event.best_match_id"
+                    class="inline-block h-2.5 w-2.5 shrink-0 rounded-full"
+                    :style="{
+                      background:
+                        option.id === event.decided_option_id ? 'var(--od-apricot)' : 'var(--od-mint)',
+                    }"
+                  />
                   {{ formatFull(option) }}
-                  <span v-if="option.id === event.decided_option_id" style="color: var(--color-pl-accent-dark)">✓</span>
                 </p>
-                <p v-if="note(option)" class="text-xs text-[var(--color-pl-muted)]">
+                <p v-if="note(option)" class="od-meta">
                   {{ t('public.your_time', note(option)) }}
                 </p>
               </div>
@@ -283,14 +297,14 @@ function note(option) {
               />
             </div>
 
-            <CountBar class="mt-2" :option="option" />
+            <CountBar class="mt-2" :option="option" :highlighted="option.id === event.best_match_id && !decided" />
           </li>
         </ul>
 
         <button
           v-if="me && !readOnly && event.date_options.length"
           type="button"
-          class="pl-btn pl-btn-accent mt-4 w-full py-2.5"
+          class="od-btn od-btn-primary mt-4 w-full py-2.5"
           :disabled="busy || !dirty"
           @click="saveAnswers"
         >
@@ -300,7 +314,7 @@ function note(option) {
 
       <!-- Planung: erscheint erst, wenn sie relevant ist -->
       <template v-if="showPlan">
-        <p class="px-1 text-sm text-[var(--color-pl-muted)]">{{ t('public.tasks_intro') }}</p>
+        <p class="px-1 text-sm text-[var(--od-slate)]">{{ t('public.tasks_intro') }}</p>
         <PlanPanel
           :event="event"
           :base-url="baseUrl"

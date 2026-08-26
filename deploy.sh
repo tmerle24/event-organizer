@@ -1,5 +1,5 @@
 #!/bin/bash
-# deploy.sh — Deploy-Skript für Plandu (Event-Organizer)
+# deploy.sh — Deploy-Skript für ORGDATE
 # Angelehnt an das bewährte Skript aus NamibWay/Wishlist.
 #
 # Erkennt automatisch, ob APP_DIR bereits ein Git-Repo ist:
@@ -14,10 +14,10 @@
 set -e
 
 # ── Projekt-spezifische Werte — vor dem ersten Deploy anpassen ──────
-APP_DIR="/var/www/plandu"
-REPO_URL="git@github.com:tmerle24/event-organizer.git"
+APP_DIR="/var/www/orgdate"
+REPO_URL="git@github.com:tmerle24/orgdate.git"
 BRANCH="main"
-QUEUE_WORKER_NAME="plandu-queue"        # Supervisor-Programm (php artisan queue:work)
+QUEUE_WORKER_NAME="orgdate-queue"        # Supervisor-Programm (php artisan queue:work)
 
 SKIP_NPM=false
 SKIP_MIGRATE=false

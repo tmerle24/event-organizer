@@ -8,10 +8,10 @@
 #
 set -euo pipefail
 
-APP_DIR="/var/www/plandu"
+APP_DIR="/var/www/orgdate"
 ENV_FILE="$APP_DIR/.env"
 BUCKET="namibway-backups"
-PREFIX="plandu/db"
+PREFIX="orgdate/db"
 
 env_get() {
     grep -m1 "^${1}=" "$ENV_FILE" 2>/dev/null | cut -d= -f2- | tr -d '"' | tr -d "'" || true
@@ -75,7 +75,7 @@ if [[ "$CONFIRM" != "ja" ]]; then
     exit 0
 fi
 
-TMPFILE=$(mktemp /tmp/plandu_restore_XXXXXX.sql.gz)
+TMPFILE=$(mktemp /tmp/orgdate_restore_XXXXXX.sql.gz)
 trap 'rm -f "$TMPFILE"' EXIT
 
 echo ""

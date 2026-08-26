@@ -79,85 +79,83 @@ function onKeydown(event) {
     </header>
 
     <main class="mx-auto max-w-3xl px-6">
-      <section class="pt-8 pb-2 text-center sm:pt-14">
-        <h1 class="font-display text-3xl leading-tight font-bold sm:text-5xl">{{ t('landing.tagline') }}</h1>
-        <p class="mt-3 text-[var(--color-pl-muted)] sm:text-lg">{{ t('landing.sub') }}</p>
+      <section class="pt-8 pb-2 text-center sm:pt-16">
+        <h1 class="od-display od-measure mx-auto">{{ t('landing.tagline') }}</h1>
+        <p class="od-measure mx-auto mt-4 text-lg" style="font-weight: 300; color: var(--od-slate)">
+          {{ t('landing.sub') }}
+        </p>
       </section>
 
-      <form class="pl-card mt-8 p-4 sm:p-6" @submit.prevent="submit">
+      <form class="od-card mt-8 p-4 sm:p-6" @submit.prevent="submit">
         <label for="event-input" class="sr-only">{{ t('landing.placeholder') }}</label>
         <textarea
           id="event-input"
           v-model="input"
           rows="3"
           maxlength="500"
-          class="pl-input font-display text-lg leading-snug sm:text-xl"
+          class="od-input text-lg leading-snug sm:text-xl"
           :placeholder="t('landing.placeholder')"
           autofocus
           @keydown="onKeydown"
         />
-        <p class="mt-2 text-xs text-[var(--color-pl-muted)]">{{ t('landing.example') }}</p>
+        <p class="od-meta mt-2">{{ t('landing.example') }}</p>
 
         <!-- Honeypot: unsichtbar, nur Bots fuellen das aus -->
         <input v-model="website" type="text" name="website" tabindex="-1" autocomplete="off" class="hidden" aria-hidden="true" />
 
         <fieldset class="mt-5">
-          <legend class="text-xs font-semibold tracking-wide text-[var(--color-pl-muted)] uppercase">
-            {{ t('landing.mode.label') }}
-          </legend>
+          <legend class="od-meta">{{ t('landing.mode.label') }}</legend>
           <div class="mt-2 grid gap-2 sm:grid-cols-3">
             <label
               v-for="option in MODES"
               :key="option"
-              class="cursor-pointer rounded-xl border p-3 transition"
-              :style="
-                mode === option
-                  ? { borderColor: 'var(--color-pl-accent)', background: 'var(--color-pl-accent-soft)' }
-                  : { borderColor: 'var(--color-pl-line)', background: 'var(--color-pl-surface)' }
-              "
+              class="cursor-pointer border p-3.5 transition"
+              :style="{
+                borderRadius: 'var(--od-radius-md)',
+                borderColor: mode === option ? 'var(--od-violet)' : 'var(--od-line)',
+                background: mode === option ? 'var(--od-violet-tint)' : 'var(--od-white)',
+              }"
             >
               <input v-model="mode" type="radio" :value="option" class="sr-only" />
-              <span class="block text-sm font-semibold">{{ t(`landing.mode.${option}`) }}</span>
-              <span class="mt-0.5 block text-xs text-[var(--color-pl-muted)]">{{ t(`landing.mode.${option}_hint`) }}</span>
+              <span class="block text-[15px] font-medium">{{ t(`landing.mode.${option}`) }}</span>
+              <span class="od-meta mt-0.5 block">{{ t(`landing.mode.${option}_hint`) }}</span>
             </label>
           </div>
         </fieldset>
 
-        <button type="submit" class="pl-btn pl-btn-accent mt-5 w-full py-3 text-base" :disabled="!canSubmit">
+        <button type="submit" class="od-btn od-btn-primary mt-5 w-full py-3.5 text-base" :disabled="!canSubmit">
           {{ busy ? t('landing.creating') : t('landing.submit') }}
         </button>
       </form>
 
       <section v-if="myEvents.length" class="mt-10">
-        <h2 class="font-display text-sm font-semibold">{{ t('landing.recent') }}</h2>
-        <p class="text-xs text-[var(--color-pl-muted)]">{{ t('landing.recent_hint') }}</p>
+        <h2 class="od-h3">{{ t('landing.recent') }}</h2>
+        <p class="od-meta">{{ t('landing.recent_hint') }}</p>
         <ul class="mt-3 space-y-1.5">
           <li v-for="event in myEvents" :key="event.manage_token">
             <a
               :href="`/e/${event.manage_token}`"
-              class="pl-card flex items-center justify-between px-4 py-2.5 text-sm hover:border-[var(--color-pl-accent)]"
+              class="od-card flex items-center justify-between px-4 py-3 text-sm transition hover:border-[var(--od-violet-soft)]"
             >
               <span class="truncate">{{ event.title }}</span>
-              <span aria-hidden="true" class="text-[var(--color-pl-muted)]">→</span>
+              <span aria-hidden="true" class="text-[var(--od-slate)]">→</span>
             </a>
           </li>
         </ul>
       </section>
 
       <section class="mt-14">
-        <h2 class="font-display text-center text-sm font-semibold tracking-wide text-[var(--color-pl-muted)] uppercase">
-          {{ t('landing.how.title') }}
-        </h2>
+        <h2 class="od-h3 text-center" style="color: var(--od-slate)">{{ t('landing.how.title') }}</h2>
         <ol class="mt-5 grid gap-4 sm:grid-cols-3">
-          <li v-for="step in [1, 2, 3]" :key="step" class="pl-card p-4">
+          <li v-for="step in [1, 2, 3]" :key="step" class="od-panel p-5">
             <span
-              class="font-mono-num flex h-7 w-7 items-center justify-center rounded-full text-sm font-semibold"
-              style="background: var(--color-pl-accent-soft); color: var(--color-pl-accent-dark)"
+              class="font-mono-num flex h-8 w-8 items-center justify-center rounded-full text-sm font-medium"
+              style="background: var(--od-violet-tint); color: var(--od-violet-dark)"
             >
               {{ step }}
             </span>
-            <h3 class="font-display mt-3 font-semibold">{{ t(`landing.how.step${step}`) }}</h3>
-            <p class="mt-1 text-sm text-[var(--color-pl-muted)]">{{ t(`landing.how.step${step}_text`) }}</p>
+            <h3 class="od-h3 mt-3">{{ t(`landing.how.step${step}`) }}</h3>
+            <p class="od-small mt-1" style="color: var(--od-slate)">{{ t(`landing.how.step${step}_text`) }}</p>
           </li>
         </ol>
       </section>

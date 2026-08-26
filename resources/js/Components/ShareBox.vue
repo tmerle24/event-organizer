@@ -58,31 +58,31 @@ async function share() {
 </script>
 
 <template>
-  <div class="pl-card p-4 sm:p-5">
+  <div class="od-card p-4 sm:p-5">
     <p class="font-display text-sm font-semibold">{{ t('manage.your_link') }}</p>
-    <p class="mt-1 text-xs text-[var(--color-pl-muted)]">{{ t('manage.link_hint') }}</p>
+    <p class="mt-1 text-xs text-[var(--od-slate)]">{{ t('manage.link_hint') }}</p>
 
     <div class="mt-3 flex flex-col gap-2 sm:flex-row">
       <input
         :value="url"
         readonly
-        class="pl-input font-mono-num text-sm"
+        class="od-input font-mono-num text-sm"
         aria-label="Link"
         @focus="$event.target.select()"
       />
       <div class="flex gap-2">
-        <button type="button" class="pl-btn pl-btn-accent whitespace-nowrap" @click="copy">
+        <button type="button" class="od-btn od-btn-primary whitespace-nowrap" @click="copy">
           {{ copied ? t('common.copied') : t('common.copy') }}
         </button>
-        <button v-if="canShare" type="button" class="pl-btn pl-btn-ghost whitespace-nowrap" @click="share">
+        <button v-if="canShare" type="button" class="od-btn od-btn-ghost whitespace-nowrap" @click="share">
           {{ t('common.share') }}
         </button>
       </div>
     </div>
 
     <details class="mt-3">
-      <summary class="cursor-pointer text-xs text-[var(--color-pl-muted)] hover:text-[var(--color-pl-ink)]">QR-Code</summary>
-      <img v-if="qr" :src="qr" alt="QR" class="mt-3 h-40 w-40 rounded-xl border border-[var(--color-pl-line)]" />
+      <summary class="cursor-pointer text-xs text-[var(--od-slate)] hover:text-[var(--od-ink)]">QR-Code</summary>
+      <img v-if="qr" :src="qr" alt="QR" class="mt-3 h-40 w-40 rounded-xl border border-[var(--od-line)]" />
     </details>
   </div>
 </template>

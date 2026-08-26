@@ -2,24 +2,24 @@
 # backup.sh — Tägliches PostgreSQL-Backup nach Cloudflare R2
 #
 # Einrichtung auf dem Server:
-#   1. Skript ausführbar machen: chmod +x /var/www/plandu/backup.sh
-#   2. CLOUDFLARE_R2_* Vars in /var/www/plandu/.env eintragen
+#   1. Skript ausführbar machen: chmod +x /var/www/orgdate/backup.sh
+#   2. CLOUDFLARE_R2_* Vars in /var/www/orgdate/.env eintragen
 #   3. Cron einrichten:
-#      echo "0 5 * * * www-data /var/www/plandu/backup.sh >> /var/log/plandu-backup.log 2>&1" \
-#        > /etc/cron.d/plandu-backup
+#      echo "0 5 * * * www-data /var/www/orgdate/backup.sh >> /var/log/orgdate-backup.log 2>&1" \
+#        > /etc/cron.d/orgdate-backup
 #
-# Backup-Ziel: namibway-backups/plandu/db/YYYY-MM-DD.sql.gz
+# Backup-Ziel: namibway-backups/orgdate/db/YYYY-MM-DD.sql.gz
 # Aufbewahrung: 30 Tage
 #
 set -euo pipefail
 
-APP_DIR="/var/www/plandu"
+APP_DIR="/var/www/orgdate"
 ENV_FILE="$APP_DIR/.env"
 BUCKET="namibway-backups"
-PREFIX="plandu/db"
+PREFIX="orgdate/db"
 RETAIN_DAYS=30
 DATE=$(date +%Y-%m-%d)
-TMPFILE=$(mktemp /tmp/plandu_backup_XXXXXX.sql.gz)
+TMPFILE=$(mktemp /tmp/orgdate_backup_XXXXXX.sql.gz)
 
 env_get() {
     grep -m1 "^${1}=" "$ENV_FILE" 2>/dev/null | cut -d= -f2- | tr -d '"' | tr -d "'" || true

@@ -25,5 +25,5 @@ export function useDeviceToken(storageKey) {
 }
 
 export function useParticipantToken(publicToken) {
-  return useDeviceToken(`pl_participant_${publicToken}`)
+  return useDeviceToken(`od_participant_${publicToken}`)
 }

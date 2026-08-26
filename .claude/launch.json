@@ -2,7 +2,7 @@
     "version": "0.0.1",
     "configurations": [
         {
-            "name": "plandu",
+            "name": "orgdate",
             "runtimeExecutable": "php",
             "runtimeArgs": ["artisan", "serve", "--port=8080"],
             "port": 8080
