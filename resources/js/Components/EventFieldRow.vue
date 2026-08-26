@@ -2,6 +2,7 @@
 import { ref, computed, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { mapsLink } from '@/composables/useMapsLink'
+import { formatFull } from '@/composables/useDateFormat'
 
 /**
  * Die editierbare Feldzeile aus Spec Abschnitt 4, Schritt 1: das Ergebnis der
@@ -109,6 +110,10 @@ async function save() {
       <button type="button" class="text-sm text-[var(--od-violet)] hover:underline" @click="open = true">
         {{ t('common.edit') }}
       </button>
+
+      <!-- Fester Termin einer Liste, wie auf der Teilnehmer-Seite über der
+           Beschreibung. -->
+      <p v-if="isList && decidedOption" class="od-h3 w-full">{{ formatFull(decidedOption) }}</p>
 
       <div class="flex w-full flex-wrap items-center gap-x-2 gap-y-1 text-sm text-[var(--od-slate)]">
         <span v-if="event.participant_count_hint">
