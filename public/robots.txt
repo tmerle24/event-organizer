@@ -1,2 +1,8 @@
 User-agent: *
-Disallow:
+
+# Event-Seiten sind privat und tragen noindex. Der Ausschluss hier spart den
+# Crawlern zusätzlich die Zugriffe.
+Disallow: /t/
+Disallow: /e/
+
+Sitemap: https://orgdate.com/sitemap.xml

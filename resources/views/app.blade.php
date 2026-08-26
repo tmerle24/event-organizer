@@ -37,6 +37,9 @@
         <title inertia>{{ $pageTitle ?? config('app.name') }}</title>
         <meta name="description" content="{{ $ogDescription ?? config('brand.claim') }}" />
         <link rel="canonical" href="{{ url()->current() }}" />
+        @if (config('brand.google_site_verification'))
+            <meta name="google-site-verification" content="{{ config('brand.google_site_verification') }}" />
+        @endif
         {{-- Event-Seiten sind privat und gehoeren nicht in den Index. --}}
         @if (request()->is('e/*') || request()->is('t/*'))
             <meta name="robots" content="noindex" />

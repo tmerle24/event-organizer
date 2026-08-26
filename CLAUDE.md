@@ -620,6 +620,25 @@ Aufbewahrung), Wiederherstellung mit `restore.sh`.
 
 ---
 
+## Suchmaschinen
+
+Indexierbar sind genau drei Seiten: Start, Impressum, Datenschutz.
+**Event-Seiten tragen `noindex`** und stehen zusätzlich in der `robots.txt`
+unter `Disallow` — sie sind privat, der Link ist der Schlüssel.
+
+- `/sitemap.xml` ist eine Route, keine Datei: so kommen die Adressen aus
+  `APP_URL` statt fest verdrahtet. Sie enthält **nie** Event-URLs — eine
+  Sitemap ist öffentlich lesbar, ein Token darin wäre für jeden einsehbar.
+  Ein Test hält das fest.
+- `public/robots.txt` ist dagegen statisch, weil nginx die Datei direkt
+  ausliefert und eine Laravel-Route dort nie ankäme. Die `Sitemap:`-Zeile
+  muss eine absolute URL sein und nennt deshalb die Domain im Klartext.
+- Der Bestätigungscode der Search Console kommt aus
+  `GOOGLE_SITE_VERIFICATION` in der `.env`. Ohne Wert steht kein Meta-Tag im
+  HTML, es braucht also keine Datei auf dem Server.
+
+---
+
 ## Rechtsseiten
 
 `Pages/Legal/Imprint.vue` und `Privacy.vue` sind bewusst deutschsprachig

@@ -15,5 +15,11 @@ return [
     // Bild und Text in WhatsApp & Co. dasselbe sagen.
     'share_text' => 'Der Termin, der allen passt. Gemeinsam planen, ohne Hin und Her.',
     'domain' => env('BRAND_DOMAIN', 'orgdate.com'),
+
+    /*
+     * Bestätigungscode der Google Search Console. Nur der Wert aus dem
+     * content-Attribut, nicht das ganze Meta-Tag. Leer = kein Tag im HTML.
+     */
+    'google_site_verification' => env('GOOGLE_SITE_VERIFICATION'),
     'email' => env('BRAND_EMAIL', 'hello@orgdate.com'),
 ];

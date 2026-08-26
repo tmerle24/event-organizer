@@ -6,6 +6,7 @@ use App\Http\Controllers\IcsController;
 use App\Http\Controllers\ParticipantController;
 use App\Http\Controllers\PlanSectionController;
 use App\Http\Controllers\PublicEventController;
+use App\Http\Controllers\SitemapController;
 use App\Http\Controllers\TaskController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -26,6 +27,8 @@ Route::get('/datenschutz', fn () => Inertia::render('Legal/Privacy')
 Route::get('/impressum', fn () => Inertia::render('Legal/Imprint')
     ->withViewData(['pageTitle' => 'Impressum – '.config('app.name')]))
     ->name('legal.imprint');
+
+Route::get('/sitemap.xml', [SitemapController::class, 'show'])->name('sitemap');
 
 Route::post('/events', [EventController::class, 'store'])
     ->middleware('throttle:20,1')
