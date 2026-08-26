@@ -110,8 +110,8 @@ aus; wer nur RSA-Cipher-Suites beherrscht, bekommt gar keine Verbindung. Prüfen
 openssl s_client -connect <domain>:443 -servername <domain> -cipher aRSA -tls1_2 </dev/null
 ```
 
-`handshake failure` heißt: es fehlt ein RSA-Zertifikat. `install.sh` legt seit
-Version X beide an, ältere Installationen rüsten so nach:
+`handshake failure` heißt: es fehlt ein RSA-Zertifikat. Neue Installationen
+legen beide an, ältere rüsten so nach:
 
 ```bash
 sudo certbot certonly --nginx -d <domain> -d www.<domain> \
