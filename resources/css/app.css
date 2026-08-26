@@ -1,0 +1,116 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@500;600&display=swap');
+@import "tailwindcss";
+
+/*
+ * Design-Tokens. Tailwind v4: Theme direkt per @theme in CSS, kein
+ * tailwind.config.js. Farben immer als var(--color-pl-*) verwenden, nie
+ * hardcodiert — der Brand-Name steht ausschliesslich in APP_NAME.
+ */
+@theme {
+  --font-display: 'Outfit', ui-sans-serif, system-ui, sans-serif;
+  --font-body: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, monospace;
+
+  --color-pl-ink: #1f2430;          /* Primaerfarbe, Text + Buttons */
+  --color-pl-muted: #77808f;        /* Sekundaertext */
+  --color-pl-line: #e5e7eb;         /* Borders */
+  --color-pl-bg: #faf9f7;           /* App-Hintergrund */
+  --color-pl-surface: #ffffff;      /* Karten */
+
+  --color-pl-accent: #0f9d76;       /* Akzent = "kann" */
+  --color-pl-accent-dark: #0b7d5d;
+  --color-pl-accent-soft: #e7f4ef;
+
+  --color-pl-maybe: #c2810c;        /* "vielleicht" */
+  --color-pl-maybe-soft: #fdf3e0;
+  --color-pl-no: #b8394a;           /* "kann nicht" */
+  --color-pl-no-soft: #fbeaec;
+  --color-pl-open: #9aa3b0;         /* "offen" — bewusst neutral, nie rot */
+}
+
+body {
+  font-family: var(--font-body);
+  background-color: var(--color-pl-bg);
+  color: var(--color-pl-ink);
+  overflow-x: hidden;
+}
+
+.font-display { font-family: var(--font-display); }
+
+.font-mono-num {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Tailwind setzt cursor:default auf <button>; global zurueck auf pointer. */
+button { cursor: pointer; }
+
+/* Karten-Grundform */
+.pl-card {
+  background: var(--color-pl-surface);
+  border: 1px solid var(--color-pl-line);
+  border-radius: 1rem;
+}
+
+.pl-input {
+  width: 100%;
+  background: var(--color-pl-surface);
+  border: 1px solid var(--color-pl-line);
+  border-radius: 0.75rem;
+  padding: 0.625rem 0.875rem;
+  outline: none;
+}
+.pl-input:focus {
+  border-color: var(--color-pl-accent);
+  box-shadow: 0 0 0 3px var(--color-pl-accent-soft);
+}
+
+.pl-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border-radius: 0.75rem;
+  padding: 0.625rem 1.125rem;
+  font-weight: 600;
+  transition: background-color 0.15s ease, opacity 0.15s ease;
+}
+.pl-btn-primary { background: var(--color-pl-ink); color: #fff; }
+.pl-btn-primary:hover { background: #333a4b; }
+.pl-btn-accent { background: var(--color-pl-accent); color: #fff; }
+.pl-btn-accent:hover { background: var(--color-pl-accent-dark); }
+.pl-btn-ghost { border: 1px solid var(--color-pl-line); background: var(--color-pl-surface); }
+.pl-btn-ghost:hover { background: var(--color-pl-bg); }
+.pl-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* Signature-Element: der Fortschrittsbalken der Rueckmeldungen */
+@keyframes pl-grow { from { width: 0; } }
+.pl-bar > span { animation: pl-grow 0.6s ease-out; }
+
+@keyframes pl-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.35; transform: scale(0.75); }
+}
+.pl-live-dot { animation: pl-pulse 1.8s ease-in-out infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  .pl-live-dot, .pl-bar > span { animation: none; }
+}
+
+/* Druckansicht: nur der Report-Block, Hintergrundfarben erzwingen. */
+@media print {
+  body * { visibility: hidden; }
+  #pl-report, #pl-report * { visibility: visible; }
+  #pl-report {
+    display: block !important;
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    padding: 2rem 12%;
+  }
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+}

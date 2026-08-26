@@ -1,0 +1,22 @@
+services:
+    pgsql:
+        image: postgres:16-alpine
+        container_name: plandu-pgsql
+        restart: unless-stopped
+        ports:
+            - '${DB_PORT:-5433}:5432'
+        environment:
+            POSTGRES_DB: '${DB_DATABASE:-plandu}'
+            POSTGRES_USER: '${DB_USERNAME:-plandu}'
+            POSTGRES_PASSWORD: '${DB_PASSWORD:-plandu}'
+        volumes:
+            - plandu-pgsql-data:/var/lib/postgresql/data
+        healthcheck:
+            test: ['CMD', 'pg_isready', '-U', '${DB_USERNAME:-plandu}', '-d', '${DB_DATABASE:-plandu}']
+            interval: 5s
+            timeout: 5s
+            retries: 5
+
+volumes:
+    plandu-pgsql-data:
+        driver: local
