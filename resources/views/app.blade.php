@@ -40,6 +40,12 @@
         <meta property="og:url" content="{{ url()->current() }}" />
         <meta property="og:locale" content="{{ $ogLocale }}" />
         <meta property="og:image" content="{{ url('/og/og-image.png') }}" />
+        {{-- Microsofts Crawler (Teams/Skype) wertet secure_url gesondert aus.
+             Nur ausgeben, wenn die Seite wirklich über https läuft — sonst
+             stünde hier eine URL, die es nicht gibt. --}}
+        @if (str_starts_with(config('app.url'), 'https://'))
+            <meta property="og:image:secure_url" content="{{ secure_url('/og/og-image.png') }}" />
+        @endif
         <meta property="og:image:type" content="image/png" />
         <meta property="og:image:width" content="1200" />
         <meta property="og:image:height" content="630" />

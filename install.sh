@@ -452,16 +452,16 @@ server {
 
     # Vite hängt einen Hash an jeden Dateinamen — unbegrenzt cachebar.
     location ^~ /build/ {
-        expires 1y;
-        add_header Cache-Control "public, immutable";
+        # Nur add_header, kein "expires": beide zusammen senden Cache-Control
+        # doppelt, und daran verschlucken sich manche Crawler und Proxies.
+        add_header Cache-Control "public, max-age=31536000, immutable" always;
         access_log off;
         try_files \$uri =404;
     }
 
     # Marken-Assets ändern sich selten, aber unter gleichem Namen.
     location ~* ^/(icon|og)/ {
-        expires 30d;
-        add_header Cache-Control "public";
+        add_header Cache-Control "public, max-age=2592000" always;
         access_log off;
         try_files \$uri =404;
     }
