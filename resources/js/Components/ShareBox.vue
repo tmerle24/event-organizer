@@ -31,55 +31,17 @@ onMounted(() => {
 })
 watch(() => props.url, render)
 
-function escapeHtml(value) {
-  return value
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-}
-
-/**
- * Die Zwischenablage bekommt zwei Varianten: reinen Text (die URL) und HTML
- * (ein Link mit dem Event-Titel als Beschriftung).
- *
- * Teams, Outlook, Word und Slack nehmen die HTML-Variante — dort steht dann
- * "Team-BBQ" statt "orgdate.com/t/M4L0fYv7UlaR". Genau das legt der Browser
- * beim Kopieren aus der Adressleiste an, und deshalb sieht so ein Link beim
- * Einfügen freundlicher aus als einer aus unserem Knopf.
- *
- * Wer reinen Text einfügt — Notizen, Terminal, SMS — bekommt weiterhin die
- * URL. Jede Ebene hat einen Fallback, im schlimmsten Fall verhält es sich wie
- * vorher.
- */
 async function copy() {
-  const label = (props.title || '').trim() || props.url
-  const html = `<a href="${escapeHtml(props.url)}">${escapeHtml(label)}</a>`
-
   try {
-    if (navigator.clipboard?.write && typeof ClipboardItem !== 'undefined') {
-      await navigator.clipboard.write([
-        new ClipboardItem({
-          'text/plain': new Blob([props.url], { type: 'text/plain' }),
-          'text/html': new Blob([html], { type: 'text/html' }),
-        }),
-      ])
-    } else {
-      await navigator.clipboard.writeText(props.url)
-    }
+    await navigator.clipboard.writeText(props.url)
   } catch (e) {
-    // Firefox kann text/html je nach Version nicht.
-    try {
-      await navigator.clipboard.writeText(props.url)
-    } catch (inner) {
-      // Ohne Clipboard-API oder ohne HTTPS
-      const input = document.createElement('input')
-      input.value = props.url
-      document.body.appendChild(input)
-      input.select()
-      document.execCommand('copy')
-      document.body.removeChild(input)
-    }
+    // Fallback fuer Browser ohne Clipboard-API (oder ohne HTTPS)
+    const input = document.createElement('input')
+    input.value = props.url
+    document.body.appendChild(input)
+    input.select()
+    document.execCommand('copy')
+    document.body.removeChild(input)
   }
 
   copied.value = true
