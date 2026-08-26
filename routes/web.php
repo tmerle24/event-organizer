@@ -20,7 +20,7 @@ Route::get('/', fn () => Inertia::render('Landing')
     ->name('home');
 
 Route::get('/datenschutz', fn () => Inertia::render('Legal/Privacy')
-    ->withViewData(['pageTitle' => 'Datenschutz – '.config('app.name')]))
+    ->withViewData(['pageTitle' => 'Datenschutzerklärung – '.config('app.name')]))
     ->name('legal.privacy');
 
 Route::get('/impressum', fn () => Inertia::render('Legal/Imprint')

@@ -27,7 +27,7 @@ onMounted(() => {
 
 <template>
   <div class="flex min-h-screen flex-col">
-    <Head title="Impressum – ORGDATE" />
+    <Head :title="t('legal.imprint_title')" />
 
     <header class="mx-auto flex w-full max-w-2xl items-center justify-between px-6 py-5">
       <a href="/"><Logo /></a>

@@ -20,7 +20,7 @@ onMounted(() => {
 
 <template>
   <div class="flex min-h-screen flex-col">
-    <Head title="Datenschutz – ORGDATE" />
+    <Head :title="t('legal.privacy_title')" />
 
     <header class="mx-auto flex w-full max-w-2xl items-center justify-between px-6 py-5">
       <a href="/"><Logo /></a>

@@ -31,9 +31,12 @@ class EventManageController extends Controller
     {
         $this->closeIfPast($event);
 
+        // Nur pageTitle, kein ogTitle: im eigenen Browser-Tab ist der
+        // Eventname hilfreich, in einer Link-Vorschau hat er nichts verloren —
+        // der Verwaltungslink gehört nicht in einen Gruppenchat.
         return Inertia::render('Event/Manage', [
             'event' => $this->presenter->forManage($event),
-        ]);
+        ])->withViewData(['pageTitle' => $event->title.' – '.config('app.name')]);
     }
 
     public function data(Event $event)

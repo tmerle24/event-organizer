@@ -7,11 +7,26 @@ import { createApp, h } from 'vue';
 import { ZiggyVue } from '../../vendor/tightenco/ziggy';
 import { i18n, currentLocale } from './i18n';
 
+const APP_NAME = import.meta.env.VITE_APP_NAME || 'ORGDATE';
+
 // Backend-Locale (Mails, Planungs-Templates) an die UI-Sprache koppeln.
 window.axios.defaults.headers.common['X-App-Locale'] = currentLocale();
 
 createInertiaApp({
-    title: (title) => title || import.meta.env.VITE_APP_NAME || 'ORGDATE',
+    /*
+     * Titel-Regel, identisch zur serverseitigen in app.blade.php:
+     *   Startseite      Marke – Slogan
+     *   alle anderen    Seitentitel – Marke
+     *
+     * Ohne das Anhängen der Marke würde der Titel beim Start von JavaScript
+     * springen: der Server liefert "Team-BBQ – ORGDATE", Inertia machte
+     * daraus "Team-BBQ". Die Startseite gibt den Titel bereits vollständig
+     * vor und wird deshalb übersprungen.
+     */
+    title: (title) => {
+        if (!title) return APP_NAME
+        return title.startsWith(APP_NAME) ? title : `${title} – ${APP_NAME}`
+    },
     resolve: (name) =>
         resolvePageComponent(`./Pages/${name}.vue`, import.meta.glob('./Pages/**/*.vue')),
     setup({ el, App, props, plugin }) {

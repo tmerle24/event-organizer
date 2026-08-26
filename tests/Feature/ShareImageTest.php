@@ -156,8 +156,9 @@ class ShareImageTest extends TestCase
     }
 
     /**
-     * Der Verwaltungslink gehört nicht in einen Gruppenchat — die Manage-Seite
-     * bleibt deshalb bei der generischen Vorschau.
+     * Der Verwaltungslink gehört nicht in einen Gruppenchat — die Vorschau
+     * bleibt deshalb generisch. Im <title> steht der Eventname sehr wohl:
+     * das ist der eigene Browser-Tab des Organisators, kein geteilter Link.
      */
     public function test_the_manage_page_keeps_the_generic_preview(): void
     {
@@ -171,7 +172,11 @@ class ShareImageTest extends TestCase
 
         $response->assertOk();
         $response->assertSee('property="og:title" content="'.config('app.name').'"', false);
-        $response->assertDontSee('Geheime Überraschungsparty', false);
+        $response->assertSee('property="og:description" content="'.config('brand.share_text').'"', false);
+        $response->assertDontSee('property="og:title" content="Geheime Überraschungsparty"', false);
         $response->assertSee('name="robots" content="noindex"', false);
+
+        // Im Browser-Tab dagegen schon.
+        $response->assertSee('<title inertia>Geheime Überraschungsparty – '.config('app.name'), false);
     }
 }

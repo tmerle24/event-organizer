@@ -1,6 +1,6 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
-import { Head } from '@inertiajs/vue3'
+import { Head, usePage } from '@inertiajs/vue3'
 import { useI18n } from 'vue-i18n'
 import Logo from '@/Components/Logo.vue'
 import Footer from '@/Components/Footer.vue'
@@ -10,6 +10,7 @@ import { viewerTimezone } from '@/composables/useDateFormat'
 import { readMyEvents, rememberEvent } from '@/composables/useMyEvents'
 
 const { t } = useI18n()
+const appName = computed(() => usePage().props.appName || 'ORGDATE')
 
 const input = ref('')
 const mode = ref('dates')
@@ -70,7 +71,7 @@ function onKeydown(event) {
 </script>
 
 <template>
-  <Head :title="t('landing.tagline')" />
+  <Head :title="`${appName} – ${t('landing.tagline')}`" />
 
   <div class="min-h-screen">
     <header class="mx-auto flex max-w-3xl items-center justify-between px-6 py-5">
