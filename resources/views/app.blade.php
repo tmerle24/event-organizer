@@ -1,4 +1,18 @@
 @php
+    /*
+     * Versionsstempel an der Bild-URL. Der "?v=2"-Trick an der Seiten-URL
+     * hilft nur gegen den Vorschau-Cache der Seite — die Bild-URL bleibt
+     * dabei identisch, und Microsofts Bild-Proxy hat einen eigenen Cache
+     * darauf. Lag dort einmal ein 404 (das Bild kam erst später auf den
+     * Server), bleibt er hängen, egal wie oft die Seite neu gecrawlt wird.
+     */
+    $ogImage = url('/og/og-image.png');
+    $ogImageStamp = @filemtime(public_path('og/og-image.png'));
+
+    if ($ogImageStamp) {
+        $ogImage .= '?v='.$ogImageStamp;
+    }
+
     $ogLocale = [
         'de' => 'de_DE', 'en' => 'en_GB', 'fr' => 'fr_FR', 'es' => 'es_ES', 'nl' => 'nl_NL',
     ][app()->getLocale()] ?? 'de_DE';
@@ -39,12 +53,12 @@
         <meta property="og:description" content="{{ $ogDescription ?? config('brand.share_text') }}" />
         <meta property="og:url" content="{{ url()->current() }}" />
         <meta property="og:locale" content="{{ $ogLocale }}" />
-        <meta property="og:image" content="{{ url('/og/og-image.png') }}" />
+        <meta property="og:image" content="{{ $ogImage }}" />
         {{-- Microsofts Crawler (Teams/Skype) wertet secure_url gesondert aus.
              Nur ausgeben, wenn die Seite wirklich über https läuft — sonst
              stünde hier eine URL, die es nicht gibt. --}}
         @if (str_starts_with(config('app.url'), 'https://'))
-            <meta property="og:image:secure_url" content="{{ secure_url('/og/og-image.png') }}" />
+            <meta property="og:image:secure_url" content="{{ str_replace('http://', 'https://', $ogImage) }}" />
         @endif
         <meta property="og:image:type" content="image/png" />
         <meta property="og:image:width" content="1200" />
@@ -54,7 +68,7 @@
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content="{{ $ogTitle ?? config('app.name') }}" />
         <meta name="twitter:description" content="{{ $ogDescription ?? config('brand.share_text') }}" />
-        <meta name="twitter:image" content="{{ url('/og/og-image.png') }}" />
+        <meta name="twitter:image" content="{{ $ogImage }}" />
 
         @routes
         @vite(['resources/js/app.js'])

@@ -623,6 +623,34 @@ else
     if sudo certbot --nginx "${CERTBOT_DOMAINS[@]}" \
         --non-interactive --agree-tos -m "$TLS_EMAIL" --redirect >/dev/null 2>&1; then
         ok "Zertifikat ausgestellt, HTTP leitet auf HTTPS um"
+
+        # Zusätzlich ein RSA-Zertifikat. certbot stellt inzwischen ECDSA aus;
+        # ein Client, der nur RSA-Cipher-Suites kann, scheitert dann schon am
+        # Handshake und sieht die Seite gar nicht. Daran hängen ältere
+        # Link-Vorschau-Dienste — bei Microsoft Teams blieb dadurch das
+        # Vorschaubild leer, obwohl Titel und Text ankamen. nginx darf mehrere
+        # Zertifikate haben und wählt nach den Cipher Suites des Clients aus.
+        if sudo certbot certonly --nginx "${CERTBOT_DOMAINS[@]}" \
+            --key-type rsa --cert-name "$DOMAIN-rsa" \
+            --non-interactive --agree-tos -m "$TLS_EMAIL" >/dev/null 2>&1; then
+
+            if ! grep -q -- "$DOMAIN-rsa" "$NGINX_SITE"; then
+                sudo sed -i "0,|^\( *\)ssl_certificate_key .*|s||&\n\1ssl_certificate     /etc/letsencrypt/live/$DOMAIN-rsa/fullchain.pem;\n\1ssl_certificate_key /etc/letsencrypt/live/$DOMAIN-rsa/privkey.pem;|" "$NGINX_SITE" 2>/dev/null || true
+            fi
+
+            if sudo nginx -t >/dev/null 2>&1; then
+                sudo systemctl reload nginx
+                ok "RSA-Zertifikat zusätzlich eingebunden (ältere Clients)"
+            else
+                sudo sed -i "\|$DOMAIN-rsa|d" "$NGINX_SITE"
+                sudo nginx -t >/dev/null 2>&1 && sudo systemctl reload nginx
+                warn "RSA-Zertifikat ließ sich nicht einbinden — Konfiguration zurückgenommen"
+            fi
+        else
+            warn "RSA-Zertifikat nicht ausgestellt. Ältere Clients (u.a. die"
+            warn "Teams-Vorschau) laden dann kein Bild — siehe DEPLOYMENT.md"
+        fi
+
         # certbot legt seinen eigenen Renew-Timer an, hier nur prüfen.
         sudo systemctl list-timers certbot.timer --no-pager >/dev/null 2>&1 && \
             ok "Automatische Verlängerung aktiv"

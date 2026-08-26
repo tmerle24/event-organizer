@@ -39,9 +39,10 @@ class ShareImageTest extends TestCase
 
     public function test_the_image_url_is_absolute(): void
     {
-        // Relative Pfade ignoriert der WhatsApp-Crawler kommentarlos.
+        // Relative Pfade ignoriert der WhatsApp-Crawler kommentarlos. Hinter der
+        // Datei hängt ein Versionsstempel, deshalb nur der Präfix.
         $this->get('/')->assertSee(
-            'property="og:image" content="'.config('app.url').'/og/og-image.png"',
+            'property="og:image" content="'.config('app.url').'/og/og-image.png?v=',
             false
         );
     }

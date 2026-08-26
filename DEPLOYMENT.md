@@ -102,6 +102,32 @@ php artisan config:cache && php artisan route:cache && php artisan view:cache
 **Zertifikat erneuern** — macht certbot selbst über seinen systemd-Timer.
 Prüfen mit `sudo certbot renew --dry-run`.
 
+**Vorschaubild fehlt in Teams, funktioniert aber in WhatsApp** — dann kommt der
+Abrufer nicht durch den TLS-Handshake. certbot stellt inzwischen ECDSA-Zertifikate
+aus; wer nur RSA-Cipher-Suites beherrscht, bekommt gar keine Verbindung. Prüfen:
+
+```bash
+openssl s_client -connect <domain>:443 -servername <domain> -cipher aRSA -tls1_2 </dev/null
+```
+
+`handshake failure` heißt: es fehlt ein RSA-Zertifikat. `install.sh` legt seit
+Version X beide an, ältere Installationen rüsten so nach:
+
+```bash
+sudo certbot certonly --nginx -d <domain> -d www.<domain> \
+  --key-type rsa --cert-name <domain>-rsa --agree-tos -m hello@orgdate.com
+```
+
+Dann im vHost **zusätzlich** zu den vorhandenen Zeilen eintragen:
+
+```nginx
+ssl_certificate     /etc/letsencrypt/live/<domain>-rsa/fullchain.pem;
+ssl_certificate_key /etc/letsencrypt/live/<domain>-rsa/privkey.pem;
+```
+
+nginx wählt dann je nach Client aus. Danach `sudo nginx -t && sudo systemctl reload nginx`
+und den Link mit frischer URL (`?v=2`) erneut teilen — Teams cacht Vorschauen hartnäckig.
+
 ## Lokale Entwicklung
 
 Siehe [README.md](README.md) — dort läuft PostgreSQL über `docker compose` auf
