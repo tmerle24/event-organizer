@@ -28,7 +28,7 @@ class ShareImageTest extends TestCase
             'property="og:image"',
             'property="og:image:width" content="1200"',
             'property="og:image:height" content="630"',
-            'property="og:image:type" content="image/jpeg"',
+            'property="og:image:type" content="image/png"',
             'property="og:image:alt"',
             'property="og:locale"',
             'name="twitter:card" content="summary_large_image"',
@@ -42,15 +42,13 @@ class ShareImageTest extends TestCase
         // Relative Pfade ignoriert der WhatsApp-Crawler kommentarlos. Bewusst
         // ohne Query-String — siehe Kommentar in app.blade.php.
         $this->get('/')->assertSee(
-            'property="og:image" content="'.config('app.url').'/og/og-image.jpg"',
+            'property="og:image" content="'.config('app.url').'/og/og-image.png"',
             false
         );
     }
 
     public function test_the_share_image_exists_and_stays_under_the_size_limit(): void
     {
-        $this->assertFileExists(public_path('og/og-image.jpg'));
-
         foreach (['og-image', 'og-image-square', 'og-image-light', 'og-image-dark'] as $name) {
             $path = public_path("og/$name.png");
 
