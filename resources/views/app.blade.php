@@ -38,7 +38,7 @@
         <link rel="canonical" href="{{ url()->current() }}" />
         {{-- Event-Seiten sind privat und gehoeren nicht in den Index. --}}
         @if (request()->is('e/*') || request()->is('t/*'))
-            <meta name="robots" content="noindex, nofollow" />
+            <meta name="robots" content="noindex" />
         @endif
 
         {{--
@@ -64,6 +64,15 @@
         <meta property="og:image:width" content="1200" />
         <meta property="og:image:height" content="630" />
         <meta property="og:image:alt" content="{{ config('app.name') }} – {{ config('brand.tagline') }}" />
+
+        {{--
+            Ältere Vorschau-Dienste — darunter Microsofts SkypeUriPreview, das
+            Teams benutzt — werten og:image nicht zuverlässig aus, kennen aber
+            diese drei Formate von früher. Kosten nichts und schaden nirgends.
+        --}}
+        <link rel="image_src" href="{{ $ogImage }}" />
+        <meta name="thumbnail" content="{{ $ogImage }}" />
+        <meta itemprop="image" content="{{ $ogImage }}" />
 
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content="{{ $ogTitle ?? config('app.name') }}" />

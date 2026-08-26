@@ -155,6 +155,6 @@ class ShareImageTest extends TestCase
         $response->assertOk();
         $response->assertSee('property="og:title" content="'.config('app.name').'"', false);
         $response->assertDontSee('Geheime Überraschungsparty', false);
-        $response->assertSee('name="robots" content="noindex, nofollow"', false);
+        $response->assertSee('name="robots" content="noindex"', false);
     }
 }
