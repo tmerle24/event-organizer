@@ -102,7 +102,15 @@ php artisan config:cache && php artisan route:cache && php artisan view:cache
 **Zertifikat erneuern** — macht certbot selbst über seinen systemd-Timer.
 Prüfen mit `sudo certbot renew --dry-run`.
 
-**Vorschaubild fehlt** — erste Frage: holt der Crawler es überhaupt ab?
+**Vorschaubild fehlt** — **zuerst einen fremden Link im selben Client testen**,
+etwa `https://github.com`. Zeigt der auch kein Bild, liegt es am Client oder am
+Netz und nicht an dieser Seite. Das kostet zehn Sekunden und erspart die ganze
+serverseitige Sucherei. (Genau so ist es einmal ausgegangen: Microsoft Teams
+zeigte in einem Firmennetz für keine Seite Vorschaubilder, auch nicht für
+GitHub — der Server war die ganze Zeit korrekt.)
+
+Zeigt der fremde Link ein Bild, unsere Seite aber nicht: holt der Crawler es
+überhaupt ab?
 
 ```bash
 sudo grep "/og/" /var/log/nginx/<domain>.access.log | tail -20
