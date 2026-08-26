@@ -25,6 +25,7 @@ const form = ref({
   location: props.event.location || '',
   participant_count_hint: props.event.participant_count_hint || null,
   planning_template: props.event.planning_template,
+  fixed: splitOption(props.event.date_options.find((o) => o.id === props.event.decided_option_id) || null),
 })
 
 watch(
@@ -37,11 +38,35 @@ watch(
       location: event.location || '',
       participant_count_hint: event.participant_count_hint || null,
       planning_template: event.planning_template,
+      fixed: splitOption(event.date_options.find((o) => o.id === event.decided_option_id) || null),
     }
   }
 )
 
 const TEMPLATES = ['barbecue', 'dinner', 'party', 'trip', 'meeting', 'generic']
+
+/*
+ * Fester Termin einer Organisationsliste. Er liegt als einzelne bestätigte
+ * Terminoption vor; hier wird er für die beiden Eingabefelder zerlegt.
+ */
+const isList = computed(() => props.event.mode === 'list')
+
+const decidedOption = computed(
+  () => props.event.date_options.find((o) => o.id === props.event.decided_option_id) || null
+)
+
+function splitOption(option) {
+  if (!option) return { date: '', time: '' }
+
+  const start = new Date(option.starts_at_utc)
+  const inZone = new Date(start.toLocaleString('en-US', { timeZone: props.event.timezone }))
+  const pad = (n) => String(n).padStart(2, '0')
+
+  return {
+    date: option.day || `${inZone.getFullYear()}-${pad(inZone.getMonth() + 1)}-${pad(inZone.getDate())}`,
+    time: option.all_day ? '' : `${pad(inZone.getHours())}:${pad(inZone.getMinutes())}`,
+  }
+}
 
 const confidence = computed(() => props.event.ai_meta?.confidence || {})
 
@@ -60,6 +85,12 @@ async function save() {
       location: form.value.location || null,
       participant_count_hint: form.value.participant_count_hint || null,
       planning_template: form.value.planning_template,
+      ...(isList.value
+        ? {
+            fixed_date: form.value.fixed.date || null,
+            fixed_time: form.value.fixed.date ? form.value.fixed.time || null : null,
+          }
+        : {}),
     })
     emit('updated', data.event)
     open.value = false
@@ -141,6 +172,29 @@ async function save() {
           class="od-input mt-1"
           @focus="emit('focus-change', true)"
         />
+      </div>
+
+      <div v-if="isList">
+        <label class="text-xs font-semibold text-[var(--od-slate)]" for="f-fixed-date">
+          {{ t('manage.fields.fixed_date') }} <span class="font-normal">({{ t('common.optional') }})</span>
+        </label>
+        <div class="mt-1 flex flex-col gap-2 sm:flex-row">
+          <input
+            id="f-fixed-date"
+            v-model="form.fixed.date"
+            type="date"
+            class="od-input"
+            @focus="emit('focus-change', true)"
+          />
+          <input
+            v-if="form.fixed.date"
+            v-model="form.fixed.time"
+            type="time"
+            class="od-input sm:w-36"
+            :aria-label="t('manage.dates.time')"
+            @focus="emit('focus-change', true)"
+          />
+        </div>
       </div>
 
       <div>

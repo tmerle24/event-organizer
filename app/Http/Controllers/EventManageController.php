@@ -58,9 +58,17 @@ class EventManageController extends Controller
             'participant_count_hint' => ['sometimes', 'nullable', 'integer', 'min:1', 'max:500'],
             'organizer_email' => ['sometimes', 'nullable', 'email', 'max:180'],
             'organizer_name' => ['sometimes', 'nullable', 'string', 'max:80'],
+            // Fester Termin einer Organisationsliste. Leeres Datum entfernt ihn.
+            'fixed_date' => ['sometimes', 'nullable', 'date'],
+            'fixed_time' => ['sometimes', 'nullable', 'date_format:H:i'],
         ]);
 
-        $event->update($validated);
+        $fixedDate = array_key_exists('fixed_date', $validated);
+        $event->update(array_diff_key($validated, array_flip(['fixed_date', 'fixed_time'])));
+
+        if ($fixedDate && ! $event->hasDates()) {
+            $event->setFixedDate($validated['fixed_date'], $validated['fixed_time'] ?? null);
+        }
         $event->touchActivity();
 
         // Wird der Modus auf "Liste" erweitert, muss der Planungsbereich

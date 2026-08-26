@@ -47,7 +47,8 @@
       "step3_text": "Termin steht – dann verteilt ihr, wer was mitbringt."
     },
     "recent": "Deine Events",
-    "recent_hint": "Nur auf diesem Gerät gespeichert."
+    "recent_hint": "Nur auf diesem Gerät gespeichert.",
+    "fixed_date": "Termin, falls er schon feststeht"
   },
   "manage": {
     "title": "Event verwalten",
@@ -65,7 +66,8 @@
       "timezone": "Zeitzone",
       "participants_hint": "Erwartete Teilnehmer",
       "template": "Planungs-Vorlage",
-      "guessed": "geraten"
+      "guessed": "geraten",
+      "fixed_date": "Termin"
     },
     "dates": {
       "title": "Terminvorschläge",

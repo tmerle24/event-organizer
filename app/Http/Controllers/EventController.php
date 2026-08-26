@@ -34,6 +34,10 @@ class EventController extends Controller
             'mode' => ['nullable', 'in:dates,list,both'],
             'timezone' => ['nullable', 'string', 'max:64'],
             'organizer_name' => ['nullable', 'string', 'max:80'],
+            // Optionaler fester Termin — nur bei einer Organisationsliste,
+            // dort gibt es keine Terminfindung.
+            'fixed_date' => ['nullable', 'date'],
+            'fixed_time' => ['nullable', 'date_format:H:i'],
         ]);
 
         $timezone = $this->safeTimezone($validated['timezone'] ?? null);
@@ -70,6 +74,10 @@ class EventController extends Controller
             if ($mode === Event::MODE_LIST) {
                 $event->update(['status' => Event::STATUS_PLANNING]);
                 $this->plan->buildSections($event);
+
+                if (! empty($validated['fixed_date'])) {
+                    $event->setFixedDate($validated['fixed_date'], $validated['fixed_time'] ?? null);
+                }
             }
 
             return $event;

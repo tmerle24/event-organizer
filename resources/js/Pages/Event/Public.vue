@@ -222,6 +222,8 @@ function note(option) {
           </a>
         </div>
 
+        <p v-if="!showDates && decided" class="od-h3 mt-1">{{ formatFull(decided) }}</p>
+
         <p v-if="event.description" class="mt-1 text-sm text-[var(--od-slate)]">{{ event.description }}</p>
         <p v-if="event.location" class="mt-1 text-sm text-[var(--od-slate)]">
           📍
@@ -247,7 +249,7 @@ function note(option) {
         </p>
 
         <div
-          v-else-if="decided"
+          v-else-if="decided && showDates"
           class="od-settle mt-4 p-4"
           style="background: var(--od-sand); border: 1px solid var(--od-apricot); border-radius: var(--od-radius-lg)"
         >

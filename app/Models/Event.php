@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 
@@ -136,6 +137,42 @@ class Event extends Model
             'delete_after' => now()->addMonths(12),
             'retention_warned_at' => null,
         ])->saveQuietly();
+    }
+
+    /**
+     * Fester Termin fuer Events ohne Terminfindung (mode = list).
+     *
+     * Abgelegt als einzelne, direkt bestaetigte Terminoption statt als eigenes
+     * Feld: damit greifen iCal-Download, Datum in der Link-Vorschau und die
+     * Zeitzonen-Umrechnung ohne Sonderweg — die gibt es alle schon.
+     *
+     * $day = null entfernt den Termin wieder.
+     */
+    public function setFixedDate(?string $day, ?string $time = null): void
+    {
+        $this->dateOptions()->delete();
+
+        if (! $day) {
+            $this->update(['decided_option_id' => null]);
+
+            return;
+        }
+
+        $start = CarbonImmutable::parse($day, $this->timezone)->startOfDay();
+        $allDay = blank($time);
+
+        if (! $allDay) {
+            $start = $start->setTimeFromTimeString($time);
+        }
+
+        $option = $this->dateOptions()->create([
+            'starts_at_utc' => $start->setTimezone('UTC'),
+            'day' => $start->toDateString(),
+            'all_day' => $allDay,
+            'sort' => 0,
+        ]);
+
+        $this->update(['decided_option_id' => $option->id]);
     }
 
     /**

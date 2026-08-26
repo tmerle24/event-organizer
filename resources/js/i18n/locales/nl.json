@@ -47,7 +47,8 @@
       "step3_text": "Bevestig de datum en verdeel wie wat meeneemt."
     },
     "recent": "Jouw evenementen",
-    "recent_hint": "Alleen op dit apparaat opgeslagen."
+    "recent_hint": "Alleen op dit apparaat opgeslagen.",
+    "fixed_date": "Datum, als die al vaststaat"
   },
   "manage": {
     "title": "Evenement beheren",
@@ -65,7 +66,8 @@
       "timezone": "Tijdzone",
       "participants_hint": "Verwachte deelnemers",
       "template": "Planningssjabloon",
-      "guessed": "geschat"
+      "guessed": "geschat",
+      "fixed_date": "Datum"
     },
     "dates": {
       "title": "Datumvoorstellen",

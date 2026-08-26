@@ -47,7 +47,8 @@
       "step3_text": "Confirmez la date et répartissez qui apporte quoi."
     },
     "recent": "Vos événements",
-    "recent_hint": "Enregistré uniquement sur cet appareil."
+    "recent_hint": "Enregistré uniquement sur cet appareil.",
+    "fixed_date": "Date, si elle est déjà fixée"
   },
   "manage": {
     "title": "Gérer l'événement",
@@ -65,7 +66,8 @@
       "timezone": "Fuseau horaire",
       "participants_hint": "Participants attendus",
       "template": "Modèle d'organisation",
-      "guessed": "estimé"
+      "guessed": "estimé",
+      "fixed_date": "Date"
     },
     "dates": {
       "title": "Propositions de dates",
