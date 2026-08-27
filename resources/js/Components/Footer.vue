@@ -17,7 +17,9 @@ defineProps({
       class="mx-auto flex max-w-3xl flex-col items-center justify-between gap-3 px-6 pt-6 pb-10 sm:flex-row"
       style="color: var(--od-slate)"
     >
-      <a v-if="poweredBy" href="/" class="flex items-center gap-2 opacity-60 transition hover:opacity-100">
+      <!-- gap-3 statt gap-2: die viewBox des Logos ist auf die sichtbare Form
+           beschnitten, es bringt also keine eigene Luft mehr mit. -->
+      <a v-if="poweredBy" href="/" class="flex items-center gap-3 opacity-60 transition hover:opacity-100">
         <span class="od-meta">{{ t('footer.made_with') }}</span>
         <Logo size="sm" />
       </a>
