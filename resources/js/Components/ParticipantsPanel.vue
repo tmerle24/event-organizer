@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 const props = defineProps({
@@ -11,6 +11,10 @@ const emit = defineEmits(['updated', 'focus-change', 'error', 'flash'])
 const { t } = useI18n()
 
 const busy = ref(false)
+
+/** Nur bei Terminfindung: ohne Abstimmung gibt es nichts zu beantworten und
+ *  "Pflicht" steuert nichts (es wirkt allein im Ranking). */
+const hasPolling = computed(() => ['dates', 'both'].includes(props.event.mode))
 const inviteInput = ref('')
 const mergeSource = ref(null)
 
@@ -88,6 +92,7 @@ async function invite() {
           />
 
           <button
+            v-if="hasPolling"
             type="button"
             class="rounded-lg border px-2 py-1 text-xs"
             :title="t('manage.participants.required_hint')"
@@ -121,9 +126,12 @@ async function invite() {
           </button>
         </div>
 
-        <p class="mt-0.5 pl-1.5 text-xs text-[var(--od-slate)]">
-          <span v-if="participant.email">{{ participant.email }} · </span>
-          {{ t('manage.participants.answered', { count: participant.answered_count, total: event.date_options.length }) }}
+        <p v-if="participant.email || hasPolling" class="mt-0.5 pl-1.5 text-xs text-[var(--od-slate)]">
+          <span v-if="participant.email">{{ participant.email }}</span>
+          <span v-if="participant.email && hasPolling"> · </span>
+          <span v-if="hasPolling">
+            {{ t('manage.participants.answered', { count: participant.answered_count, total: event.date_options.length }) }}
+          </span>
         </p>
 
         <div v-if="mergeSource === participant.id" class="mt-2 pl-1.5">
