@@ -198,7 +198,7 @@ async function removeSection(section) {
 
           <template v-else>
             <span
-              v-if="task.assignee_name"
+              v-if="task.assignee_name && !(me && task.assignee_participant_id === me.id && !readOnly)"
               class="rounded-lg px-2 py-1 text-xs"
               :style="
                 me && task.assignee_participant_id === me.id
@@ -217,7 +217,7 @@ async function removeSection(section) {
               :disabled="busy"
               @click="claim(task)"
             >
-              {{ task.assignee_participant_id === me.id ? t('public.release') : t('public.take') }}
+              {{ task.assignee_participant_id === me.id ? `${t('public.mine')} ×` : t('public.take') }}
             </button>
           </template>
 
@@ -318,7 +318,10 @@ async function removeSection(section) {
           </select>
 
           <template v-else>
-            <span v-if="task.assignee_name" class="rounded-lg bg-[var(--od-mist)] px-2 py-1 text-xs text-[var(--od-slate)]">
+            <span
+              v-if="task.assignee_name && !(me && task.assignee_participant_id === me.id && !readOnly)"
+              class="rounded-lg bg-[var(--od-mist)] px-2 py-1 text-xs text-[var(--od-slate)]"
+            >
               {{ me && task.assignee_participant_id === me.id ? t('public.mine') : task.assignee_name }}
             </span>
             <button
@@ -329,7 +332,7 @@ async function removeSection(section) {
               :disabled="busy"
               @click="claim(task)"
             >
-              {{ task.assignee_participant_id === me.id ? t('public.release') : t('public.take') }}
+              {{ task.assignee_participant_id === me.id ? `${t('public.mine')} ×` : t('public.take') }}
             </button>
           </template>
 
