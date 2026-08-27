@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 /**
@@ -25,13 +25,40 @@ const newSection = ref('')
 
 const readOnly = computed(() => ['closed', 'cancelled'].includes(props.event.status))
 
-const sections = computed(() => props.event.plan_sections)
+/*
+ * Filter auf die eigenen Aufgaben. Erscheint erst, wenn man mindestens eine
+ * übernommen hat — vorher gäbe es nichts zu filtern.
+ */
+const onlyMine = ref(false)
 
-function tasksOf(sectionId) {
-  return props.event.tasks.filter((task) => task.plan_section_id === sectionId)
+function mine(task) {
+  return !!props.me && task.assignee_participant_id === props.me.id
 }
 
-const looseTasks = computed(() => props.event.tasks.filter((task) => !task.plan_section_id))
+const hasMine = computed(() => props.event.tasks.some(mine))
+
+/** Beim Freigeben der letzten eigenen Aufgabe stünde man sonst vor einer
+ *  leeren Liste, ohne zu sehen, warum. */
+watch(hasMine, (still) => {
+  if (! still) onlyMine.value = false
+})
+
+function keep(task) {
+  return !onlyMine.value || mine(task)
+}
+
+function tasksOf(sectionId) {
+  return props.event.tasks.filter((task) => task.plan_section_id === sectionId && keep(task))
+}
+
+const looseTasks = computed(() => props.event.tasks.filter((task) => !task.plan_section_id && keep(task)))
+
+/** Beim Filtern bleiben nur Bereiche stehen, in denen etwas übrig ist. */
+const sections = computed(() =>
+  onlyMine.value
+    ? props.event.plan_sections.filter((section) => tasksOf(section.id).length)
+    : props.event.plan_sections
+)
 
 function suggestionsOf(section) {
   return props.event.task_suggestions?.[section.key] || []
@@ -128,7 +155,22 @@ async function removeSection(section) {
 
 <template>
   <section class="od-card p-4 sm:p-5">
-    <h2 class="font-display font-semibold">{{ t('manage.plan.title') }}</h2>
+    <div class="flex items-center justify-between gap-3">
+      <h2 class="font-display font-semibold">{{ t('manage.plan.title') }}</h2>
+
+      <!-- Leiser Textknopf wie "Meine Teilnahme entfernen", kein Chip: der
+           Filter ist eine Nebenaktion und soll die Überschrift nicht
+           überstrahlen. Die Beschriftung nennt jeweils das Ziel des Klicks. -->
+      <button
+        v-if="hasMine"
+        type="button"
+        class="shrink-0 text-xs text-[var(--od-slate)] hover:text-[var(--od-violet)]"
+        :aria-pressed="onlyMine"
+        @click="onlyMine = !onlyMine"
+      >
+        {{ onlyMine ? t('manage.plan.all_tasks') : t('manage.plan.only_mine') }}
+      </button>
+    </div>
 
     <div v-for="section in sections" :key="section.id" class="mt-5">
       <div class="flex items-center justify-between gap-2">
@@ -238,7 +280,10 @@ async function removeSection(section) {
       </ul>
 
       <!-- Vorschlaege: inaktive Liste mit "Uebernehmen" pro Zeile -->
-      <div v-if="canManage && !readOnly && suggestionsOf(section).length" class="mt-2 flex flex-wrap items-center gap-1.5">
+      <div
+        v-if="canManage && !readOnly && !onlyMine && suggestionsOf(section).length"
+        class="mt-2 flex flex-wrap items-center gap-1.5"
+      >
         <span class="text-xs text-[var(--od-slate)]">{{ t('manage.plan.suggestions') }}:</span>
         <button
           v-for="title in suggestionsOf(section)"
@@ -261,7 +306,7 @@ async function removeSection(section) {
         </button>
       </div>
 
-      <div v-if="!readOnly" class="mt-2 flex gap-2">
+      <div v-if="!readOnly && !onlyMine" class="mt-2 flex gap-2">
         <input
           v-model="newTask[section.id]"
           class="od-input py-1.5 text-sm"
@@ -277,7 +322,7 @@ async function removeSection(section) {
     </div>
 
     <!-- Aufgaben ohne Bereich (z.B. nach dem Loeschen einer Sektion) -->
-    <div v-if="looseTasks.length || !sections.length" class="mt-5">
+    <div v-if="looseTasks.length || (!sections.length && !onlyMine)" class="mt-5">
       <h3 v-if="sections.length" class="od-h3" style="color: var(--od-slate)">
         {{ t('manage.plan.other_tasks') }}
       </h3>
@@ -356,7 +401,7 @@ async function removeSection(section) {
         </li>
       </ul>
 
-      <div v-if="!readOnly" class="mt-2 flex gap-2">
+      <div v-if="!readOnly && !onlyMine" class="mt-2 flex gap-2">
         <input
           v-model="newTask['none']"
           class="od-input py-1.5 text-sm"

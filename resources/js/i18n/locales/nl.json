@@ -131,7 +131,9 @@
       "other_tasks": "Overige taken",
       "task_label": "Taak hernoemen",
       "section_label": "Onderdeel hernoemen",
-      "done_label": "Klaar"
+      "done_label": "Klaar",
+      "only_mine": "Alleen mijn taken",
+      "all_tasks": "Alle taken"
     },
     "danger": {
       "title": "Evenement",

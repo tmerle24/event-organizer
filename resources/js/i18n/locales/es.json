@@ -131,7 +131,9 @@
       "other_tasks": "Otras tareas",
       "task_label": "Renombrar tarea",
       "section_label": "Renombrar sección",
-      "done_label": "Hecho"
+      "done_label": "Hecho",
+      "only_mine": "Solo mis tareas",
+      "all_tasks": "Todas las tareas"
     },
     "danger": {
       "title": "Evento",

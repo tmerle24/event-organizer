@@ -131,7 +131,9 @@
       "other_tasks": "Weitere Aufgaben",
       "task_label": "Aufgabe umbenennen",
       "section_label": "Bereich umbenennen",
-      "done_label": "Erledigt"
+      "done_label": "Erledigt",
+      "only_mine": "Nur meine Aufgaben",
+      "all_tasks": "Alle Aufgaben"
     },
     "danger": {
       "title": "Event",

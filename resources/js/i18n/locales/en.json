@@ -131,7 +131,9 @@
       "other_tasks": "Other tasks",
       "task_label": "Rename task",
       "section_label": "Rename section",
-      "done_label": "Done"
+      "done_label": "Done",
+      "only_mine": "Only my tasks",
+      "all_tasks": "All tasks"
     },
     "danger": {
       "title": "Event",

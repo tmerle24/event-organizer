@@ -131,7 +131,9 @@
       "other_tasks": "Autres tâches",
       "task_label": "Renommer la tâche",
       "section_label": "Renommer la section",
-      "done_label": "Terminé"
+      "done_label": "Terminé",
+      "only_mine": "Seulement mes tâches",
+      "all_tasks": "Toutes les tâches"
     },
     "danger": {
       "title": "Événement",
