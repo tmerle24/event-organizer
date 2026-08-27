@@ -41,7 +41,7 @@ class EventController extends Controller
         ]);
 
         $timezone = $this->safeTimezone($validated['timezone'] ?? null);
-        $extraction = $this->extractor->extract($validated['input'], $timezone);
+        $extraction = $this->extractor->extract($validated['input'], $timezone, $request->ip());
         $mode = $validated['mode'] ?? Event::MODE_DATES;
 
         $event = DB::transaction(function () use ($extraction, $mode, $timezone, $validated, $request) {

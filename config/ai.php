@@ -14,4 +14,12 @@ return [
 
     // Harter globaler Cutoff pro Tag (Anzahl Extraktionen).
     'daily_budget' => (int) env('AI_DAILY_BUDGET', 500),
+
+    /*
+     * Grenzen je IP (Spec Abschnitt 11). Sie gelten nur für den KI-Aufruf,
+     * nicht für das Anlegen eines Events: Wer sie überschreitet, bekommt die
+     * Heuristik statt eines Fehlers und merkt nichts davon.
+     */
+    'per_ip_hourly' => (int) env('AI_PER_IP_HOURLY', 5),
+    'per_ip_daily' => (int) env('AI_PER_IP_DAILY', 20),
 ];

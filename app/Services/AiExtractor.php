@@ -6,6 +6,7 @@ use Carbon\CarbonImmutable;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\RateLimiter;
 
 /**
  * Extraktion per Claude API mit erzwungenem Schema (Tool-Use als Structured
@@ -19,11 +20,11 @@ class AiExtractor
 {
     public function __construct(private readonly HeuristicExtractor $heuristic) {}
 
-    public function extract(string $input, string $timezone = 'Europe/Berlin'): array
+    public function extract(string $input, string $timezone = 'Europe/Berlin', ?string $ip = null): array
     {
         $input = mb_substr(trim($input), 0, (int) config('ai.max_input_chars'));
 
-        if (! config('ai.key') || ! $this->consumeBudget()) {
+        if (! config('ai.key') || ! $this->withinIpLimit($ip) || ! $this->consumeBudget()) {
             return $this->heuristic->extract($input, $timezone);
         }
 
@@ -63,6 +64,41 @@ class AiExtractor
 
             return $this->heuristic->extract($input, $timezone);
         }
+    }
+
+    /**
+     * Grenzen je IP (Spec Abschnitt 11): 5 pro Stunde, 20 pro Tag.
+     *
+     * Bewusst hier und nicht als Drosselung auf der Route: Eine Route-Grenze
+     * antwortet mit 429, das Anlegen des Events wuerde also scheitern. Hier
+     * faellt nur der KI-Aufruf weg, die Heuristik uebernimmt, und die Person
+     * merkt nichts davon.
+     */
+    private function withinIpLimit(?string $ip): bool
+    {
+        $ip ??= request()->ip();
+
+        if (! $ip) {
+            return true;
+        }
+
+        $hourly = (int) config('ai.per_ip_hourly');
+        $daily = (int) config('ai.per_ip_daily');
+
+        $hourKey = 'ai:ip:hour:'.$ip;
+        $dayKey = 'ai:ip:day:'.$ip;
+
+        // Erst pruefen, dann beide zaehlen: sonst verbraucht eine bereits am
+        // Tageslimit gescheiterte Anfrage noch einen Platz im Stundenfenster.
+        if (RateLimiter::tooManyAttempts($hourKey, $hourly)
+            || RateLimiter::tooManyAttempts($dayKey, $daily)) {
+            return false;
+        }
+
+        RateLimiter::hit($hourKey, 3600);
+        RateLimiter::hit($dayKey, 86400);
+
+        return true;
     }
 
     /**

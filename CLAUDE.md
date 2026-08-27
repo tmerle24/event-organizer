@@ -527,8 +527,17 @@ mehrfach anforderbar sein muss.
 - Rate-Limits: Event erstellen 20/min, Join 20/min, Verfügbarkeit 60/min,
   Einladungen 10/min, Verwaltungslink 5/min.
 - Eingabelänge hart auf 500 Zeichen begrenzt.
-- Globales KI-Tagesbudget (`AI_DAILY_BUDGET`) als harter Cutoff → bei
-  Überschreitung greift der Fallback, kein Fehler.
+- **KI-Grenzen liegen im `AiExtractor`, nicht auf der Route.** Eine
+  Route-Drosselung antwortet mit 429 — das Anlegen des Events würde scheitern
+  und die Person bekäme einen Fehler zu sehen. Stattdessen fällt nur der
+  KI-Aufruf weg und die Heuristik übernimmt:
+  - je IP `AI_PER_IP_HOURLY` (5) und `AI_PER_IP_DAILY` (20)
+  - global `AI_DAILY_BUDGET` (500) als harter Cutoff
+  - `throttle:20,1` bleibt auf der Route, aber gegen das massenhafte Anlegen
+    von Events, nicht gegen KI-Kosten
+- **Jeder Ausfallpfad ist getestet** (`AiFallbackTest`): kein Key, 500, 429,
+  Timeout, Antwort ohne `tool_use`. In allen Fällen entsteht das Event, die
+  Heuristik greift, und nichts davon ist für die Person sichtbar.
 
 ### Retention
 `events.delete_after` = `last_activity_at + 12 Monate`, jede schreibende Aktion
