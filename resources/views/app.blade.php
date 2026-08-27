@@ -88,6 +88,31 @@
         @inertiaHead
     </head>
     <body class="antialiased">
+        {{--
+            Ohne JavaScript ist der <body> vollständig leer: Inertia baut die
+            Seite erst im Browser auf. Das trifft Menschen mit abgeschaltetem
+            JavaScript ebenso wie Crawler, die keins ausführen.
+
+            Nur auf der Startseite, und nur mit den Texten aus config/brand.php,
+            die ohnehin schon Titel und Meta-Description füllen — so kann der
+            Block nicht von dem abweichen, was Nutzer zu sehen bekommen.
+
+            Inline-Stile, weil auch das CSS im JS-Bundle steckt.
+        --}}
+        @if (request()->routeIs('home'))
+            <noscript>
+                <div style="max-width:38rem;margin:0 auto;padding:3rem 1.5rem;font-family:system-ui,sans-serif;color:#14122B">
+                    <h1 style="font-size:1.75rem;line-height:1.25;margin:0 0 .75rem">{{ config('brand.tagline') }}</h1>
+                    <p style="margin:0 0 1.5rem;color:#6E6B85">{{ config('brand.claim') }}</p>
+                    <p style="margin:0 0 1.5rem">{{ __('share.noscript') }}</p>
+                    <p style="margin:0;font-size:.875rem">
+                        <a href="/impressum" style="color:#5B4BE8">{{ __('Impressum') }}</a> ·
+                        <a href="/datenschutz" style="color:#5B4BE8">{{ __('Datenschutz') }}</a>
+                    </p>
+                </div>
+            </noscript>
+        @endif
+
         @inertia
     </body>
 </html>

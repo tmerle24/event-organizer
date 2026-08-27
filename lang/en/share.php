@@ -6,6 +6,8 @@ return [
     'no_dates' => 'Plan together, without the back and forth.',
     'cancelled' => 'This event was cancelled.',
     'closed' => 'This event is over.',
+    'noscript' => 'ORGDATE needs JavaScript. Turn it on to find a date or sign up to a list.',
+
     'at' => ':when',
     'at_place' => ':when · :where',
 ];

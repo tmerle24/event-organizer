@@ -633,6 +633,12 @@ unter `Disallow` — sie sind privat, der Link ist der Schlüssel.
 - `public/robots.txt` ist dagegen statisch, weil nginx die Datei direkt
   ausliefert und eine Laravel-Route dort nie ankäme. Die `Sitemap:`-Zeile
   muss eine absolute URL sein und nennt deshalb die Domain im Klartext.
+- **Ohne JavaScript ist der `<body>` leer** — Inertia baut die Seite erst im
+  Browser auf. Die Startseite hat deshalb einen `<noscript>`-Block mit
+  Überschrift und Beschreibung. Beide Texte kommen aus `config/brand.php`,
+  denselben Strings, die Titel und Meta-Description füllen — so kann der Block
+  nicht von dem abweichen, was Nutzer sehen. Inline-Stile, weil auch das CSS im
+  JS-Bundle steckt.
 - Der Bestätigungscode der Search Console kommt aus
   `GOOGLE_SITE_VERIFICATION` in der `.env`. Ohne Wert steht kein Meta-Tag im
   HTML, es braucht also keine Datei auf dem Server.

@@ -10,6 +10,8 @@ return [
     'no_dates' => 'Gemeinsam planen, ohne Hin und Her.',
     'cancelled' => 'Das Event wurde abgesagt.',
     'closed' => 'Das Event ist vorbei.',
+    'noscript' => 'ORGDATE braucht JavaScript. Aktiviere es, um einen Termin zu finden oder dich in eine Liste einzutragen.',
+
     'at' => ':when',
     'at_place' => ':when · :where',
 ];

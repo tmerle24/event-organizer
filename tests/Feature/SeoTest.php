@@ -38,6 +38,24 @@ class SeoTest extends TestCase
         $response->assertDontSee('/e/', false);
     }
 
+    /**
+     * Ohne JavaScript ist der Body sonst vollständig leer — Inertia baut die
+     * Seite erst im Browser auf.
+     */
+    public function test_the_landing_page_has_readable_content_without_javascript(): void
+    {
+        $response = $this->get('/');
+
+        $response->assertOk();
+        $response->assertSee('<noscript>', false);
+        $response->assertSee(config('brand.tagline'), false);
+        $response->assertSee(config('brand.claim'), false);
+
+        // Nur die Startseite: auf Event-Seiten stünde dort der Eventname.
+        $event = Event::create(['title' => 'Team-BBQ', 'timezone' => 'Europe/Berlin']);
+        $this->get("/t/{$event->public_token}")->assertDontSee('<noscript>', false);
+    }
+
     public function test_the_verification_tag_appears_only_when_configured(): void
     {
         config(['brand.google_site_verification' => null]);

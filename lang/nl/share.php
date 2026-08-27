@@ -6,6 +6,8 @@ return [
     'no_dates' => 'Samen plannen, zonder heen en weer.',
     'cancelled' => 'Dit evenement is afgezegd.',
     'closed' => 'Dit evenement is voorbij.',
+    'noscript' => 'ORGDATE heeft JavaScript nodig. Zet het aan om een datum te prikken of je op een lijst te zetten.',
+
     'at' => ':when',
     'at_place' => ':when · :where',
 ];
