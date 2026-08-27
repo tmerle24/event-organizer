@@ -18,7 +18,7 @@ Laravel 13 · Inertia.js v2 · Vue 3 · Tailwind CSS v4 · PostgreSQL 16 · Vite
 ## Schnellstart
 
 ```bash
-docker compose up -d                     # PostgreSQL auf Port 5433
+docker compose up -d                     # PostgreSQL auf Port 5434
 composer install && npm install
 cp .env.example .env && php artisan key:generate
 php artisan migrate

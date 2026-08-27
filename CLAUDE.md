@@ -33,7 +33,7 @@ Vollständige Spezifikation: `event-planner-spec-v0.2.md` im Repo-Root.
 |---|---|
 | Backend | Laravel 13, PHP 8.4 |
 | Frontend-Bridge | Inertia.js v2 (`inertiajs/inertia-laravel` ^2.0 + `@inertiajs/vue3` ^2.0) |
-| Datenbank | **PostgreSQL 16** (lokal via `docker compose`, Container `orgdate-pgsql`, Port **5433**) |
+| Datenbank | **PostgreSQL 16** (lokal via `docker compose`, Container `orgdate-pgsql`, Port **5434**) |
 | Frontend | Vue 3, ausschließlich `<script setup>` |
 | Styling | Tailwind CSS v4 + `@tailwindcss/vite` (CSS-first, kein `tailwind.config.js`) |
 | i18n | vue-i18n v9 (DE/EN/FR/ES/NL) + Laravel `__()` für Mails/Templates |
@@ -46,8 +46,12 @@ Vollständige Spezifikation: `event-planner-spec-v0.2.md` im Repo-Root.
 übergeben — Tailwind v4 bündelt das CSS ins JS. In `app.blade.php` steht nur
 `resources/js/app.js`.
 
-**Port 5433 statt 5432:** Auf der Entwicklungsmaschine belegt bereits ein anderes
-Projekt (`namibway-pgsql`) den Standard-Port.
+**Port 5434 statt 5432:** Auf der Entwicklungsmaschine belegt `namibway-pgsql`
+den Standard-Port. **5433 ist ebenfalls tabu** — darüber laufen SSH-Tunnel zu
+Produktionsdatenbanken (`ssh -L 5433:127.0.0.1:5432 …`). Ein Container auf 5433
+nimmt dem Tunnel den Port weg; SSH bricht deswegen nicht ab, sondern warnt nur
+einmal und läuft weiter, sodass der Client unbemerkt auf der lokalen Datenbank
+landet. Das sieht dann nach `password authentication failed` vom Server aus.
 
 **Eine Schrift:** Outfit für alles (300/400/500/600). **Bold 700 wird nicht
 benutzt** — zu laut für den Markencharakter.
@@ -549,7 +553,7 @@ verlängert (`Event::touchActivity()`). Ein täglicher Scheduled Task in
 ## Lokale Entwicklung
 
 ```bash
-docker compose up -d          # PostgreSQL auf Port 5433
+docker compose up -d          # PostgreSQL auf Port 5434
 composer install && npm install
 cp .env.example .env && php artisan key:generate
 php artisan migrate

@@ -149,4 +149,4 @@ und den Link mit frischer URL (`?v=2`) erneut teilen — Teams cacht Vorschauen 
 ## Lokale Entwicklung
 
 Siehe [README.md](README.md) — dort läuft PostgreSQL über `docker compose` auf
-Port 5433, `install.sh` ist ausschließlich für Server gedacht.
+Port 5434, `install.sh` ist ausschließlich für Server gedacht.

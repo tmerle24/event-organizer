@@ -17,7 +17,7 @@ jobs:
           POSTGRES_USER: orgdate
           POSTGRES_PASSWORD: orgdate
         ports:
-          - 5433:5432
+          - 5434:5432
         options: >-
           --health-cmd pg_isready
           --health-interval 5s

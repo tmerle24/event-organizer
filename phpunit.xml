@@ -28,7 +28,7 @@
              sonst anders als in Produktion. -->
         <env name="DB_CONNECTION" value="pgsql"/>
         <env name="DB_HOST" value="127.0.0.1"/>
-        <env name="DB_PORT" value="5433"/>
+        <env name="DB_PORT" value="5434"/>
         <env name="DB_DATABASE" value="orgdate_test"/>
         <env name="DB_USERNAME" value="orgdate"/>
         <env name="DB_PASSWORD" value="orgdate"/>
