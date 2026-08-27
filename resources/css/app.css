@@ -73,6 +73,23 @@ body {
 
 button { cursor: pointer; }
 
+/*
+ * iOS Safari zoomt beim Fokus in jedes Eingabefeld, dessen Schrift kleiner als
+ * 16px ist — und zoomt beim Verlassen nicht wieder heraus. Auf Touch-Geräten
+ * deshalb überall 16px, am Desktop bleibt die feinere Abstufung.
+ *
+ * !important, weil sonst die Tailwind-Klassen (text-sm, text-xs) gewinnen.
+ * maximum-scale=1 im Viewport wäre die andere Lösung, verhindert aber auch das
+ * absichtliche Vergrößern — das nimmt man niemandem weg.
+ */
+@media (pointer: coarse) {
+  input,
+  select,
+  textarea {
+    font-size: 16px !important;
+  }
+}
+
 /* Runde Formen, viel Luft (Guide Abschnitt 7). */
 .od-card {
   background: var(--od-white);
