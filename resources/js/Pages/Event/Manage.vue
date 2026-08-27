@@ -146,7 +146,7 @@ async function deleteEvent() {
 
   <div class="min-h-screen">
     <header class="mx-auto flex max-w-3xl items-center justify-between px-6 py-5">
-      <a href="/"><Logo /></a>
+      <a href="/" class="flex"><Logo /></a>
       <div class="flex items-center gap-2">
         <span
           class="rounded-lg px-2.5 py-1 text-xs font-semibold"

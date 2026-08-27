@@ -194,7 +194,7 @@ function note(option) {
 
   <div class="min-h-screen">
     <header class="mx-auto flex max-w-2xl items-center justify-between px-6 py-5">
-      <a href="/"><Logo /></a>
+      <a href="/" class="flex"><Logo /></a>
       <LanguageSwitcher />
     </header>
 
