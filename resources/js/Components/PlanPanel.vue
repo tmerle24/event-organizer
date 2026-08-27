@@ -213,7 +213,11 @@ async function removeSection(section) {
               v-if="me && !readOnly && (!task.assignee_participant_id || task.assignee_participant_id === me.id)"
               type="button"
               class="rounded-lg px-2 py-1 text-xs font-semibold"
-              :style="{ color: 'var(--od-violet-dark)', background: 'var(--od-violet-tint)' }"
+              :style="
+                task.assignee_participant_id === me.id
+                  ? { color: '#fff', background: 'var(--od-violet)' }
+                  : { color: 'var(--od-violet-dark)', background: 'var(--od-violet-tint)' }
+              "
               :disabled="busy"
               @click="claim(task)"
             >
@@ -328,7 +332,11 @@ async function removeSection(section) {
               v-if="me && !readOnly && (!task.assignee_participant_id || task.assignee_participant_id === me.id)"
               type="button"
               class="rounded-lg px-2 py-1 text-xs font-semibold"
-              :style="{ color: 'var(--od-violet-dark)', background: 'var(--od-violet-tint)' }"
+              :style="
+                task.assignee_participant_id === me.id
+                  ? { color: '#fff', background: 'var(--od-violet)' }
+                  : { color: 'var(--od-violet-dark)', background: 'var(--od-violet-tint)' }
+              "
               :disabled="busy"
               @click="claim(task)"
             >
