@@ -110,6 +110,8 @@ async function invite() {
           <button
             type="button"
             class="rounded-lg px-2 py-1 text-xs text-[var(--od-slate)] hover:text-[var(--od-violet)]"
+            :title="t('manage.participants.merge_hint')"
+            :aria-label="t('manage.participants.merge_hint')"
             @click="mergeSource = mergeSource === participant.id ? null : participant.id"
           >
             ⇄
