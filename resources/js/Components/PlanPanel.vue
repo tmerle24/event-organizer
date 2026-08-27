@@ -175,7 +175,7 @@ async function removeSection(section) {
           <input
             :value="task.title"
             :disabled="busy || readOnly"
-            class="min-w-0 flex-1 border border-transparent bg-transparent px-1.5 py-1 text-sm hover:border-[var(--od-line)] focus:border-[var(--od-violet)] focus:outline-none disabled:hover:border-transparent"
+            class="min-w-0 flex-1 truncate border border-transparent bg-transparent px-1.5 py-1 text-sm hover:border-[var(--od-line)] focus:border-[var(--od-violet)] focus:outline-none disabled:hover:border-transparent"
             :class="{ 'text-[var(--od-slate)] line-through': task.status === 'done' }"
             :style="{ borderRadius: 'var(--od-radius-sm)' }"
             maxlength="160"
@@ -300,7 +300,7 @@ async function removeSection(section) {
           <input
             :value="task.title"
             :disabled="busy || readOnly"
-            class="min-w-0 flex-1 border border-transparent bg-transparent px-1.5 py-1 text-sm hover:border-[var(--od-line)] focus:border-[var(--od-violet)] focus:outline-none disabled:hover:border-transparent"
+            class="min-w-0 flex-1 truncate border border-transparent bg-transparent px-1.5 py-1 text-sm hover:border-[var(--od-line)] focus:border-[var(--od-violet)] focus:outline-none disabled:hover:border-transparent"
             :class="{ 'text-[var(--od-slate)] line-through': task.status === 'done' }"
             :style="{ borderRadius: 'var(--od-radius-sm)' }"
             maxlength="160"
