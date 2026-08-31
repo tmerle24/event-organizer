@@ -38,7 +38,7 @@ defineProps({
         rel="noopener"
         aria-label="solvedapps"
         class="opacity-50 transition-opacity hover:opacity-90"
-      ><img src="/images/solvedapps-wordmark.svg" alt="solvedapps" width="130" height="32" /></a>
+      ><img src="/images/solvedapps-wordmark.svg" alt="solvedapps" width="130" height="32" class="relative top-[-2px]" /></a>
     </div>
   </footer>
 </template>
