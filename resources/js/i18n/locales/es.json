@@ -127,13 +127,13 @@
       }
     },
     "plan": {
-      "title": "Organización",
+      "title": "Por hacer",
       "intro": "La fecha está fijada. ¿Repartimos quién trae qué?",
       "start": "Empezar a organizar",
       "add_section": "Añadir sección",
       "section_placeholder": "Nombre de la sección",
       "add_task": "Añadir tarea",
-      "task_placeholder": "¿Qué hay que hacer?",
+      "task_placeholder": "Añadir tarea",
       "suggestions": "Sugerencias",
       "adopt": "Añadir",
       "adopt_all": "Añadir todas",
@@ -207,7 +207,6 @@
     "cancelled_banner": "Este evento se ha cancelado.",
     "closed_banner": "Este evento ya ha pasado.",
     "add_to_calendar": "Añadir al calendario",
-    "tasks_intro": "Todavía por organizar:",
     "take": "Me encargo",
     "release": "Mejor no",
     "mine": "Tú",
@@ -220,7 +219,8 @@
     "email_toggle": "Aviso por correo",
     "saved": "Guardado",
     "modal_title": "¿Cómo te llamas?",
-    "who_ask": "¿Cuándo puedes?"
+    "who_ask": "¿Cuándo puedes?",
+    "done_hint": "Marca lo que ya has hecho."
   },
   "legal": {
     "privacy": "Privacidad",

@@ -127,13 +127,13 @@
       }
     },
     "plan": {
-      "title": "Planning",
+      "title": "Te doen",
       "intro": "De datum staat. Zullen we verdelen wie wat meeneemt?",
       "start": "Planning starten",
       "add_section": "Onderdeel toevoegen",
       "section_placeholder": "Naam van het onderdeel",
       "add_task": "Taak toevoegen",
-      "task_placeholder": "Wat moet er gebeuren?",
+      "task_placeholder": "Taak toevoegen",
       "suggestions": "Suggesties",
       "adopt": "Toevoegen",
       "adopt_all": "Alles toevoegen",
@@ -207,7 +207,6 @@
     "cancelled_banner": "Dit evenement is afgezegd.",
     "closed_banner": "Dit evenement is voorbij.",
     "add_to_calendar": "Aan agenda toevoegen",
-    "tasks_intro": "Dit moet nog geregeld worden:",
     "take": "Ik doe het",
     "release": "Toch niet",
     "mine": "Jij",
@@ -220,7 +219,8 @@
     "email_toggle": "Melding per mail",
     "saved": "Opgeslagen",
     "modal_title": "Hoe heet je?",
-    "who_ask": "Wanneer kun jij?"
+    "who_ask": "Wanneer kun jij?",
+    "done_hint": "Vink af wat je gedaan hebt."
   },
   "legal": {
     "privacy": "Privacy",

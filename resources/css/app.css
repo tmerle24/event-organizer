@@ -73,6 +73,13 @@ body {
 
 button { cursor: pointer; }
 
+/* Haken in Markenfarbe statt Browser-Blau */
+input[type='checkbox'] {
+  accent-color: var(--od-violet);
+  cursor: pointer;
+}
+input[type='checkbox']:disabled { cursor: default; }
+
 /*
  * iOS Safari zoomt beim Fokus in jedes Eingabefeld, dessen Schrift kleiner als
  * 16px ist — und zoomt beim Verlassen nicht wieder heraus. Auf Touch-Geräten

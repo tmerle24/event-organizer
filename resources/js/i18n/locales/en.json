@@ -127,13 +127,13 @@
       }
     },
     "plan": {
-      "title": "Planning",
+      "title": "To do",
       "intro": "The date is set. Want to hand out who brings what?",
       "start": "Start planning",
       "add_section": "Add a section",
       "section_placeholder": "Section name",
       "add_task": "Add a task",
-      "task_placeholder": "What needs doing?",
+      "task_placeholder": "Add a task",
       "suggestions": "Suggestions",
       "adopt": "Add",
       "adopt_all": "Add all",
@@ -207,7 +207,6 @@
     "cancelled_banner": "This event was cancelled.",
     "closed_banner": "This event is over.",
     "add_to_calendar": "Add to calendar",
-    "tasks_intro": "Still to be organized:",
     "take": "I'll do it",
     "release": "Never mind",
     "mine": "You",
@@ -220,7 +219,8 @@
     "email_toggle": "Email notification",
     "saved": "Saved",
     "modal_title": "What’s your name?",
-    "who_ask": "When can you make it?"
+    "who_ask": "When can you make it?",
+    "done_hint": "Tick off what you’ve done."
   },
   "legal": {
     "privacy": "Privacy",

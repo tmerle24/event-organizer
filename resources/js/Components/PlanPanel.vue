@@ -85,6 +85,13 @@ async function addTask(sectionId) {
   const title = (newTask.value[sectionId ?? 'none'] || '').trim()
   if (!title) return
 
+  // ohne Namen erst fragen, danach wird die Aufgabe angelegt
+  if (!props.canManage && !props.me) {
+    emit('need-name', () => addTask(sectionId))
+
+    return
+  }
+
   await call('post', `${props.baseUrl}/tasks`, withToken({ title, plan_section_id: sectionId }))
   newTask.value[sectionId ?? 'none'] = ''
 }
@@ -206,21 +213,26 @@ async function removeSection(section) {
         </button>
       </div>
 
-      <ul class="mt-2 space-y-1.5">
+      <!-- Zeilen statt Kaesten: sonst sehen Aufgaben wie Buttons aus -->
+      <ul class="mt-1">
         <li
           v-for="task in tasksOf(section.id)"
           :key="task.id"
-          class="flex flex-wrap items-center gap-2 border border-[var(--od-line)] px-3.5 py-2.5"
-          :style="{ borderRadius: 'var(--od-radius-md)' }"
+          class="flex flex-wrap items-center gap-2 border-b border-[var(--od-line)] py-1.5 last:border-b-transparent"
         >
-          <input
-            type="checkbox"
-            :checked="task.status === 'done'"
-            :disabled="busy || readOnly"
-            class="h-4 w-4 shrink-0"
-            :aria-label="`${t('manage.plan.done_label')}: ${task.title}`"
-            @change="toggleDone(task)"
-          />
+          <!-- Haken erst, wenn jemand die Aufgabe hat: sonst liest man ihn als
+               "auswaehlen" statt "erledigt". Bei der eigenen Aufgabe mit Wort. -->
+          <label v-if="canManage || task.assignee_participant_id" class="flex shrink-0 items-center">
+            <input
+              type="checkbox"
+              :checked="task.status === 'done'"
+              :disabled="busy || readOnly"
+              class="h-4 w-4 shrink-0"
+              :aria-label="`${t('manage.plan.done_label')}: ${task.title}`"
+              @change="toggleDone(task)"
+            />
+          </label>
+          <span v-else class="w-4 shrink-0" />
           <input
             :value="task.title"
             :disabled="busy || readOnly"
@@ -228,6 +240,7 @@ async function removeSection(section) {
             :class="{ 'text-[var(--od-slate)] line-through': task.status === 'done' }"
             :style="{ borderRadius: 'var(--od-radius-sm)' }"
             maxlength="160"
+            :title="task.title"
             :aria-label="t('manage.plan.task_label')"
             @focus="emit('focus-change', true)"
             @blur="emit('focus-change', false); rename(task, $event)"
@@ -248,7 +261,7 @@ async function removeSection(section) {
           <template v-else>
             <span
               v-if="task.assignee_participant_id && !(me && task.assignee_participant_id === me.id && !readOnly)"
-              class="rounded-lg px-2 py-1 text-xs"
+              class="max-w-[7rem] truncate rounded-lg px-1.5 py-0.5 text-[11px]"
               :style="
                 me && task.assignee_participant_id === me.id
                   ? { background: 'var(--od-violet-tint)', color: 'var(--od-violet-dark)' }
@@ -334,21 +347,25 @@ async function removeSection(section) {
         {{ t('manage.plan.other_tasks') }}
       </h3>
 
-      <ul class="mt-2 space-y-1.5">
+      <ul class="mt-1">
         <li
           v-for="task in looseTasks"
           :key="task.id"
-          class="flex flex-wrap items-center gap-2 border border-[var(--od-line)] px-3.5 py-2.5"
-          :style="{ borderRadius: 'var(--od-radius-md)' }"
+          class="flex flex-wrap items-center gap-2 border-b border-[var(--od-line)] py-1.5 last:border-b-transparent"
         >
-          <input
-            type="checkbox"
-            :checked="task.status === 'done'"
-            :disabled="busy || readOnly"
-            class="h-4 w-4 shrink-0"
-            :aria-label="`${t('manage.plan.done_label')}: ${task.title}`"
-            @change="toggleDone(task)"
-          />
+          <!-- Haken erst, wenn jemand die Aufgabe hat: sonst liest man ihn als
+               "auswaehlen" statt "erledigt". Bei der eigenen Aufgabe mit Wort. -->
+          <label v-if="canManage || task.assignee_participant_id" class="flex shrink-0 items-center">
+            <input
+              type="checkbox"
+              :checked="task.status === 'done'"
+              :disabled="busy || readOnly"
+              class="h-4 w-4 shrink-0"
+              :aria-label="`${t('manage.plan.done_label')}: ${task.title}`"
+              @change="toggleDone(task)"
+            />
+          </label>
+          <span v-else class="w-4 shrink-0" />
           <input
             :value="task.title"
             :disabled="busy || readOnly"
@@ -356,6 +373,7 @@ async function removeSection(section) {
             :class="{ 'text-[var(--od-slate)] line-through': task.status === 'done' }"
             :style="{ borderRadius: 'var(--od-radius-sm)' }"
             maxlength="160"
+            :title="task.title"
             :aria-label="t('manage.plan.task_label')"
             @focus="emit('focus-change', true)"
             @blur="emit('focus-change', false); rename(task, $event)"
@@ -376,7 +394,7 @@ async function removeSection(section) {
           <template v-else>
             <span
               v-if="task.assignee_participant_id && !(me && task.assignee_participant_id === me.id && !readOnly)"
-              class="rounded-lg bg-[var(--od-mist)] px-2 py-1 text-xs text-[var(--od-slate)]"
+              class="max-w-[7rem] truncate rounded-lg bg-[var(--od-mist)] px-1.5 py-0.5 text-[11px] text-[var(--od-slate)]"
             >
               {{ me && task.assignee_participant_id === me.id ? t('public.mine') : (task.assignee_name ?? t('public.taken')) }}
             </span>
@@ -420,6 +438,15 @@ async function removeSection(section) {
         <button type="button" class="od-btn od-btn-ghost w-11 shrink-0 px-0 py-1.5 text-sm" :disabled="busy" @click="addTask(null)">+</button>
       </div>
     </div>
+
+    <!-- Ein Satz statt eines Wortes in jeder Zeile: erklaert den Haken, sobald
+         man selbst etwas uebernommen hat. -->
+    <p v-if="!canManage && !readOnly && hasMine" class="od-meta mt-4 flex items-center gap-1.5">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--od-violet)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="m5 13 4 4 10-10" />
+      </svg>
+      {{ t('public.done_hint') }}
+    </p>
 
     <div v-if="canManage && !readOnly" class="mt-5 flex gap-2 border-t border-[var(--od-line)] pt-4">
       <input

@@ -127,13 +127,13 @@
       }
     },
     "plan": {
-      "title": "Planung",
+      "title": "Zu erledigen",
       "intro": "Der Termin steht. Willst du gleich verteilen, wer was mitbringt?",
       "start": "Planung starten",
       "add_section": "Bereich hinzufügen",
       "section_placeholder": "Name des Bereichs",
       "add_task": "Aufgabe hinzufügen",
-      "task_placeholder": "Was muss erledigt werden?",
+      "task_placeholder": "Aufgabe hinzufügen",
       "suggestions": "Vorschläge",
       "adopt": "Übernehmen",
       "adopt_all": "Alle übernehmen",
@@ -207,7 +207,6 @@
     "cancelled_banner": "Dieses Event wurde abgesagt.",
     "closed_banner": "Dieses Event ist vorbei.",
     "add_to_calendar": "Zum Kalender hinzufügen",
-    "tasks_intro": "Das muss noch organisiert werden:",
     "take": "Übernehmen",
     "release": "Doch nicht",
     "mine": "Du",
@@ -220,7 +219,8 @@
     "email_toggle": "E-Mail-Benachrichtigung",
     "saved": "Gespeichert",
     "modal_title": "Wie heißt du?",
-    "who_ask": "Wann kannst du?"
+    "who_ask": "Wann kannst du?",
+    "done_hint": "Abhaken, was du erledigt hast"
   },
   "legal": {
     "privacy": "Datenschutz",

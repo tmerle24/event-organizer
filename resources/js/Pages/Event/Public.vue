@@ -321,7 +321,10 @@ function note(option) {
           </a>
         </div>
 
-        <p v-if="!showDates && decided" class="od-h3 mt-1">{{ formatFull(decided) }}</p>
+        <p v-if="!showDates && decided" class="od-h3 mt-1">
+          <span class="sm:hidden">{{ formatCompact(decided) }}</span>
+          <span class="hidden sm:inline">{{ formatFull(decided) }}</span>
+        </p>
 
         <p v-if="event.description" class="mt-1 text-sm text-[var(--od-slate)]">{{ event.description }}</p>
         <p v-if="event.location" class="mt-1 text-sm text-[var(--od-slate)]">
@@ -467,7 +470,6 @@ function note(option) {
 
       <!-- Planung: erscheint erst, wenn sie relevant ist -->
       <template v-if="showPlan">
-        <p class="px-1 text-sm text-[var(--od-slate)]">{{ t('public.tasks_intro') }}</p>
         <PlanPanel
           :event="event"
           :base-url="baseUrl"
