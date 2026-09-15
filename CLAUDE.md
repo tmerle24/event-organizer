@@ -152,7 +152,7 @@ Sortierung: `blocked` nach unten → `no_count` aufsteigend → `score` absteige
 **Zwei Regeln, die nicht verhandelbar sind:**
 
 1. **Nie eine Quote anzeigen, solange Antworten fehlen.** Nicht „6/8 verfügbar",
-   sondern `6 kann · 2 offen`. `CountBar.vue` setzt das um; ein falsches
+   sondern `6 können · 2 offen`. `CountBar.vue` setzt das um; ein falsches
    Vollständigkeitsgefühl ist der teuerste Fehler in diesem Screen.
 2. **Kein Best Match unter dem Quorum.** Erst wenn mindestens die Hälfte der
    Teilnehmer geantwortet hat (`RankingService::BEST_MATCH_QUORUM`), gibt es eine

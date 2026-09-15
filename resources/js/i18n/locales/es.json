@@ -95,9 +95,9 @@
       "title_decided": "La fecha"
     },
     "counts": {
-      "yes": "puede",
+      "yes": "puede | pueden",
       "maybe": "quizá",
-      "no": "no puede",
+      "no": "no puede | no pueden",
       "open": "sin responder"
     },
     "participants": {
@@ -145,7 +145,7 @@
       "deleted": "Evento eliminado."
     },
     "status": {
-      "collecting": "Recogiendo respuestas",
+      "collecting": "Activo",
       "decided": "Fecha fijada",
       "planning": "En organización",
       "closed": "Finalizado",

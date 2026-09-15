@@ -37,7 +37,7 @@ function pick(key, current) {
       type="button"
       :disabled="disabled"
       :aria-pressed="value === option.key"
-      :title="t(`manage.counts.${option.key}`)"
+      :title="t(`manage.counts.${option.key}`, 1)"
       class="flex h-11 w-11 items-center justify-center border text-base font-medium transition disabled:opacity-40"
       :style="
         value === option.key

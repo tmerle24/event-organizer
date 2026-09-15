@@ -95,9 +95,9 @@
       "title_decided": "Der Termin"
     },
     "counts": {
-      "yes": "kann",
+      "yes": "kann | können",
       "maybe": "vielleicht",
-      "no": "kann nicht",
+      "no": "kann nicht | können nicht",
       "open": "offen"
     },
     "participants": {
@@ -145,7 +145,7 @@
       "deleted": "Event gelöscht."
     },
     "status": {
-      "collecting": "Rückmeldungen laufen",
+      "collecting": "Aktiv",
       "decided": "Termin steht",
       "planning": "In Planung",
       "closed": "Abgeschlossen",

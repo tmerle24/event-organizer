@@ -145,7 +145,7 @@
       "deleted": "Event deleted."
     },
     "status": {
-      "collecting": "Collecting responses",
+      "collecting": "Active",
       "decided": "Date is set",
       "planning": "Planning",
       "closed": "Finished",

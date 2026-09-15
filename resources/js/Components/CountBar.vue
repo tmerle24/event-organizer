@@ -52,16 +52,16 @@ const segments = computed(() => [
         class="font-mono-num font-medium"
         :style="{ color: highlighted ? 'var(--od-mint)' : 'var(--od-violet)' }"
       >
-        {{ option.yes_count }} {{ t('manage.counts.yes') }}
+        {{ option.yes_count }} {{ t('manage.counts.yes', option.yes_count) }}
       </span>
       <span v-if="option.maybe_count" class="font-mono-num" style="color: var(--od-violet-soft)">
-        {{ option.maybe_count }} {{ t('manage.counts.maybe') }}
+        {{ option.maybe_count }} {{ t('manage.counts.maybe', option.maybe_count) }}
       </span>
       <span v-if="option.no_count" class="font-mono-num" style="color: var(--od-slate)">
-        {{ option.no_count }} {{ t('manage.counts.no') }}
+        {{ option.no_count }} {{ t('manage.counts.no', option.no_count) }}
       </span>
       <span v-if="option.open_count" class="font-mono-num" style="color: var(--od-slate)">
-        {{ option.open_count }} {{ t('manage.counts.open') }}
+        {{ option.open_count }} {{ t('manage.counts.open', option.open_count) }}
       </span>
     </p>
   </div>

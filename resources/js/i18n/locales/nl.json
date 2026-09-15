@@ -95,9 +95,9 @@
       "title_decided": "De datum"
     },
     "counts": {
-      "yes": "kan",
+      "yes": "kan | kunnen",
       "maybe": "misschien",
-      "no": "kan niet",
+      "no": "kan niet | kunnen niet",
       "open": "open"
     },
     "participants": {
@@ -145,7 +145,7 @@
       "deleted": "Evenement verwijderd."
     },
     "status": {
-      "collecting": "Reacties komen binnen",
+      "collecting": "Actief",
       "decided": "Datum staat",
       "planning": "In planning",
       "closed": "Afgerond",

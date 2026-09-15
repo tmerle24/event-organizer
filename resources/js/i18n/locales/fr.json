@@ -95,9 +95,9 @@
       "title_decided": "La date"
     },
     "counts": {
-      "yes": "dispo",
+      "yes": "dispo | dispos",
       "maybe": "peut-être",
-      "no": "pas dispo",
+      "no": "pas dispo | pas dispos",
       "open": "sans réponse"
     },
     "participants": {
@@ -145,7 +145,7 @@
       "deleted": "Événement supprimé."
     },
     "status": {
-      "collecting": "Réponses en cours",
+      "collecting": "En cours",
       "decided": "Date fixée",
       "planning": "En organisation",
       "closed": "Terminé",
