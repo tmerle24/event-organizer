@@ -1,6 +1,7 @@
 <script setup>
-import { computed } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
+import WhoList from '@/Components/WhoList.vue'
 
 /**
  * Zeigt nie eine Quote wie "8/8 verfügbar", solange Antworten fehlen —
@@ -13,9 +14,20 @@ const props = defineProps({
   option: { type: Object, required: true },
   // true = dieser Termin passt allen bzw. steht fest → einziges Mint-Signal
   highlighted: { type: Boolean, default: false },
+  // ohne Teilnehmerliste kein Aufklappen
+  participants: { type: Array, default: null },
+  showOpen: { type: Boolean, default: false },
+  // Schalter "Namen zeigen" im Kopf des Panels
+  expandAll: { type: Boolean, default: false },
 })
 
 const { t } = useI18n()
+
+const expanded = ref(props.expandAll)
+watch(
+  () => props.expandAll,
+  (value) => (expanded.value = value)
+)
 
 const total = computed(
   () => props.option.yes_count + props.option.maybe_count + props.option.no_count + props.option.open_count
@@ -46,23 +58,43 @@ const segments = computed(() => [
       />
     </div>
 
-    <p class="mt-1.5 flex flex-wrap gap-x-3 gap-y-0.5 text-[13px]">
-      <span
-        v-if="option.yes_count"
-        class="font-mono-num font-medium"
-        :style="{ color: highlighted ? 'var(--od-mint)' : 'var(--od-violet)' }"
+    <div class="mt-1.5 flex items-start justify-between gap-3">
+      <p class="flex flex-wrap gap-x-3 gap-y-0.5 text-[13px]">
+        <span
+          v-if="option.yes_count"
+          class="font-mono-num font-medium"
+          :style="{ color: highlighted ? 'var(--od-mint)' : 'var(--od-violet)' }"
+        >
+          {{ option.yes_count }} {{ t('manage.counts.yes', option.yes_count) }}
+        </span>
+        <span v-if="option.maybe_count" class="font-mono-num" style="color: var(--od-violet-soft)">
+          {{ option.maybe_count }} {{ t('manage.counts.maybe', option.maybe_count) }}
+        </span>
+        <span v-if="option.no_count" class="font-mono-num" style="color: var(--od-slate)">
+          {{ option.no_count }} {{ t('manage.counts.no', option.no_count) }}
+        </span>
+        <span v-if="option.open_count" class="font-mono-num" style="color: var(--od-slate)">
+          {{ option.open_count }} {{ t('manage.counts.open', option.open_count) }}
+        </span>
+      </p>
+
+      <button
+        v-if="participants"
+        type="button"
+        class="-my-1 shrink-0 rounded-lg px-1.5 py-1 text-[13px] text-[var(--od-slate)] hover:text-[var(--od-violet)]"
+        :aria-expanded="expanded"
+        @click="expanded = !expanded"
       >
-        {{ option.yes_count }} {{ t('manage.counts.yes', option.yes_count) }}
-      </span>
-      <span v-if="option.maybe_count" class="font-mono-num" style="color: var(--od-violet-soft)">
-        {{ option.maybe_count }} {{ t('manage.counts.maybe', option.maybe_count) }}
-      </span>
-      <span v-if="option.no_count" class="font-mono-num" style="color: var(--od-slate)">
-        {{ option.no_count }} {{ t('manage.counts.no', option.no_count) }}
-      </span>
-      <span v-if="option.open_count" class="font-mono-num" style="color: var(--od-slate)">
-        {{ option.open_count }} {{ t('manage.counts.open', option.open_count) }}
-      </span>
-    </p>
+        {{ t('manage.dates.who') }} <span aria-hidden="true">{{ expanded ? '▴' : '▾' }}</span>
+      </button>
+    </div>
+
+    <WhoList
+      v-if="participants && expanded"
+      class="mt-2"
+      :option="option"
+      :participants="participants"
+      :show-open="showOpen"
+    />
   </div>
 </template>

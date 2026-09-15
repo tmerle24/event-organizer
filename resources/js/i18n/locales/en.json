@@ -92,7 +92,12 @@
       "other_options": "One other date was on the table | {count} other dates were on the table",
       "show": "show",
       "hide": "hide",
-      "title_decided": "The date"
+      "title_decided": "The date",
+      "who": "Who?",
+      "names_show": "Show names",
+      "names_hide": "Hide names",
+      "still_open": "No answer yet",
+      "best_partial": "Best fit"
     },
     "counts": {
       "yes": "can",

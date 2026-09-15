@@ -92,7 +92,12 @@
       "other_options": "Er stond nog een datum open | Er stonden {count} andere datums open",
       "show": "bekijken",
       "hide": "verbergen",
-      "title_decided": "De datum"
+      "title_decided": "De datum",
+      "who": "Wie?",
+      "names_show": "Namen tonen",
+      "names_hide": "Namen verbergen",
+      "still_open": "Nog open",
+      "best_partial": "Past het best"
     },
     "counts": {
       "yes": "kan | kunnen",

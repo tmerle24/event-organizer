@@ -255,6 +255,7 @@ resources/js/
     PrintSheet.vue             # Druck-Zettel: wer kommt, wer bringt was
     AvailabilityButtons.vue    # ✓ / ~ / ✕ + „offen" durch erneutes Klicken
     CountBar.vue               # Balken + Zahlen, nie eine Quote; Mint nur bei „passt allen"
+    WhoList.vue                # Namen pro Termin, gruppiert nach Antwort
     ConfirmModal.vue           # statt window.confirm()
     Toast.vue
   Pages/
@@ -310,9 +311,20 @@ Violett-Familie und sind als abgeleitet im CSS kommentiert.
 `.od-btn-primary` / `.od-btn-ghost` / `.od-btn-quiet`. Radien: `--od-radius-sm`
 10px (Buttons/Inputs), `-md` 12px (Zeilen), `-lg` 16px (Karten), `-xl` 28px.
 
-**Eine Primäraktion pro Screen.** Im Terminscreen bekommt nur die Zeile, die
-allen passt, den gefüllten Button (`isPrimaryChoice()` in `DateOptionsPanel`);
+**Eine Primäraktion pro Screen.** Im Terminscreen bekommt nur die Zeile des
+besten Termins den gefüllten Button (`isPrimaryChoice()` in `DateOptionsPanel`);
 alles andere ist Ghost oder Quiet.
+
+**„Passt allen" heißt wirklich allen.** Mint und das Label gibt es nur, wenn
+alle zugesagt haben — kein Vielleicht, kein Nein, nichts offen
+(`fitsEveryone()` in `composables/useMatch.js`). Sonst heißt der beste Termin
+„Passt am besten" und bleibt Violett. Seit die Namen pro Termin sichtbar sind,
+würde „Passt allen" direkt über „✕ Ben" sonst sich selbst widersprechen.
+
+**Wer kann wann:** `CountBar` klappt pro Termin die Namen auf (`WhoList.vue`),
+„Namen zeigen" im Kopf öffnet alle zum Vergleichen. Pflicht-Personen zuerst.
+„Noch offen" mit Namen nur auf der Verwaltungsseite — öffentlich wäre das eine
+Mahnung.
 
 ---
 

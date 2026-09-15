@@ -92,7 +92,12 @@
       "other_options": "Une autre date était proposée | {count} autres dates étaient proposées",
       "show": "voir",
       "hide": "masquer",
-      "title_decided": "La date"
+      "title_decided": "La date",
+      "who": "Qui ?",
+      "names_show": "Afficher les noms",
+      "names_hide": "Masquer les noms",
+      "still_open": "Pas encore de réponse",
+      "best_partial": "Convient le mieux"
     },
     "counts": {
       "yes": "dispo | dispos",

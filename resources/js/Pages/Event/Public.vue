@@ -7,11 +7,13 @@ import Footer from '@/Components/Footer.vue'
 import LanguageSwitcher from '@/Components/LanguageSwitcher.vue'
 import AvailabilityButtons from '@/Components/AvailabilityButtons.vue'
 import CountBar from '@/Components/CountBar.vue'
+import WhoList from '@/Components/WhoList.vue'
 import PlanPanel from '@/Components/PlanPanel.vue'
 import ConfirmModal from '@/Components/ConfirmModal.vue'
 import Toast from '@/Components/Toast.vue'
 import { useParticipantToken } from '@/composables/useDeviceToken'
 import { formatFull, timezoneNote } from '@/composables/useDateFormat'
+import { fitsEveryone } from '@/composables/useMatch'
 import { mapsLink } from '@/composables/useMapsLink'
 
 const props = defineProps({
@@ -43,6 +45,7 @@ const confirmLeave = ref(false)
  * das, was noch zu tun ist, nicht unter sechs abgehakten Terminen liegt.
  */
 const showDateList = ref(false)
+const expandAll = ref(false)
 
 const baseUrl = computed(() => `/t/${event.value.public_token}`)
 const readOnly = computed(() => ['closed', 'cancelled'].includes(event.value.status))
@@ -258,6 +261,7 @@ function note(option) {
           <p v-if="note(decided)" class="od-meta">
             {{ t('public.your_time', note(decided)) }}
           </p>
+          <WhoList class="mt-3" :option="decided" :participants="event.participants" />
           <a :href="`${baseUrl}/event.ics`" class="od-btn od-btn-ghost od-small mt-3">{{ t('public.add_to_calendar') }}</a>
         </div>
       </div>
@@ -300,7 +304,18 @@ function note(option) {
 
       <!-- Verfuegbarkeit -->
       <section v-if="showDates" class="od-card p-4 sm:p-5">
-        <h2 class="font-display font-semibold">{{ t('public.who') }}</h2>
+        <header class="flex items-center justify-between gap-3">
+          <h2 class="font-display font-semibold">{{ t('public.who') }}</h2>
+          <button
+            v-if="event.answered_count > 0 && dateListVisible"
+            type="button"
+            class="od-meta whitespace-nowrap hover:text-[var(--od-violet)]"
+            :aria-pressed="expandAll"
+            @click="expandAll = !expandAll"
+          >
+            {{ expandAll ? t('manage.dates.names_hide') : t('manage.dates.names_show') }}
+          </button>
+        </header>
 
         <button
           v-if="decided && otherCount"
@@ -336,7 +351,11 @@ function note(option) {
                     class="inline-block h-2.5 w-2.5 shrink-0 rounded-full"
                     :style="{
                       background:
-                        option.id === event.decided_option_id ? 'var(--od-apricot)' : 'var(--od-mint)',
+                        option.id === event.decided_option_id
+                          ? 'var(--od-apricot)'
+                          : fitsEveryone(option)
+                            ? 'var(--od-mint)'
+                            : 'var(--od-violet)',
                     }"
                   />
                   {{ formatFull(option) }}
@@ -353,7 +372,13 @@ function note(option) {
               />
             </div>
 
-            <CountBar class="mt-2" :option="option" :highlighted="option.id === event.best_match_id && !decided" />
+            <CountBar
+              class="mt-2"
+              :option="option"
+              :highlighted="option.id === event.best_match_id && !decided && fitsEveryone(option)"
+              :participants="event.participants"
+              :expand-all="expandAll"
+            />
           </li>
         </ul>
 

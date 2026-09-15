@@ -2,7 +2,9 @@
 import { ref, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import CountBar from '@/Components/CountBar.vue'
+import WhoList from '@/Components/WhoList.vue'
 import { formatFull, isoDay, timezoneNote } from '@/composables/useDateFormat'
+import { fitsEveryone } from '@/composables/useMatch'
 
 const props = defineProps({
   event: { type: Object, required: true },
@@ -15,6 +17,7 @@ const { t } = useI18n()
 const busy = ref(false)
 const notify = ref(true)
 const showGenerator = ref(false)
+const expandAll = ref(false)
 /*
  * Sobald der Termin steht, ist die Auswahl erledigt und die Planung ist das,
  * was zählt. Die anderen Termine bleiben erreichbar — die Entscheidung lässt
@@ -57,9 +60,19 @@ function isPrimaryChoice(option) {
   return option.id === props.event.best_match_id && !decided.value
 }
 
+function isBest(option) {
+  return option.id === props.event.best_match_id && !decided.value
+}
+
+/** Mint nur, wenn der beste Termin wirklich allen passt */
+function isMint(option) {
+  return isBest(option) && fitsEveryone(option)
+}
+
 function borderFor(option) {
   if (option.id === props.event.decided_option_id) return 'var(--od-apricot)'
-  if (option.id === props.event.best_match_id && !decided.value) return 'var(--od-mint)'
+  if (isMint(option)) return 'var(--od-mint)'
+  if (isBest(option)) return 'var(--od-violet-soft)'
   return 'var(--od-line)'
 }
 
@@ -126,11 +139,22 @@ function toggleWeekday(day) {
 
 <template>
   <section class="od-card p-4 sm:p-5">
-    <header class="flex items-center justify-between gap-3">
-      <h2 class="od-h3">{{ decided ? t('manage.dates.title_decided') : t('manage.dates.title') }}</h2>
-      <span v-if="event.answered_count > 0 && !decided" class="od-meta">
-        {{ t('manage.dates.need_more', event.answered_count) }}
-      </span>
+    <header class="flex items-start justify-between gap-3">
+      <div class="min-w-0">
+        <h2 class="od-h3">{{ decided ? t('manage.dates.title_decided') : t('manage.dates.title') }}</h2>
+        <p v-if="event.answered_count > 0 && !decided" class="od-meta">
+          {{ t('manage.dates.need_more', event.answered_count) }}
+        </p>
+      </div>
+      <button
+        v-if="event.answered_count > 0 && optionsVisible"
+        type="button"
+        class="od-meta mt-1 shrink-0 whitespace-nowrap hover:text-[var(--od-violet)]"
+        :aria-pressed="expandAll"
+        @click="expandAll = !expandAll"
+      >
+        {{ expandAll ? t('manage.dates.names_hide') : t('manage.dates.names_show') }}
+      </button>
     </header>
 
     <!-- Bestaetigter Termin steht ueber allem anderen -->
@@ -141,6 +165,7 @@ function toggleWeekday(day) {
     >
       <p class="od-h3">{{ t('manage.dates.confirmed') }}</p>
       <p class="od-h2 mt-1">{{ localizedFull(decided) }}</p>
+      <WhoList class="mt-3" :option="decided" :participants="event.participants" show-open />
       <div class="mt-3 flex flex-wrap gap-2">
         <a :href="`${baseUrl}/event.ics`" class="od-btn od-btn-ghost text-sm">{{ t('public.add_to_calendar') }}</a>
         <button v-if="!readOnly" type="button" class="od-btn od-btn-ghost text-sm" :disabled="busy" @click="undecide">
@@ -176,15 +201,19 @@ function toggleWeekday(day) {
           opacity: option.blocked ? 0.7 : 1,
         }"
       >
-        <div class="flex items-start justify-between gap-3">
-          <div class="min-w-0 flex-1">
+        <!-- Handy: Aktionen unter dem Datum, sonst wird es in schmale Zeilen gequetscht -->
+        <div class="flex flex-wrap items-start justify-between gap-x-3 gap-y-2">
+          <div class="min-w-0 basis-full sm:basis-0 sm:flex-1">
             <p
-              v-if="option.id === event.best_match_id && !decided"
+              v-if="isBest(option)"
               class="flex items-center gap-1.5 text-[13px] font-medium"
-              style="color: var(--od-mint)"
+              :style="{ color: isMint(option) ? 'var(--od-mint)' : 'var(--od-violet)' }"
             >
-              <span class="inline-block h-2 w-2 rounded-full" style="background: var(--od-mint)" />
-              {{ t('manage.dates.best') }}
+              <span
+                class="inline-block h-2 w-2 rounded-full"
+                :style="{ background: isMint(option) ? 'var(--od-mint)' : 'var(--od-violet)' }"
+              />
+              {{ isMint(option) ? t('manage.dates.best') : t('manage.dates.best_partial') }}
             </p>
             <p class="od-h3 flex items-center gap-2">
               <span
@@ -232,7 +261,14 @@ function toggleWeekday(day) {
           </div>
         </div>
 
-        <CountBar class="mt-2" :option="option" :highlighted="option.id === event.best_match_id && !decided" />
+        <CountBar
+          class="mt-2"
+          :option="option"
+          :highlighted="isMint(option)"
+          :participants="event.participants"
+          show-open
+          :expand-all="expandAll"
+        />
       </li>
     </ul>
 

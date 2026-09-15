@@ -92,7 +92,12 @@
       "other_options": "Ein anderer Termin stand zur Wahl | {count} andere Termine standen zur Wahl",
       "show": "ansehen",
       "hide": "ausblenden",
-      "title_decided": "Der Termin"
+      "title_decided": "Der Termin",
+      "who": "Wer?",
+      "names_show": "Namen zeigen",
+      "names_hide": "Namen ausblenden",
+      "still_open": "Noch offen",
+      "best_partial": "Passt am besten"
     },
     "counts": {
       "yes": "kann | können",

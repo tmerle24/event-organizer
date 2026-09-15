@@ -92,7 +92,12 @@
       "other_options": "Había otra fecha a elegir | Había {count} fechas más a elegir",
       "show": "ver",
       "hide": "ocultar",
-      "title_decided": "La fecha"
+      "title_decided": "La fecha",
+      "who": "¿Quién?",
+      "names_show": "Mostrar nombres",
+      "names_hide": "Ocultar nombres",
+      "still_open": "Sin responder aún",
+      "best_partial": "El que mejor encaja"
     },
     "counts": {
       "yes": "puede | pueden",
