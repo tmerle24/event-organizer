@@ -15,6 +15,7 @@ import { useParticipantToken } from '@/composables/useDeviceToken'
 import { formatFull, timezoneNote } from '@/composables/useDateFormat'
 import { fitsEveryone } from '@/composables/useMatch'
 import { mapsLink } from '@/composables/useMapsLink'
+import { rememberName, rememberedName } from '@/composables/useRememberedName'
 
 const props = defineProps({
   event: { type: Object, required: true },
@@ -26,7 +27,7 @@ const event = ref(props.event)
 const token = useParticipantToken(props.event.public_token)
 const me = ref(props.event.me)
 
-const form = ref({ display_name: '', email: '', website: '' })
+const form = ref({ display_name: rememberedName(), email: '', website: '' })
 const answers = ref({})
 const busy = ref(false)
 /*
@@ -158,6 +159,7 @@ async function join() {
     })
     event.value = data.event
     me.value = data.event.me
+    rememberName(form.value.display_name.trim())
     if (Object.keys(draft).length) {
       answers.value = {}
       flash(t('public.answers_saved'))
@@ -197,7 +199,7 @@ async function leave() {
     const { data } = await window.axios.post(`${baseUrl.value}/leave`, { token })
     event.value = data.event
     me.value = null
-    form.value = { display_name: '', email: '', website: '' }
+    form.value = { display_name: rememberedName(), email: '', website: '' }
   } catch (e) {
     flash(t('common.error'), 'error')
   } finally {
@@ -387,8 +389,10 @@ function note(option) {
                 </p>
               </div>
 
+              <!-- ml-auto: bricht die Zeile um, bleiben die Buttons trotzdem rechts -->
               <AvailabilityButtons
                 v-if="(me || answerFirst) && !readOnly"
+                class="ml-auto"
                 :value="currentValue(option.id)"
                 @update:value="setValue(option.id, $event)"
               />

@@ -75,8 +75,9 @@ onMounted(() => {
           <p class="od-small mt-1" style="color: var(--od-slate)">
             ORGDATE verzichtet bewusst auf ein Login-System. Stattdessen werden zufällig erzeugte
             Tokens (Verwaltungs-Token, Teilnahme-Token) im LocalStorage deines Browsers gespeichert.
-            Dazu kommen deine Sprachwahl und eine Liste der von dir erstellten Events – beides
-            verlässt dein Gerät nicht. Es werden keine Analyse- oder Werbe-Cookies gesetzt.
+            Dazu kommen deine Sprachwahl, eine Liste der von dir erstellten Events und der Name,
+            mit dem du dich zuletzt eingetragen hast, damit er beim nächsten Event schon im Feld
+            steht – all das verlässt dein Gerät nicht. Es werden keine Analyse- oder Werbe-Cookies gesetzt.
           </p>
         </section>
 
