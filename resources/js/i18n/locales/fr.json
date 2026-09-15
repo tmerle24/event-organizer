@@ -218,10 +218,14 @@
     "your_time": "{local} chez vous · {event} à {zone}",
     "name_hint": "Une fois inscrit, vous voyez qui est disponible quand – et les autres vous voient.",
     "taken": "déjà prise",
-    "email_toggle": "Nouvelles par e-mail ?",
     "name_first": "Indiquez d’abord votre nom, puis votre choix compte.",
     "join_first": "Appuyez sur « C'est parti » et votre choix compte.",
-    "names_teaser": "Indiquez votre nom pour voir qui est disponible quand."
+    "names_teaser": "Indiquez votre nom pour voir qui est disponible quand.",
+    "email_ask_date": "Être prévenu quand la date est fixée ?",
+    "email_ask": "Être prévenu en cas de changement ?",
+    "email_yes": "Oui",
+    "email_no": "Non merci",
+    "email_saved": "C’est noté, vous serez prévenu."
   },
   "legal": {
     "privacy": "Confidentialité",

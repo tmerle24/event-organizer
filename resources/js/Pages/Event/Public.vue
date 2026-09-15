@@ -27,7 +27,7 @@ const event = ref(props.event)
 const token = useParticipantToken(props.event.public_token)
 const me = ref(props.event.me)
 
-const form = ref({ display_name: rememberedName(), email: '', website: '' })
+const form = ref({ display_name: rememberedName(), website: '' })
 const answers = ref({})
 const busy = ref(false)
 /*
@@ -41,7 +41,9 @@ const editing = ref(false)
 const toast = ref('')
 const toastTone = ref('ok')
 const confirmLeave = ref(false)
-const showEmail = ref(false)
+const followUpEmail = ref('')
+const dismissKey = `od_email_dismissed_${props.event.public_token}`
+const emailDismissed = ref(readFlag(dismissKey))
 const joinForm = ref(null)
 const nameInput = ref(null)
 /*
@@ -108,6 +110,49 @@ function currentValue(optionId) {
   return myVotes()[optionId] ?? null
 }
 
+function readFlag(key) {
+  try {
+    return localStorage.getItem(key) === '1'
+  } catch (e) {
+    return false
+  }
+}
+
+/** Nach dem Eintragen fragen, nicht davor — dann stoert es das Formular nicht. */
+const askForEmail = computed(() => !!me.value && !me.value.email && !readOnly.value && !emailDismissed.value)
+
+function dismissEmail() {
+  emailDismissed.value = true
+  try {
+    localStorage.setItem(dismissKey, '1')
+  } catch (e) {
+    // Private Mode: gilt dann nur fuer diese Sitzung
+  }
+}
+
+async function saveEmail() {
+  const email = followUpEmail.value.trim()
+  if (!email || !me.value) return
+  busy.value = true
+
+  try {
+    // /join mit demselben Token aktualisiert nur den eigenen Eintrag
+    const { data } = await window.axios.post(`${baseUrl.value}/join`, {
+      display_name: me.value.display_name,
+      email,
+      token,
+    })
+    event.value = data.event
+    me.value = data.event.me
+    followUpEmail.value = ''
+    flash(t('public.email_saved'))
+  } catch (e) {
+    flash(t('common.error'), 'error')
+  } finally {
+    busy.value = false
+  }
+}
+
 function setValue(optionId, value) {
   answers.value = { ...answers.value, [optionId]: value }
   if (!me.value) nudgeToName()
@@ -159,7 +204,6 @@ async function join() {
   try {
     const { data } = await window.axios.post(`${baseUrl.value}/join`, {
       display_name: form.value.display_name.trim(),
-      email: form.value.email.trim() || null,
       token,
       website: form.value.website,
     })
@@ -205,7 +249,7 @@ async function leave() {
     const { data } = await window.axios.post(`${baseUrl.value}/leave`, { token })
     event.value = data.event
     me.value = null
-    form.value = { display_name: rememberedName(), email: '', website: '' }
+    form.value = { display_name: rememberedName(), website: '' }
   } catch (e) {
     flash(t('common.error'), 'error')
   } finally {
@@ -323,33 +367,6 @@ function note(option) {
             {{ t('public.join') }}
           </button>
         </div>
-        <!-- aufklappbar wie "Wer?", links unter dem Namen -->
-        <button
-          type="button"
-          class="-mx-1.5 mt-1 flex items-center gap-1 rounded-lg px-1.5 py-1 text-[13px] text-[var(--od-slate)] hover:text-[var(--od-violet)]"
-          :aria-expanded="showEmail"
-          aria-controls="p-email-block"
-          @click="showEmail = !showEmail"
-        >
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <rect x="3" y="5" width="18" height="14" rx="2" />
-            <path d="m3.5 6.5 8.5 6.5 8.5-6.5" />
-          </svg>
-          {{ t('public.email_toggle') }} <span aria-hidden="true">{{ showEmail ? '▴' : '▾' }}</span>
-        </button>
-
-        <div v-if="showEmail" id="p-email-block">
-          <input
-            id="p-email"
-            v-model="form.email"
-            type="email"
-            class="od-input mt-1"
-            maxlength="180"
-            :aria-label="t('public.email')"
-            :placeholder="t('manage.email_placeholder')"
-          />
-          <p class="mt-1 text-xs text-[var(--od-slate)]">{{ t('public.email_hint') }}</p>
-        </div>
 
         <input v-model="form.website" type="text" name="website" tabindex="-1" autocomplete="off" class="hidden" aria-hidden="true" />
       </form>
@@ -420,13 +437,10 @@ function note(option) {
                 </p>
               </div>
 
-              <!-- ml-auto: bricht die Zeile um, bleiben die Buttons trotzdem rechts -->
-              <AvailabilityButtons
-                v-if="(me || !resolving) && !readOnly"
-                class="ml-auto"
-                :value="currentValue(option.id)"
-                @update:value="setValue(option.id, $event)"
-              />
+              <!-- Desktop: rechts neben dem Datum -->
+              <div v-if="(me || !resolving) && !readOnly" class="ml-auto hidden sm:block">
+                <AvailabilityButtons :value="currentValue(option.id)" @update:value="setValue(option.id, $event)" />
+              </div>
             </div>
 
             <CountBar
@@ -437,6 +451,11 @@ function note(option) {
               :show-declined="false"
               :expand-all="expandAll"
             />
+
+            <!-- Handy: immer ganz unten rechts, egal ob es schon einen Balken gibt -->
+            <div v-if="(me || !resolving) && !readOnly" class="mt-3 flex justify-end sm:hidden">
+              <AvailabilityButtons :value="currentValue(option.id)" @update:value="setValue(option.id, $event)" />
+            </div>
           </li>
         </ul>
 
@@ -450,6 +469,35 @@ function note(option) {
           {{ t('public.save_answers') }}
         </button>
       </section>
+
+      <!-- Nachfrage nach der E-Mail, erst wenn man dabei ist -->
+      <form v-if="askForEmail" class="od-card p-4 sm:p-5" @submit.prevent="saveEmail">
+        <label class="block text-sm" for="p-follow-email">
+          {{ showDates && !decided ? t('public.email_ask_date') : t('public.email_ask') }}
+        </label>
+        <div class="mt-2 flex gap-2">
+          <input
+            id="p-follow-email"
+            v-model="followUpEmail"
+            type="email"
+            class="od-input min-w-0 flex-1"
+            maxlength="180"
+            required
+            :placeholder="t('manage.email_placeholder')"
+            @focus="editing = true"
+            @blur="editing = false"
+          />
+          <button type="submit" class="od-btn od-btn-ghost shrink-0" :disabled="busy || !followUpEmail.trim()">
+            {{ t('public.email_yes') }}
+          </button>
+        </div>
+        <div class="mt-1.5 flex items-center justify-between gap-3">
+          <p class="text-xs text-[var(--od-slate)]">{{ t('public.email_hint') }}</p>
+          <button type="button" class="shrink-0 text-xs text-[var(--od-slate)] hover:text-[var(--od-ink)]" @click="dismissEmail">
+            {{ t('public.email_no') }}
+          </button>
+        </div>
+      </form>
 
       <!-- Planung: erscheint erst, wenn sie relevant ist -->
       <template v-if="showPlan">

@@ -218,10 +218,14 @@
     "your_time": "{local} your time · {event} in {zone}",
     "name_hint": "Once you’re in, you’ll see who can make it when – and the others will see you.",
     "taken": "taken",
-    "email_toggle": "Updates by email?",
     "name_first": "Add your name first, then your tap counts.",
     "join_first": "Tap “Let's go” and your answer counts.",
-    "names_teaser": "Add your name to see who can make it when."
+    "names_teaser": "Add your name to see who can make it when.",
+    "email_ask_date": "Want a heads-up when the date is set?",
+    "email_ask": "Want a heads-up when something changes?",
+    "email_yes": "Yes",
+    "email_no": "No thanks",
+    "email_saved": "Done, you’ll get a heads-up."
   },
   "legal": {
     "privacy": "Privacy",

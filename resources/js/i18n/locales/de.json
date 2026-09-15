@@ -218,10 +218,14 @@
     "your_time": "{local} bei dir · {event} in {zone}",
     "name_hint": "Sobald du dabei bist, siehst du, wer wann kann – und die anderen sehen dich.",
     "taken": "vergeben",
-    "email_toggle": "Updates per Mail?",
     "name_first": "Erst kurz deinen Namen, dann zählt dein Tipp.",
     "join_first": "Noch kurz auf „Los geht's“, dann zählt dein Tipp.",
-    "names_teaser": "Trag deinen Namen ein, dann siehst du, wer wann kann."
+    "names_teaser": "Trag deinen Namen ein, dann siehst du, wer wann kann.",
+    "email_ask_date": "Bescheid bekommen, wenn der Termin steht?",
+    "email_ask": "Bescheid bekommen, wenn sich etwas ändert?",
+    "email_yes": "Ja",
+    "email_no": "Nein danke",
+    "email_saved": "Gut, du bekommst Bescheid."
   },
   "legal": {
     "privacy": "Datenschutz",

@@ -137,4 +137,21 @@ class ParticipationTest extends TestCase
 
         $this->get("/e/{$event->public_token}")->assertNotFound();
     }
+
+    public function test_adding_an_email_later_keeps_the_answers(): void
+    {
+        $event = $this->makeEvent();
+        $token = str_repeat('a', 32);
+        $option = $event->dateOptions()->first();
+
+        $this->postJson("/t/{$event->public_token}/join", ['display_name' => 'Anna', 'token' => $token])->assertCreated();
+        $this->postJson("/t/{$event->public_token}/availability", ['token' => $token, 'answers' => [$option->id => 'yes']])->assertOk();
+
+        // Nachfrage-Box: gleicher Token, jetzt mit Adresse
+        $this->postJson("/t/{$event->public_token}/join", ['display_name' => 'Anna', 'email' => 'anna@example.org', 'token' => $token])->assertSuccessful();
+
+        $participant = $event->participants()->sole();
+        $this->assertSame('anna@example.org', $participant->email);
+        $this->assertSame('yes', $participant->availabilities()->sole()->value);
+    }
 }
