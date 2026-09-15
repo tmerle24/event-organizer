@@ -31,6 +31,19 @@ export function formatShort(option) {
   return new Intl.DateTimeFormat(locale(), opts).format(date)
 }
 
+/** Kompakt fuer schmale Zeilen: "Fr., 25. Sep. 2026, 18:00" */
+export function formatCompact(option, timeZone = viewerTimezone()) {
+  const date = option.all_day && option.day ? new Date(`${option.day}T12:00:00`) : new Date(option.starts_at_utc)
+  const opts = { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' }
+  if (!option.all_day) {
+    opts.hour = '2-digit'
+    opts.minute = '2-digit'
+    opts.timeZone = timeZone
+  }
+
+  return new Intl.DateTimeFormat(locale(), opts).format(date)
+}
+
 export function formatTime(option, timeZone = viewerTimezone()) {
   if (option.all_day) return null
   return new Intl.DateTimeFormat(locale(), {

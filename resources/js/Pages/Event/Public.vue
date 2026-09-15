@@ -13,7 +13,7 @@ import ConfirmModal from '@/Components/ConfirmModal.vue'
 import NameModal from '@/Components/NameModal.vue'
 import Toast from '@/Components/Toast.vue'
 import { useParticipantToken } from '@/composables/useDeviceToken'
-import { formatFull, timezoneNote } from '@/composables/useDateFormat'
+import { formatCompact, formatFull, timezoneNote } from '@/composables/useDateFormat'
 import { fitsEveryone } from '@/composables/useMatch'
 import { mapsLink } from '@/composables/useMapsLink'
 import { rememberName, rememberedName } from '@/composables/useRememberedName'
@@ -273,7 +273,9 @@ function markerFor(option) {
   if (option.id === event.value.decided_option_id) {
     return { label: t('manage.dates.confirmed'), dot: 'var(--od-apricot)', text: 'var(--od-ink)' }
   }
-  if (option.id === event.value.best_match_id && !decided.value) {
+  // Markierung nur, wenn ein Termin eindeutig vorne liegt — bei Gleichstand
+  // liefert der Server keinen best_match_id.
+  if (!decided.value && option.id === event.value.best_match_id) {
     return fitsEveryone(option)
       ? { label: t('manage.dates.best'), dot: 'var(--od-mint)', text: 'var(--od-mint)' }
       : { label: t('manage.dates.best_partial'), dot: 'var(--od-violet)', text: 'var(--od-violet)' }
@@ -402,17 +404,7 @@ function note(option) {
           <li
             v-for="(option, index) in ordered"
             :key="option.id"
-            class="border border-transparent px-3.5 py-3.5"
-            :class="markerFor(option) || markerFor(ordered[index + 1] ?? {}) ? '' : 'border-b-[var(--od-line)]! last:border-b-transparent!'"
-            :style="
-              markerFor(option)
-                ? {
-                    borderColor: option.id === event.decided_option_id ? 'var(--od-apricot)' : markerFor(option).dot,
-                    borderRadius: 'var(--od-radius-md)',
-                    background: option.id === event.decided_option_id ? 'var(--od-sand)' : 'var(--od-white)',
-                  }
-                : {}
-            "
+            class="border-b border-b-[var(--od-line)] px-3.5 py-3.5 last:border-b-transparent"
           >
             <div class="flex flex-wrap items-center justify-between gap-2">
               <div class="min-w-0">
@@ -428,8 +420,10 @@ function note(option) {
                     {{ markerFor(option).label }}
                   </template>
                 </p>
+                <!-- Handy: kurzes Format, damit der Termin in eine Zeile passt -->
                 <p class="od-h3" :class="{ 'opacity-60': option.blocked }">
-                  {{ formatFull(option) }}
+                  <span class="sm:hidden">{{ formatCompact(option) }}</span>
+                  <span class="hidden sm:inline">{{ formatFull(option) }}</span>
                 </p>
                 <p v-if="note(option)" class="od-meta">
                   {{ t('public.your_time', note(option)) }}

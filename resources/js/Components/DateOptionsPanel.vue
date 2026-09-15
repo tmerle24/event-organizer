@@ -3,7 +3,7 @@ import { ref, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import CountBar from '@/Components/CountBar.vue'
 import WhoList from '@/Components/WhoList.vue'
-import { formatFull, isoDay, timezoneNote } from '@/composables/useDateFormat'
+import { formatCompact, formatFull, isoDay, timezoneNote } from '@/composables/useDateFormat'
 import { fitsEveryone } from '@/composables/useMatch'
 
 const props = defineProps({
@@ -60,11 +60,13 @@ function isPrimaryChoice(option) {
   return option.id === props.event.best_match_id && !decided.value
 }
 
+/** Markierung nur bei eindeutiger Empfehlung — bei Gleichstand liefert der
+ *  Server keinen best_match_id. */
 function isBest(option) {
   return option.id === props.event.best_match_id && !decided.value
 }
 
-/** Mint nur, wenn der beste Termin wirklich allen passt */
+/** Mint nur, wenn der empfohlene Termin wirklich allen passt */
 function isMint(option) {
   return isBest(option) && fitsEveryone(option)
 }
@@ -199,14 +201,8 @@ function toggleWeekday(day) {
       <li
         v-for="(option, index) in ordered"
         :key="option.id"
-        class="border border-transparent px-3.5 py-3.5"
-        :class="marked(option) || marked(ordered[index + 1] ?? {}) ? '' : 'border-b-[var(--od-line)]! last:border-b-transparent!'"
-        :style="{
-          ...(marked(option)
-            ? { borderColor: borderFor(option), borderRadius: 'var(--od-radius-md)', background: 'var(--od-white)' }
-            : {}),
-          opacity: option.blocked ? 0.7 : 1,
-        }"
+        class="border-b border-b-[var(--od-line)] px-3.5 py-3.5 last:border-b-transparent"
+        :style="{ opacity: option.blocked ? 0.7 : 1 }"
       >
         <!-- Aktionen rechts oben, Datum darunter in voller Breite (sonst am Handy gequetscht) -->
         <div class="-mt-1 flex min-h-8 items-center justify-between gap-3">
@@ -255,13 +251,15 @@ function toggleWeekday(day) {
         </div>
 
         <p class="od-h3 mt-1.5 flex items-center gap-2">
+          <!-- Handy: kurzes Format -->
           <span
             v-if="option.id === event.decided_option_id"
             class="inline-block h-2.5 w-2.5 shrink-0 rounded-full"
             style="background: var(--od-apricot)"
             :aria-label="t('manage.dates.confirmed')"
           />
-          {{ localizedFull(option) }}
+          <span class="sm:hidden">{{ formatCompact(option) }}</span>
+          <span class="hidden sm:inline">{{ localizedFull(option) }}</span>
         </p>
         <p v-if="note(option)" class="od-meta">
           {{ t('public.your_time', note(option)) }}

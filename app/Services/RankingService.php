@@ -95,6 +95,20 @@ class RankingService
             return null;
         }
 
+        // Gleichstand ist keine Empfehlung: "Passt am besten" an einem von zwei
+        // gleich bewerteten Terminen versteht niemand.
+        $second = $ranked[1] ?? null;
+
+        if ($second && $this->key($second) === $this->key($top)) {
+            return null;
+        }
+
         return $top['id'];
+    }
+
+    /** Alles, was die Reihenfolge bestimmt — ohne Datum */
+    private function key(array $row): array
+    {
+        return [$row['blocked'], $row['no_count'], $row['score'], $row['open_count'], $row['maybe_count']];
     }
 }

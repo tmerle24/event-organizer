@@ -136,4 +136,24 @@ class RankingTest extends TestCase
 
         $this->assertNull(app(RankingService::class)->bestMatchId($this->event->fresh()));
     }
+
+    public function test_a_tie_gets_no_recommendation(): void
+    {
+        $a = $this->option(1);
+        $b = $this->option(2);
+        $anna = $this->participant('Anna');
+        $ben = $this->participant('Ben');
+
+        foreach ([$a, $b] as $option) {
+            $this->answer($option, $anna, 'maybe');
+            $this->answer($option, $ben, 'maybe');
+        }
+
+        $this->assertNull(app(RankingService::class)->bestMatchId($this->event->fresh()));
+
+        // sobald ein Termin besser dasteht, gibt es wieder eine Empfehlung
+        Availability::where('date_option_id', $a->id)->update(['value' => 'yes']);
+
+        $this->assertSame($a->id, app(RankingService::class)->bestMatchId($this->event->fresh()));
+    }
 }
