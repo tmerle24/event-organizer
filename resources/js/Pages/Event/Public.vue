@@ -404,7 +404,17 @@ function note(option) {
           <li
             v-for="(option, index) in ordered"
             :key="option.id"
-            class="border-b border-b-[var(--od-line)] px-3.5 py-3.5 last:border-b-transparent"
+            class="border border-transparent px-3.5 py-3.5"
+            :class="markerFor(option) || markerFor(ordered[index + 1] ?? {}) ? '' : 'border-b-[var(--od-line)]! last:border-b-transparent!'"
+            :style="
+              markerFor(option)
+                ? {
+                    borderColor: option.id === event.decided_option_id ? 'var(--od-apricot)' : markerFor(option).dot,
+                    borderRadius: 'var(--od-radius-md)',
+                    background: option.id === event.decided_option_id ? 'var(--od-sand)' : 'var(--od-white)',
+                  }
+                : {}
+            "
           >
             <div class="flex flex-wrap items-center justify-between gap-2">
               <div class="min-w-0">

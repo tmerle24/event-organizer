@@ -201,8 +201,14 @@ function toggleWeekday(day) {
       <li
         v-for="(option, index) in ordered"
         :key="option.id"
-        class="border-b border-b-[var(--od-line)] px-3.5 py-3.5 last:border-b-transparent"
-        :style="{ opacity: option.blocked ? 0.7 : 1 }"
+        class="border border-transparent px-3.5 py-3.5"
+        :class="marked(option) || marked(ordered[index + 1] ?? {}) ? '' : 'border-b-[var(--od-line)]! last:border-b-transparent!'"
+        :style="{
+          ...(marked(option)
+            ? { borderColor: borderFor(option), borderRadius: 'var(--od-radius-md)', background: 'var(--od-white)' }
+            : {}),
+          opacity: option.blocked ? 0.7 : 1,
+        }"
       >
         <!-- Aktionen rechts oben, Datum darunter in voller Breite (sonst am Handy gequetscht) -->
         <div class="-mt-1 flex min-h-8 items-center justify-between gap-3">
