@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, onMounted, onBeforeUnmount, watch } from 'vue'
+import { ref, computed, nextTick, onMounted, onBeforeUnmount, watch } from 'vue'
 import { Head } from '@inertiajs/vue3'
 import { useI18n } from 'vue-i18n'
 import Logo from '@/Components/Logo.vue'
@@ -10,6 +10,7 @@ import CountBar from '@/Components/CountBar.vue'
 import WhoList from '@/Components/WhoList.vue'
 import PlanPanel from '@/Components/PlanPanel.vue'
 import ConfirmModal from '@/Components/ConfirmModal.vue'
+import NameModal from '@/Components/NameModal.vue'
 import Toast from '@/Components/Toast.vue'
 import { useParticipantToken } from '@/composables/useDeviceToken'
 import { formatFull, timezoneNote } from '@/composables/useDateFormat'
@@ -27,7 +28,6 @@ const event = ref(props.event)
 const token = useParticipantToken(props.event.public_token)
 const me = ref(props.event.me)
 
-const form = ref({ display_name: rememberedName(), email: '', website: '' })
 const answers = ref({})
 const busy = ref(false)
 /*
@@ -41,8 +41,11 @@ const editing = ref(false)
 const toast = ref('')
 const toastTone = ref('ok')
 const confirmLeave = ref(false)
-const joinForm = ref(null)
-const nameInput = ref(null)
+const saved = ref(false)
+const askName = ref(false)
+let saveTimer = null
+// was beim ersten Klick gemeint war — wird nach dem Eintragen nachgeholt
+let pending = null
 /*
  * Steht der Termin, ist die Abstimmung erledigt: die Liste klappt zu, damit
  * das, was noch zu tun ist, nicht unter sechs abgehakten Terminen liegt.
@@ -85,7 +88,10 @@ onMounted(async () => {
   poller = setInterval(refresh, 6000)
 })
 
-onBeforeUnmount(() => clearInterval(poller))
+onBeforeUnmount(() => {
+  clearInterval(poller)
+  clearTimeout(saveTimer)
+})
 
 watch(() => event.value.decided_option_id, syncFromServer)
 
@@ -108,24 +114,44 @@ function currentValue(optionId) {
 }
 
 function setValue(optionId, value) {
-  answers.value = { ...answers.value, [optionId]: value }
-  if (!me.value) nudgeToName()
-}
+  if (!me.value) {
+    // Erst der Name, dann zaehlt der Klick — der Klick wird danach nachgeholt.
+    pending = () => setValue(optionId, value)
+    askName.value = true
 
-/*
- * Buttons sind schon vor dem Eintragen da. Der Tipp bleibt stehen, aber ohne
- * Namen geht nichts raus — also zum Namensfeld und kurz sagen, warum.
- */
-function nudgeToName() {
-  const input = nameInput.value
-  if (!input || form.value.display_name.trim()) {
-    joinForm.value?.scrollIntoView({ behavior: 'smooth', block: 'center' })
-    flash(t('public.join_first'))
     return
   }
-  joinForm.value?.scrollIntoView({ behavior: 'smooth', block: 'center' })
-  input.focus({ preventScroll: true })
-  flash(t('public.name_first'))
+
+  answers.value = { ...answers.value, [optionId]: value }
+
+  // Kein Speichern-Button: jeder Tipp geht raus, mehrere kurz hintereinander
+  // als eine Anfrage — so kann nichts verloren gehen.
+  clearTimeout(saveTimer)
+  saveTimer = setTimeout(saveAnswers, 600)
+}
+
+/** Aufgabe oder Antwort ohne Namen: erst fragen, dann nachholen */
+function requestName(action) {
+  pending = action
+  askName.value = true
+}
+
+function cancelName() {
+  askName.value = false
+  pending = null
+}
+
+async function joinFromModal(payload) {
+  await join(payload)
+
+  if (me.value) {
+    askName.value = false
+    const action = pending
+    pending = null
+    // erst rendern lassen, sonst sieht PlanPanel den Teilnehmer noch nicht
+    await nextTick()
+    action?.()
+  }
 }
 
 /**
@@ -151,45 +177,52 @@ function flash(message, tone = 'ok') {
   setTimeout(() => (toast.value = ''), 2600)
 }
 
-async function join() {
-  if (!form.value.display_name.trim()) return
+async function join({ display_name, email, website }) {
+  if (!display_name) return
   busy.value = true
 
   try {
     const { data } = await window.axios.post(`${baseUrl.value}/join`, {
-      display_name: form.value.display_name.trim(),
-      email: form.value.email.trim() || null,
+      display_name,
+      email,
       token,
-      website: form.value.website,
+      website,
     })
     event.value = data.event
     me.value = data.event.me
-    rememberName(form.value.display_name.trim())
+    rememberName(display_name)
   } catch (e) {
     flash(t('common.error'), 'error')
-    return
   } finally {
     busy.value = false
   }
-
-  // vorher angetippte Termine gleich mitspeichern
-  await saveAnswers()
 }
 
 async function saveAnswers() {
   if (!me.value || !dirty.value) return
+  clearTimeout(saveTimer)
+
+  const sending = answers.value
   busy.value = true
 
   try {
     const { data } = await window.axios.post(`${baseUrl.value}/availability`, {
       token,
-      answers: answers.value,
+      answers: sending,
     })
     event.value = data.event
     me.value = data.event.me
-    answers.value = {}
-    flash(t('public.answers_saved'))
+    // nur die gesendeten Antworten verwerfen — waehrenddessen kann getippt worden sein
+    answers.value = Object.fromEntries(
+      Object.entries(answers.value).filter(([optionId]) => !(optionId in sending))
+    )
+    saved.value = true
+    setTimeout(() => (saved.value = false), 2000)
   } catch (e) {
+    // Antwort faellt auf den Serverstand zurueck
+    answers.value = Object.fromEntries(
+      Object.entries(answers.value).filter(([optionId]) => !(optionId in sending))
+    )
     flash(t('common.error'), 'error')
   } finally {
     busy.value = false
@@ -204,7 +237,6 @@ async function leave() {
     const { data } = await window.axios.post(`${baseUrl.value}/leave`, { token })
     event.value = data.event
     me.value = null
-    form.value = { display_name: rememberedName(), email: '', website: '' }
   } catch (e) {
     flash(t('common.error'), 'error')
   } finally {
@@ -304,46 +336,8 @@ function note(option) {
         </div>
       </div>
 
-      <!-- Eintragen: erste Antwort erzeugt den Teilnehmer -->
-      <!-- Kompakt, damit die Termine am Handy ohne Scrollen darunter sichtbar sind -->
-      <form v-if="!me && !readOnly && !resolving" ref="joinForm" class="od-card p-4 sm:p-5" @submit.prevent="join">
-        <label class="block text-sm" for="p-name">{{ showDates ? t('public.intro') : t('public.intro_list') }}</label>
-        <div class="mt-2 flex gap-2">
-          <input
-            id="p-name"
-            ref="nameInput"
-            v-model="form.display_name"
-            class="od-input min-w-0 flex-1"
-            maxlength="80"
-            required
-            :placeholder="t('public.name_placeholder')"
-          />
-          <button type="submit" class="od-btn od-btn-primary shrink-0 whitespace-nowrap" :disabled="busy || !form.display_name.trim()">
-            {{ t('public.join') }}
-          </button>
-        </div>
-
-        <!-- aufklappbar wie der QR-Code im Teilen-Kasten -->
-        <details class="mt-2">
-          <summary class="cursor-pointer text-xs text-[var(--od-slate)] hover:text-[var(--od-ink)]">
-            {{ t('public.email_toggle') }}
-          </summary>
-          <input
-            id="p-email"
-            v-model="form.email"
-            type="email"
-            class="od-input mt-2"
-            maxlength="180"
-            :aria-label="t('public.email')"
-            :placeholder="t('manage.email_placeholder')"
-          />
-          <p class="mt-1 text-xs text-[var(--od-slate)]">{{ t('public.email_hint') }}</p>
-        </details>
-
-        <input v-model="form.website" type="text" name="website" tabindex="-1" autocomplete="off" class="hidden" aria-hidden="true" />
-      </form>
-
-      <div v-else-if="me" class="flex items-center justify-between px-1 text-sm">
+      <!-- Eingetragen: Name und Austragen -->
+      <div v-if="me" class="flex items-center justify-between px-1 text-sm">
         <span>{{ t('public.hello', { name: me.display_name }) }}</span>
         <button type="button" class="text-xs text-[var(--od-slate)] hover:text-[var(--od-slate)]" @click="confirmLeave = true">
           {{ t('public.leave') }}
@@ -355,7 +349,8 @@ function note(option) {
         <header class="flex items-center justify-between gap-3">
           <div class="min-w-0">
             <h2 class="font-display font-semibold">{{ t('public.who') }}</h2>
-            <p v-if="!me && !readOnly && !resolving" class="od-meta mt-0.5">{{ t('public.names_teaser') }}</p>
+            <p v-if="!me && !readOnly && !resolving" class="od-meta mt-0.5">{{ t('public.intro') }}</p>
+            <p v-else-if="saved" class="od-meta mt-0.5 od-settle" style="color: var(--od-violet)">{{ t('public.saved') }}</p>
           </div>
           <button
             v-if="me && event.answered_count > 0 && dateListVisible"
@@ -431,15 +426,6 @@ function note(option) {
           </li>
         </ul>
 
-        <button
-          v-if="me && !readOnly && event.date_options.length && dateListVisible"
-          type="button"
-          class="od-btn od-btn-primary mt-4 w-full py-2.5"
-          :disabled="busy || !dirty"
-          @click="saveAnswers"
-        >
-          {{ t('public.save_answers') }}
-        </button>
       </section>
 
       <!-- Planung: erscheint erst, wenn sie relevant ist -->
@@ -450,6 +436,7 @@ function note(option) {
           :base-url="baseUrl"
           :participant-token="token"
           :me="me"
+          @need-name="requestName"
           @updated="event = $event"
           @focus-change="editing = $event"
           @error="flash(t('common.error'), 'error')"
@@ -459,6 +446,7 @@ function note(option) {
 
     <Footer powered-by />
     <Toast :message="toast" :tone="toastTone" />
+    <NameModal :open="askName" :busy="busy" @confirm="joinFromModal" @cancel="cancelName" />
     <ConfirmModal
       :open="confirmLeave"
       :message="t('public.leave_confirm')"

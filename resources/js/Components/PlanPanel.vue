@@ -16,7 +16,7 @@ const props = defineProps({
   canManage: { type: Boolean, default: false },
 })
 
-const emit = defineEmits(['updated', 'focus-change', 'error'])
+const emit = defineEmits(['updated', 'focus-change', 'error', 'need-name'])
 const { t } = useI18n()
 
 const busy = ref(false)
@@ -129,7 +129,14 @@ async function assign(task, participantId) {
 }
 
 async function claim(task) {
-  if (!props.me) return
+  // wie bei den Terminen: ohne Namen erst zum Formular
+  if (!props.me) {
+    // Der Klick wird nachgeholt, sobald der Name da ist
+    emit('need-name', () => claim(task))
+
+    return
+  }
+
   await assign(task, task.assignee_participant_id === props.me.id ? null : props.me.id)
 }
 
@@ -252,18 +259,18 @@ async function removeSection(section) {
             </span>
 
             <button
-              v-if="me && !readOnly && (!task.assignee_participant_id || task.assignee_participant_id === me.id)"
+              v-if="!canManage && !readOnly && (!task.assignee_participant_id || mine(task))"
               type="button"
               class="rounded-lg px-2 py-1 text-xs font-semibold"
               :style="
-                task.assignee_participant_id === me.id
+                mine(task)
                   ? { color: '#fff', background: 'var(--od-violet)' }
                   : { color: 'var(--od-violet-dark)', background: 'var(--od-violet-tint)' }
               "
               :disabled="busy"
               @click="claim(task)"
             >
-              {{ task.assignee_participant_id === me.id ? `${t('public.mine')} ×` : t('public.take') }}
+              {{ mine(task) ? `${t('public.mine')} ×` : t('public.take') }}
             </button>
           </template>
 
@@ -374,18 +381,18 @@ async function removeSection(section) {
               {{ me && task.assignee_participant_id === me.id ? t('public.mine') : (task.assignee_name ?? t('public.taken')) }}
             </span>
             <button
-              v-if="me && !readOnly && (!task.assignee_participant_id || task.assignee_participant_id === me.id)"
+              v-if="!canManage && !readOnly && (!task.assignee_participant_id || mine(task))"
               type="button"
               class="rounded-lg px-2 py-1 text-xs font-semibold"
               :style="
-                task.assignee_participant_id === me.id
+                mine(task)
                   ? { color: '#fff', background: 'var(--od-violet)' }
                   : { color: 'var(--od-violet-dark)', background: 'var(--od-violet-tint)' }
               "
               :disabled="busy"
               @click="claim(task)"
             >
-              {{ task.assignee_participant_id === me.id ? `${t('public.mine')} ×` : t('public.take') }}
+              {{ mine(task) ? `${t('public.mine')} ×` : t('public.take') }}
             </button>
           </template>
 

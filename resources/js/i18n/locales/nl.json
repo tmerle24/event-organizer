@@ -201,7 +201,6 @@
     "leave": "Mijn deelname verwijderen",
     "leave_confirm": "Je reacties en taken worden verwijderd. Doorgaan?",
     "your_answer": "Jouw antwoord",
-    "save_answers": "Zo is het goed",
     "answers_saved": "Genoteerd. Je kunt het altijd aanpassen.",
     "who": "Wie kan wanneer",
     "decided_banner": "De datum staat",
@@ -218,10 +217,9 @@
     "your_time": "{local} bij jou · {event} in {zone}",
     "name_hint": "Zodra je meedoet, zie je wie wanneer kan – en zien de anderen jou.",
     "taken": "bezet",
-    "name_first": "Eerst even je naam, dan telt je keuze.",
-    "join_first": "Tik nog even op ‘Aan de slag’, dan telt je keuze.",
-    "names_teaser": "Vul je naam in, dan zie je wie wanneer kan.",
-    "email_toggle": "Melding per mail"
+    "email_toggle": "Melding per mail",
+    "saved": "Opgeslagen",
+    "modal_title": "Hoe heet je?"
   },
   "legal": {
     "privacy": "Privacy",

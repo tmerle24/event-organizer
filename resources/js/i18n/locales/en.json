@@ -201,7 +201,6 @@
     "leave": "Remove my participation",
     "leave_confirm": "Your answers and tasks will be deleted. Continue?",
     "your_answer": "Your answer",
-    "save_answers": "That works",
     "answers_saved": "Got it. You can change this any time.",
     "who": "Who can make it",
     "decided_banner": "The date is set",
@@ -218,10 +217,9 @@
     "your_time": "{local} your time · {event} in {zone}",
     "name_hint": "Once you’re in, you’ll see who can make it when – and the others will see you.",
     "taken": "taken",
-    "name_first": "Add your name first, then your tap counts.",
-    "join_first": "Tap “Let's go” and your answer counts.",
-    "names_teaser": "Add your name to see who can make it when.",
-    "email_toggle": "Email notification"
+    "email_toggle": "Email notification",
+    "saved": "Saved",
+    "modal_title": "What’s your name?"
   },
   "legal": {
     "privacy": "Privacy",

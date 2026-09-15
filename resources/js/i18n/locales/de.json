@@ -201,7 +201,6 @@
     "leave": "Meine Teilnahme entfernen",
     "leave_confirm": "Deine Antworten und Aufgaben werden gelöscht. Fortfahren?",
     "your_answer": "Deine Antwort",
-    "save_answers": "Passt so",
     "answers_saved": "Steht. Ändern kannst du das jederzeit.",
     "who": "Wer kann wann",
     "decided_banner": "Der Termin steht",
@@ -218,10 +217,9 @@
     "your_time": "{local} bei dir · {event} in {zone}",
     "name_hint": "Sobald du dabei bist, siehst du, wer wann kann – und die anderen sehen dich.",
     "taken": "vergeben",
-    "name_first": "Erst kurz deinen Namen, dann zählt dein Tipp.",
-    "join_first": "Noch kurz auf „Los geht's“, dann zählt dein Tipp.",
-    "names_teaser": "Trag deinen Namen ein, dann siehst du, wer wann kann.",
-    "email_toggle": "E-Mail-Benachrichtigung"
+    "email_toggle": "E-Mail-Benachrichtigung",
+    "saved": "Gespeichert",
+    "modal_title": "Wie heißt du?"
   },
   "legal": {
     "privacy": "Datenschutz",
