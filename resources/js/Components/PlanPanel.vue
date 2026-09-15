@@ -240,7 +240,7 @@ async function removeSection(section) {
 
           <template v-else>
             <span
-              v-if="task.assignee_name && !(me && task.assignee_participant_id === me.id && !readOnly)"
+              v-if="task.assignee_participant_id && !(me && task.assignee_participant_id === me.id && !readOnly)"
               class="rounded-lg px-2 py-1 text-xs"
               :style="
                 me && task.assignee_participant_id === me.id
@@ -248,7 +248,7 @@ async function removeSection(section) {
                   : { background: 'var(--od-mist)', color: 'var(--od-slate)' }
               "
             >
-              {{ me && task.assignee_participant_id === me.id ? t('public.mine') : task.assignee_name }}
+              {{ me && task.assignee_participant_id === me.id ? t('public.mine') : (task.assignee_name ?? t('public.taken')) }}
             </span>
 
             <button
@@ -315,7 +315,7 @@ async function removeSection(section) {
           @blur="emit('focus-change', false)"
           @keyup.enter="addTask(section.id)"
         />
-        <button type="button" class="od-btn od-btn-ghost px-3 py-1.5 text-sm" :disabled="busy" @click="addTask(section.id)">
+        <button type="button" class="od-btn od-btn-ghost w-11 shrink-0 px-0 py-1.5 text-sm" :disabled="busy" @click="addTask(section.id)">
           +
         </button>
       </div>
@@ -368,10 +368,10 @@ async function removeSection(section) {
 
           <template v-else>
             <span
-              v-if="task.assignee_name && !(me && task.assignee_participant_id === me.id && !readOnly)"
+              v-if="task.assignee_participant_id && !(me && task.assignee_participant_id === me.id && !readOnly)"
               class="rounded-lg bg-[var(--od-mist)] px-2 py-1 text-xs text-[var(--od-slate)]"
             >
-              {{ me && task.assignee_participant_id === me.id ? t('public.mine') : task.assignee_name }}
+              {{ me && task.assignee_participant_id === me.id ? t('public.mine') : (task.assignee_name ?? t('public.taken')) }}
             </span>
             <button
               v-if="me && !readOnly && (!task.assignee_participant_id || task.assignee_participant_id === me.id)"
@@ -410,7 +410,7 @@ async function removeSection(section) {
           @blur="emit('focus-change', false)"
           @keyup.enter="addTask(null)"
         />
-        <button type="button" class="od-btn od-btn-ghost px-3 py-1.5 text-sm" :disabled="busy" @click="addTask(null)">+</button>
+        <button type="button" class="od-btn od-btn-ghost w-11 shrink-0 px-0 py-1.5 text-sm" :disabled="busy" @click="addTask(null)">+</button>
       </div>
     </div>
 

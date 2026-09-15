@@ -214,7 +214,9 @@
     "taken_by": "{name}",
     "add_own": "Eigene Aufgabe hinzufügen",
     "no_dates": "Der Organisator hat noch keine Termine eingetragen.",
-    "your_time": "{local} bei dir · {event} in {zone}"
+    "your_time": "{local} bei dir · {event} in {zone}",
+    "name_hint": "Sobald du dabei bist, siehst du, wer wann kann – und die anderen sehen dich.",
+    "taken": "vergeben"
   },
   "legal": {
     "privacy": "Datenschutz",

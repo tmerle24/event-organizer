@@ -13,6 +13,8 @@ const props = defineProps({
   option: { type: Object, required: true },
   participants: { type: Array, required: true },
   showOpen: { type: Boolean, default: false },
+  // oeffentlich: Absagen nur als Zahl, nicht mit Namen
+  showDeclined: { type: Boolean, default: true },
 })
 
 const { t } = useI18n()
@@ -29,6 +31,7 @@ const groups = computed(() => {
   const sorted = [...props.participants].sort(byImportance)
 
   return GROUPS.filter((group) => group.key !== 'open' || props.showOpen)
+    .filter((group) => group.key !== 'no' || props.showDeclined)
     .map((group) => ({
       ...group,
       people: sorted.filter((p) => (votes[p.id] ?? 'open') === group.key),

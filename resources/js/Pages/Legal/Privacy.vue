@@ -52,6 +52,12 @@ onMounted(() => {
             Planungsbereich kommen Aufgaben und deren Zuordnung hinzu. Ein Benutzerkonto gibt es
             nicht.
           </p>
+          <p class="od-small mt-2" style="color: var(--od-slate)">
+            Wer sich eingetragen hat, sieht die Namen der anderen Teilnehmenden, ihre Zusagen und
+            Vielleicht-Antworten sowie übernommene Aufgaben. Absagen erscheinen dort nur als Anzahl.
+            Wer das Event organisiert, sieht alle Antworten. Vor dem Eintragen zeigt die Seite nur
+            Anzahlen, keine Namen. Die E-Mail-Adresse ist für niemanden sichtbar.
+          </p>
         </section>
 
         <section>

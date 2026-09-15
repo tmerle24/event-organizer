@@ -311,6 +311,14 @@ Violett-Familie und sind als abgeleitet im CSS kommentiert.
 `.od-btn-primary` / `.od-btn-ghost` / `.od-btn-quiet`. Radien: `--od-radius-sm`
 10px (Buttons/Inputs), `-md` 12px (Zeilen), `-lg` 16px (Karten), `-xl` 28px.
 
+**Ungelayerte Klassen schlagen Tailwind-Utilities.** Tailwind v4 legt Utilities
+in `@layer utilities`; eine Klasse außerhalb eines Layers gewinnt immer, egal
+wie spezifisch. `px-0` an einem `.od-btn` wurde deshalb lange still ignoriert.
+Die `.od-btn`-Familie steht jetzt in `@layer components`, Utilities greifen
+dort. Die übrigen `.od-*`-Klassen sind weiter ungelayert — wer z. B. an
+`.od-meta` (setzt die Farbe) eine Textfarbe per Utility überschreiben will,
+braucht `!` (`hover:text-[var(--od-violet)]!`).
+
 **Eine Primäraktion pro Screen.** Im Terminscreen bekommt nur die Zeile des
 besten Termins den gefüllten Button (`isPrimaryChoice()` in `DateOptionsPanel`);
 alles andere ist Ghost oder Quiet.
@@ -325,6 +333,15 @@ würde „Passt allen" direkt über „✕ Ben" sonst sich selbst widersprechen.
 „Namen zeigen" im Kopf öffnet alle zum Vergleichen. Pflicht-Personen zuerst.
 „Noch offen" mit Namen nur auf der Verwaltungsseite — öffentlich wäre das eine
 Mahnung.
+
+**Namen erst nach dem Eintragen** (`EventPresenter::forPublic()`, serverseitig):
+ohne Teilnehmer-Token liefert die Public-Seite leere `participants`, leere
+`votes` und keine `assignee_name` — Balken und Zahlen bleiben. Eingetragene
+sehen Namen bei „kann" und „vielleicht", **Absagen anderer nur als Zahl**
+(die `no`-Stimmen fremder Teilnehmer fehlen in `votes`). Der Organisator sieht
+alles. Das ist kein Datenschutz — jeder mit Link kann sich eintragen —, nur
+kein beiläufiger Blick. Tests: `NameVisibilityTest`. Bewusst **kein Schalter**
+dafür: gleiche Regeln für alle, im Formular erklärt.
 
 ---
 

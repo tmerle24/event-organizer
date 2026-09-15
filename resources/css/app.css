@@ -131,28 +131,34 @@ button { cursor: pointer; }
   box-shadow: 0 0 0 3px var(--od-violet-tint);
 }
 
-.od-btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  border-radius: var(--od-radius-sm);
-  padding: 0.625rem 1.125rem;
-  font-weight: 500;
-  transition: background-color 0.15s ease, border-color 0.15s ease, opacity 0.15s ease;
+/*
+ * Im components-Layer, damit Tailwind-Utilities (px-0, py-2.5 ...) am Button
+ * greifen. Ungelayert gewinnt die Klasse sonst immer.
+ */
+@layer components {
+  .od-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    border-radius: var(--od-radius-sm);
+    padding: 0.625rem 1.125rem;
+    font-weight: 500;
+    transition: background-color 0.15s ease, border-color 0.15s ease, opacity 0.15s ease;
+  }
+  /* Genau eine Primaeraktion pro Screen — alles andere ist Ghost. */
+  .od-btn-primary { background: var(--od-violet); color: var(--od-white); }
+  .od-btn-primary:hover { background: var(--od-violet-dark); }
+  .od-btn-ghost {
+    border: 1px solid var(--od-line);
+    background: var(--od-white);
+    color: var(--od-ink);
+  }
+  .od-btn-ghost:hover { border-color: var(--od-violet-soft); }
+  .od-btn-quiet { color: var(--od-slate); }
+  .od-btn-quiet:hover { color: var(--od-ink); background: var(--od-mist); }
+  .od-btn:disabled { opacity: 0.45; cursor: not-allowed; }
 }
-/* Genau eine Primaeraktion pro Screen — alles andere ist Ghost. */
-.od-btn-primary { background: var(--od-violet); color: var(--od-white); }
-.od-btn-primary:hover { background: var(--od-violet-dark); }
-.od-btn-ghost {
-  border: 1px solid var(--od-line);
-  background: var(--od-white);
-  color: var(--od-ink);
-}
-.od-btn-ghost:hover { border-color: var(--od-violet-soft); }
-.od-btn-quiet { color: var(--od-slate); }
-.od-btn-quiet:hover { color: var(--od-ink); background: var(--od-mist); }
-.od-btn:disabled { opacity: 0.45; cursor: not-allowed; }
 
 /* Der Bestaetigungsmoment darf kurz feiern (Guide Abschnitt 7). */
 @keyframes od-settle {

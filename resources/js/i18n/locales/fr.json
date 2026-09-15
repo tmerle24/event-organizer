@@ -214,7 +214,9 @@
     "taken_by": "{name}",
     "add_own": "Ajouter ma propre tâche",
     "no_dates": "L'organisateur n'a pas encore proposé de dates.",
-    "your_time": "{local} chez vous · {event} à {zone}"
+    "your_time": "{local} chez vous · {event} à {zone}",
+    "name_hint": "Une fois inscrit, vous voyez qui est disponible quand – et les autres vous voient.",
+    "taken": "déjà prise"
   },
   "legal": {
     "privacy": "Confidentialité",

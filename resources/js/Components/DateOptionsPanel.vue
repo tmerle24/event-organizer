@@ -149,7 +149,7 @@ function toggleWeekday(day) {
       <button
         v-if="event.answered_count > 0 && optionsVisible"
         type="button"
-        class="od-meta mt-1 shrink-0 whitespace-nowrap hover:text-[var(--od-violet)]"
+        class="od-meta mt-1 shrink-0 whitespace-nowrap hover:text-[var(--od-violet)]!"
         :aria-pressed="expandAll"
         @click="expandAll = !expandAll"
       >
@@ -177,7 +177,7 @@ function toggleWeekday(day) {
     <button
       v-if="decided && otherCount"
       type="button"
-      class="od-btn od-btn-quiet mt-4 px-0 text-[13px]"
+      class="od-btn od-btn-quiet mt-4 px-0 text-[13px] hover:bg-transparent"
       :aria-expanded="showOptions"
       @click="showOptions = !showOptions"
     >
@@ -220,13 +220,12 @@ function toggleWeekday(day) {
             <!--
               Eine Primäraktion pro Screen (Brand Guide Abschnitt 7): nur der
               beste Termin bekommt den gefüllten Button, alle anderen bleiben
-              als leise Aktion wählbar. px/py mit !, weil .od-btn ausserhalb
-              der Tailwind-Layer steht und Utilities sonst ueberschreibt.
+              als leise Aktion wählbar.
             -->
             <button
               v-if="!readOnly && option.id !== event.decided_option_id"
               type="button"
-              class="od-btn whitespace-nowrap px-3! py-1.5! text-[13px]"
+              class="od-btn whitespace-nowrap px-3 py-1.5 text-[13px]"
               :class="isPrimaryChoice(option) ? 'od-btn-primary' : 'od-btn-quiet'"
               :disabled="busy"
               @click="decide(option)"

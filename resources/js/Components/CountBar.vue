@@ -17,6 +17,7 @@ const props = defineProps({
   // ohne Teilnehmerliste kein Aufklappen
   participants: { type: Array, default: null },
   showOpen: { type: Boolean, default: false },
+  showDeclined: { type: Boolean, default: true },
   // Schalter "Namen zeigen" im Kopf des Panels
   expandAll: { type: Boolean, default: false },
 })
@@ -95,6 +96,7 @@ const segments = computed(() => [
       :option="option"
       :participants="participants"
       :show-open="showOpen"
+      :show-declined="showDeclined"
     />
   </div>
 </template>

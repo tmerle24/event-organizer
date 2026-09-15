@@ -261,7 +261,7 @@ function note(option) {
           <p v-if="note(decided)" class="od-meta">
             {{ t('public.your_time', note(decided)) }}
           </p>
-          <WhoList class="mt-3" :option="decided" :participants="event.participants" />
+          <WhoList v-if="me" class="mt-3" :option="decided" :participants="event.participants" :show-declined="false" />
           <a :href="`${baseUrl}/event.ics`" class="od-btn od-btn-ghost od-small mt-3">{{ t('public.add_to_calendar') }}</a>
         </div>
       </div>
@@ -281,6 +281,7 @@ function note(option) {
           required
           :placeholder="t('public.name_placeholder')"
         />
+        <p class="mt-1 text-xs text-[var(--od-slate)]">{{ t('public.name_hint') }}</p>
 
         <label class="mt-3 block text-xs font-semibold text-[var(--od-slate)]" for="p-email">
           {{ t('public.email') }} <span class="font-normal">({{ t('common.optional') }})</span>
@@ -307,9 +308,9 @@ function note(option) {
         <header class="flex items-center justify-between gap-3">
           <h2 class="font-display font-semibold">{{ t('public.who') }}</h2>
           <button
-            v-if="event.answered_count > 0 && dateListVisible"
+            v-if="me && event.answered_count > 0 && dateListVisible"
             type="button"
-            class="od-meta whitespace-nowrap hover:text-[var(--od-violet)]"
+            class="od-meta whitespace-nowrap hover:text-[var(--od-violet)]!"
             :aria-pressed="expandAll"
             @click="expandAll = !expandAll"
           >
@@ -320,7 +321,7 @@ function note(option) {
         <button
           v-if="decided && otherCount"
           type="button"
-          class="od-btn od-btn-quiet mt-2 px-0 text-[13px]"
+          class="od-btn od-btn-quiet mt-2 px-0 text-[13px] hover:bg-transparent"
           :aria-expanded="showDateList"
           @click="showDateList = !showDateList"
         >
@@ -376,7 +377,8 @@ function note(option) {
               class="mt-2"
               :option="option"
               :highlighted="option.id === event.best_match_id && !decided && fitsEveryone(option)"
-              :participants="event.participants"
+              :participants="me ? event.participants : null"
+              :show-declined="false"
               :expand-all="expandAll"
             />
           </li>

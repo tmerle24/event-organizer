@@ -40,9 +40,16 @@ class EventPresenter
         ];
     }
 
+    /**
+     * Namen erst fuer Eingetragene: wer andere sieht, steht selbst drin. Vorher
+     * nur Zahlen — Teilnehmerliste, Stimmen und Aufgaben-Namen bleiben leer.
+     * Absagen anderer ("kann nicht") auch fuer Eingetragene nur als Zahl.
+     * Kein Datenschutz (jeder mit Link kann sich eintragen), nur kein
+     * beilaeufiger Blick — deshalb serverseitig, nicht nur im UI.
+     */
     public function forPublic(Event $event, ?Participant $me = null): array
     {
-        return [
+        $data = [
             ...$this->common($event),
             'me' => $me ? [
                 'id' => $me->id,
@@ -57,6 +64,25 @@ class EventPresenter
                 'is_organizer' => $p->is_organizer,
             ])->values()->all(),
         ];
+
+        if (! $me) {
+            $data['participants'] = [];
+            $data['tasks'] = array_map(fn ($task) => [...$task, 'assignee_name' => null], $data['tasks']);
+        }
+
+        $data['date_options'] = array_map(function ($option) use ($me) {
+            $option['votes'] = $me
+                ? array_filter(
+                    $option['votes'],
+                    fn ($value, $participantId) => $value !== 'no' || $participantId === $me->id,
+                    ARRAY_FILTER_USE_BOTH,
+                )
+                : [];
+
+            return $option;
+        }, $data['date_options']);
+
+        return $data;
     }
 
     private function common(Event $event): array
