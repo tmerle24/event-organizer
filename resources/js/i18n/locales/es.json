@@ -81,7 +81,7 @@
       "all_day": "Todo el día",
       "time": "Hora",
       "day": "Día",
-      "confirm": "Quedarnos con esta fecha",
+      "confirm": "Fijar esta fecha",
       "confirmed": "Fijado",
       "blocked": "No le viene bien a alguien que debería estar",
       "best": "Le viene bien a todos",
@@ -98,7 +98,7 @@
       "names_hide": "Ocultar nombres",
       "still_open": "Sin responder aún",
       "best_partial": "El que mejor encaja",
-      "confirm_short": "Elegir"
+      "confirm_short": "Fijar"
     },
     "counts": {
       "yes": "puede | pueden",

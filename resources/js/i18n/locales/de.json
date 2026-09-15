@@ -81,7 +81,7 @@
       "all_day": "Ganztägig",
       "time": "Uhrzeit",
       "day": "Tag",
-      "confirm": "Diesen Termin nehmen",
+      "confirm": "Diesen Termin festlegen",
       "confirmed": "Steht",
       "blocked": "Passt einer Person nicht, die dabei sein sollte",
       "best": "Passt allen",
@@ -98,7 +98,7 @@
       "names_hide": "Namen ausblenden",
       "still_open": "Noch offen",
       "best_partial": "Passt am besten",
-      "confirm_short": "Nehmen"
+      "confirm_short": "Festlegen"
     },
     "counts": {
       "yes": "kann | können",

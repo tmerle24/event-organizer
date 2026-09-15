@@ -81,7 +81,7 @@
       "all_day": "Toute la journée",
       "time": "Heure",
       "day": "Jour",
-      "confirm": "Prendre cette date",
+      "confirm": "Fixer cette date",
       "confirmed": "C’est fixé",
       "blocked": "Ne convient pas à quelqu’un qui devrait être là",
       "best": "Ça convient à tout le monde",
@@ -98,7 +98,7 @@
       "names_hide": "Masquer les noms",
       "still_open": "Pas encore de réponse",
       "best_partial": "Convient le mieux",
-      "confirm_short": "Prendre"
+      "confirm_short": "Fixer"
     },
     "counts": {
       "yes": "dispo | dispos",

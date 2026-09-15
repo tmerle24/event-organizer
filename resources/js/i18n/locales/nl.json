@@ -81,7 +81,7 @@
       "all_day": "Hele dag",
       "time": "Tijd",
       "day": "Dag",
-      "confirm": "Deze datum nemen",
+      "confirm": "Deze datum vastleggen",
       "confirmed": "Staat",
       "blocked": "Past iemand niet die erbij hoort",
       "best": "Past iedereen",
@@ -98,7 +98,7 @@
       "names_hide": "Namen verbergen",
       "still_open": "Nog open",
       "best_partial": "Past het best",
-      "confirm_short": "Nemen"
+      "confirm_short": "Vastleggen"
     },
     "counts": {
       "yes": "kan | kunnen",

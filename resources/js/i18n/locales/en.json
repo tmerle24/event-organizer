@@ -81,7 +81,7 @@
       "all_day": "All day",
       "time": "Time",
       "day": "Day",
-      "confirm": "Take this date",
+      "confirm": "Set this date",
       "confirmed": "Set",
       "blocked": "Doesn't work for someone who should be there",
       "best": "Works for everyone",
@@ -98,7 +98,7 @@
       "names_hide": "Hide names",
       "still_open": "No answer yet",
       "best_partial": "Best fit",
-      "confirm_short": "Take"
+      "confirm_short": "Set"
     },
     "counts": {
       "yes": "can",
