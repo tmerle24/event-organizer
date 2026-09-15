@@ -15,6 +15,9 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        // One-Click-Abmeldung aus dem Mailprogramm hat kein CSRF-Token; der Link ist signiert
+        $middleware->validateCsrfTokens(except: ['t/*/unsubscribe/*']);
+
         $middleware->web(append: [
             HandleInertiaRequests::class,
             SetLocale::class,

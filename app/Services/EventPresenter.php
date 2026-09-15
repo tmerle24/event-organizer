@@ -31,7 +31,8 @@ class EventPresenter
             'participants' => $event->participants->map(fn (Participant $p) => [
                 'id' => $p->id,
                 'display_name' => $p->display_name,
-                'email' => $p->email,
+                // Adresse bleibt beim System, der Organisator sieht nur, ob es Updates gibt
+                'has_email' => filled($p->email),
                 'is_required' => $p->is_required,
                 'is_organizer' => $p->is_organizer,
                 'answered_count' => $p->availabilities->count(),

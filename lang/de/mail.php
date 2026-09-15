@@ -4,6 +4,8 @@ return [
     'common' => [
         'link_hint' => 'Falls der Button nicht funktioniert, kopiere diesen Link:',
         'no_account' => 'Kein Konto nötig – einfach den Link öffnen.',
+        'why' => 'Du bekommst diese Mail, weil du bei „:title“ deine Adresse für Updates hinterlegt hast.',
+        'unsubscribe' => 'Keine Mails mehr zu diesem Event',
     ],
     'invite' => [
         'subject' => 'Einladung: :title',
@@ -24,6 +26,15 @@ return [
         'heading' => 'Das Event wurde abgesagt',
         'body' => '":title" findet nicht statt.',
         'cta' => 'Details ansehen',
+    ],
+    'changed' => [
+        'subject' => 'Änderung: :title',
+        'heading' => 'Es gibt eine Änderung',
+    ],
+    'reopened' => [
+        'subject' => 'Findet doch statt: :title',
+        'heading' => 'Es findet doch statt',
+        'body' => '„:title“ ist nicht mehr abgesagt.',
     ],
     'manage_link' => [
         'subject' => 'Dein Verwaltungslink: :title',

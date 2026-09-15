@@ -1,7 +1,7 @@
 <x-mail::message>
-# {{ __('mail.decided.heading') }}
+# {{ __('mail.reopened.heading') }}
 
-**{{ $event->title }}**
+{{ __('mail.reopened.body', ['title' => $event->title]) }}
 
 @if ($when)
 {{ __('mail.decided.when', ['when' => $when]) }}
@@ -14,11 +14,6 @@
 <x-mail::button :url="$url">
 {{ __('mail.decided.cta') }}
 </x-mail::button>
-
-{{ __('mail.decided.planning_hint') }}
-
-{{ __('mail.common.link_hint') }}
-[{{ $url }}]({{ $url }})
 
 <x-slot:subcopy>
 {{ __('mail.common.why', ['title' => $event->title]) }}

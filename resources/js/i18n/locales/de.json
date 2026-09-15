@@ -112,7 +112,8 @@
       "invite": "Per E-Mail einladen",
       "invite_placeholder": "eine{'@'}mail.de, zwei{'@'}mail.de",
       "invite_send": "Einladungen senden",
-      "invited": "Einladung ist unterwegs | {count} Einladungen sind unterwegs"
+      "invited": "Einladung ist unterwegs | {count} Einladungen sind unterwegs",
+      "gets_updates": "Bekommt Updates per Mail"
     },
     "plan": {
       "title": "Planung",
@@ -181,7 +182,7 @@
     "name": "Dein Name",
     "name_placeholder": "Wie heißt du?",
     "email": "E-Mail",
-    "email_hint": "Nur damit du erfährst, wann es losgeht. Freiwillig.",
+    "email_hint": "Nur für Updates zum Event. Der Organisator sieht sie nicht.",
     "join": "Los geht's",
     "hello": "Hallo, {name}",
     "not_you": "Nicht du?",
@@ -217,5 +218,13 @@
     "imprint": "Impressum",
     "rights": "Kostenlos und ohne Anmeldung.",
     "made_with": "Gemacht mit"
+  },
+  "unsubscribe": {
+    "title": "Keine Mails mehr zu diesem Event?",
+    "body": "Wir löschen nur deine E-Mail-Adresse. Dein Name, deine Antworten und Aufgaben bleiben stehen.",
+    "confirm": "Adresse entfernen",
+    "done_title": "Erledigt",
+    "done_body": "Zu diesem Event bekommst du keine Mails mehr. Deine Adresse ist gelöscht.",
+    "back": "Zum Event"
   }
 }

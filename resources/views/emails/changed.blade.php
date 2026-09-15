@@ -1,5 +1,5 @@
 <x-mail::message>
-# {{ __('mail.decided.heading') }}
+# {{ __('mail.changed.heading') }}
 
 **{{ $event->title }}**
 
@@ -14,8 +14,6 @@
 <x-mail::button :url="$url">
 {{ __('mail.decided.cta') }}
 </x-mail::button>
-
-{{ __('mail.decided.planning_hint') }}
 
 {{ __('mail.common.link_hint') }}
 [{{ $url }}]({{ $url }})

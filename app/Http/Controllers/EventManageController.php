@@ -65,11 +65,16 @@ class EventManageController extends Controller
 
         $fixedDate = array_key_exists('fixed_date', $validated);
         $event->update(array_diff_key($validated, array_flip(['fixed_date', 'fixed_time'])));
+        $locationChanged = $event->wasChanged('location');
 
         if ($fixedDate && ! $event->hasDates()) {
             $event->setFixedDate($validated['fixed_date'], $validated['fixed_time'] ?? null);
         }
         $event->touchActivity();
+
+        if ($locationChanged || $fixedDate) {
+            $this->announceChangeIfDecided($event);
+        }
 
         // Wird der Modus auf "Liste" erweitert, muss der Planungsbereich
         // existieren, damit die Sektionen nicht leer bleiben.
@@ -141,6 +146,10 @@ class EventManageController extends Controller
         ]);
 
         $event->touchActivity();
+
+        if ($event->decided_option_id === $option->id) {
+            $this->announceChangeIfDecided($event);
+        }
 
         return response()->json(['event' => $this->presenter->forManage($event->fresh())]);
     }
@@ -257,8 +266,12 @@ class EventManageController extends Controller
             'status' => $event->decided_option_id ? Event::STATUS_DECIDED : Event::STATUS_COLLECTING,
         ]);
         $event->touchActivity();
+        $notified = $this->notifier->announceReopening($event->fresh());
 
-        return response()->json(['event' => $this->presenter->forManage($event->fresh())]);
+        return response()->json([
+            'event' => $this->presenter->forManage($event->fresh()),
+            'notified' => $notified,
+        ]);
     }
 
     public function destroy(Event $event)
@@ -300,6 +313,20 @@ class EventManageController extends Controller
         $sent = $this->notifier->sendManageLink($event, $validated['email']);
 
         return response()->json(['sent' => $sent]);
+    }
+
+    /**
+     * Termin oder Ort nach der Festlegung geaendert → Update an alle, die den
+     * alten Stand per Mail kennen. Der Notifier verschickt nichts, wenn sich
+     * inhaltlich nichts geaendert hat.
+     */
+    private function announceChangeIfDecided(Event $event): void
+    {
+        $event->refresh();
+
+        if ($event->decided_option_id && in_array($event->status, [Event::STATUS_DECIDED, Event::STATUS_PLANNING], true)) {
+            $this->notifier->announceChange($event);
+        }
     }
 
     /**

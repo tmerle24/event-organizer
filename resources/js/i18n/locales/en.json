@@ -112,7 +112,8 @@
       "invite": "Invite by email",
       "invite_placeholder": "one{'@'}mail.com, two{'@'}mail.com",
       "invite_send": "Send invitations",
-      "invited": "Invitation is on its way | {count} invitations are on their way"
+      "invited": "Invitation is on its way | {count} invitations are on their way",
+      "gets_updates": "Gets updates by email"
     },
     "plan": {
       "title": "Planning",
@@ -181,7 +182,7 @@
     "name": "Your name",
     "name_placeholder": "What's your name?",
     "email": "Email",
-    "email_hint": "Only so you hear when it's happening. Optional.",
+    "email_hint": "Only for updates about the event. The organizer can’t see it.",
     "join": "Let's go",
     "hello": "Hi, {name}",
     "not_you": "Not you?",
@@ -217,5 +218,13 @@
     "imprint": "Imprint",
     "rights": "Free, no sign-up.",
     "made_with": "Made with"
+  },
+  "unsubscribe": {
+    "title": "No more emails about this event?",
+    "body": "We only delete your email address. Your name, answers and tasks stay as they are.",
+    "confirm": "Remove address",
+    "done_title": "Done",
+    "done_body": "You won’t get any more emails about this event. Your address has been deleted.",
+    "back": "Go to the event"
   }
 }

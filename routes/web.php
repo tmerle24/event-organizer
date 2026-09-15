@@ -8,6 +8,7 @@ use App\Http\Controllers\PlanSectionController;
 use App\Http\Controllers\PublicEventController;
 use App\Http\Controllers\SitemapController;
 use App\Http\Controllers\TaskController;
+use App\Http\Controllers\UnsubscribeController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -98,4 +99,10 @@ Route::prefix('/t/{event}')->name('public.')->group(function () {
         ->middleware('throttle:30,1')->name('tasks.destroy');
 
     Route::get('/event.ics', [IcsController::class, 'download'])->name('ics');
+
+    // Abmeldelink aus Mails — signiert, POST ohne CSRF fuer One-Click (RFC 8058)
+    Route::get('/unsubscribe/{participant}', [UnsubscribeController::class, 'show'])
+        ->middleware('signed:relative')->name('unsubscribe');
+    Route::post('/unsubscribe/{participant}', [UnsubscribeController::class, 'destroy'])
+        ->middleware(['signed:relative', 'throttle:10,1'])->name('unsubscribe.confirm');
 });

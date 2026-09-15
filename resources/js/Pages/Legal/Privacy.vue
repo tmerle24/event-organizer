@@ -47,8 +47,10 @@ onMounted(() => {
             Beim Anlegen eines Events speichern wir den von dir eingegebenen Text, den daraus
             erzeugten Titel, die Terminvorschläge und – falls angegeben – Ort und Beschreibung.
             Wer sich über den geteilten Link einträgt, hinterlässt einen Namen (Pflicht), seine
-            Verfügbarkeiten und optional eine E-Mail-Adresse. Im Planungsbereich kommen Aufgaben
-            und deren Zuordnung hinzu. Ein Benutzerkonto gibt es nicht.
+            Verfügbarkeiten und optional eine E-Mail-Adresse. Die Adresse nutzen wir nur für
+            Nachrichten zu diesem Event; wer das Event organisiert, bekommt sie nicht zu sehen. Im
+            Planungsbereich kommen Aufgaben und deren Zuordnung hinzu. Ein Benutzerkonto gibt es
+            nicht.
           </p>
         </section>
 
@@ -89,9 +91,18 @@ onMounted(() => {
           <h2 class="od-h3">6. E-Mails</h2>
           <p class="od-small mt-1" style="color: var(--od-slate)">
             Wir versenden ausschließlich Nachrichten, die zum Ablauf des Events gehören:
-            Einladung, Bestätigung des Termins, Absage sowie auf Anforderung den Verwaltungslink.
-            Kein Newsletter, keine Werbung. Eine E-Mail-Adresse anzugeben ist für Teilnehmende
-            freiwillig; ohne Adresse funktioniert alles außer der Benachrichtigung.
+            Einladung, Bestätigung des Termins, Änderungen an Termin oder Ort nach der Bestätigung,
+            Absage und deren Rücknahme sowie auf Anforderung den Verwaltungslink. Kein Newsletter,
+            keine Werbung. Eine E-Mail-Adresse anzugeben ist für Teilnehmende freiwillig; ohne
+            Adresse funktioniert alles außer der Benachrichtigung. Jede dieser Mails enthält einen
+            Link, über den die eigene Adresse sofort gelöscht wird.
+          </p>
+          <p class="od-small mt-2" style="color: var(--od-slate)">
+            Adressen, an die über ORGDATE eine Einladung verschickt wird, verwenden wir nur für
+            diesen einen Versand und speichern sie nicht. Damit dieselbe Einladung nicht zweimal
+            verschickt wird, bleibt lediglich ein nicht umkehrbarer Prüfwert (Hash) zurück, aus dem
+            sich die Adresse nicht wiederherstellen lässt. Auch im Versandprotokoll der übrigen
+            Mails steht keine Adresse.
           </p>
         </section>
 
@@ -101,7 +112,8 @@ onMounted(() => {
             Ein Event wird mitsamt Terminen, Antworten, Aufgaben und Teilnehmerdaten automatisch
             gelöscht, wenn zwölf Monate lang keine Aktivität stattgefunden hat. Wer das Event
             erstellt hat, kann es jederzeit vollständig löschen. Teilnehmende können ihre eigene
-            Teilnahme inklusive aller Antworten selbst entfernen.
+            Teilnahme inklusive aller Antworten selbst entfernen oder nur ihre E-Mail-Adresse über
+            den Link in jeder Mail löschen.
           </p>
         </section>
 

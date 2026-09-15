@@ -148,9 +148,11 @@ async function invite() {
           </button>
         </div>
 
-        <p v-if="participant.email || hasPolling" class="mt-0.5 pl-1.5 text-xs text-[var(--od-slate)]">
-          <span v-if="participant.email">{{ participant.email }}</span>
-          <span v-if="participant.email && hasPolling"> · </span>
+        <p v-if="participant.has_email || hasPolling" class="mt-0.5 pl-1.5 text-xs text-[var(--od-slate)]">
+          <span v-if="participant.has_email" :title="t('manage.participants.gets_updates')">
+            ✉ <span class="sr-only">{{ t('manage.participants.gets_updates') }}</span>
+          </span>
+          <span v-if="participant.has_email && hasPolling"> · </span>
           <span v-if="hasPolling">
             {{ t('manage.participants.answered', { count: participant.answered_count, total: event.date_options.length }) }}
           </span>

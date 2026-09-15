@@ -218,6 +218,7 @@ GET  /t/{event}/state          → JSON (Live-Polling)
 POST /t/{event}/join (20/min) | /availability (60/min) | /leave (10/min)
 POST/PATCH/DELETE /t/{event}/tasks[/{task}]
 GET  /t/{event}/event.ics
+GET/POST /t/{event}/unsubscribe/{participant}   → signiert, POST löscht nur die Adresse
 ```
 
 **Ein `{event}`-Parameter, zwei Schlüssel:** Das Route-Binding in
@@ -251,6 +252,7 @@ resources/js/
     DateOptionsPanel.vue       # Terminvorschläge, Ranking, Bestätigung
     ParticipantsPanel.vue      # Umbenennen, Pflicht, Merge, Einladen
     PlanPanel.vue              # Sektionen, Aufgaben, Vorschläge (Manage + Public)
+    PrintSheet.vue             # Druck-Zettel: wer kommt, wer bringt was
     AvailabilityButtons.vue    # ✓ / ~ / ✕ + „offen" durch erneutes Klicken
     CountBar.vue               # Balken + Zahlen, nie eine Quote; Mint nur bei „passt allen"
     ConfirmModal.vue           # statt window.confirm()
@@ -259,6 +261,7 @@ resources/js/
     Landing.vue
     Event/Manage.vue           # Organisator
     Event/Public.vue           # Teilnehmer
+    Unsubscribe.vue            # Abmeldelink aus Mails
     Legal/{Imprint,Privacy}.vue
 ```
 
@@ -521,10 +524,39 @@ den sektionslosen Bereich); eine Überschrift zu entfernen darf keine Arbeit
 vernichten.
 
 ### Mails
-`EventNotifier` mit Dedupe-Key pro `(Typ, Event, Empfänger)` in
-`mail_notifications` — Retries erzeugen keine Doppelmails. Ausnahme: der
-Verwaltungslink bekommt einen zeitbasierten Key, weil er bei Gerätewechsel
-mehrfach anforderbar sein muss.
+`EventNotifier` versendet nur transaktional. **Im Versandprotokoll
+(`mail_notifications`) steht nie eine Adresse:**
+
+- Teilnehmer-Mails verweisen auf `participant_id` — die Adresse existiert nur
+  einmal, am Teilnehmer. Wird sie entfernt, bleibt nichts zurück.
+- Einladung und Verwaltungslink speichern nur `recipient_hash`
+  (HMAC mit `APP_KEY`). **Einladungsadressen werden nie gespeichert**, nur für
+  den einen Versand benutzt.
+- SMTP-Fehler landen ohne Adresse in `error` und im Log (`EventNotifier::scrub`).
+- Versand bleibt synchron — ein Queue-Job legte die Adresse in `jobs`/`failed_jobs` ab.
+
+**Dedupe über den Inhalt, nicht über den Typ.** Jede Teilnehmer-Mail trägt
+einen `fingerprint` (Termin + Ort bzw. Status). Gleiche Info wie in der letzten
+Mail derselben Familie → keine Mail. So kommt ein neu festgelegter Termin an,
+ein doppelter Klick aber nicht. Der `dedupe_key` enthält die ID der
+Vorgänger-Mail, damit parallele Requests an der Unique-Constraint scheitern.
+
+| Typ | Wann | An wen |
+|---|---|---|
+| `decided` | Termin festgelegt (neu oder anderer Termin) | alle mit Adresse |
+| `changed` | Ort oder Uhrzeit des festen Termins geändert | nur wer den alten Stand per Mail kennt |
+| `cancelled` | Absage | alle mit Adresse |
+| `reopened` | Absage zurückgenommen | nur wer die Absage bekommen hat |
+
+**Die Verwaltungsseite bekommt keine Adressen** — `EventPresenter::forManage()`
+liefert nur `has_email`, das UI zeigt ✉. Der Organisator kann Adressen auch
+nicht setzen.
+
+**Abmeldelink in jeder Teilnehmer-Mail** (`ParticipantMail`): signiert
+(`signed:relative`), GET zeigt nur an — Mail-Scanner rufen Links vorab auf —,
+erst POST löscht die Adresse. Name, Antworten und Aufgaben bleiben. Mit
+`List-Unsubscribe`-Header für One-Click, deshalb ist die Route vom CSRF-Schutz
+ausgenommen.
 
 ### Anti-Spam & Kosten
 - Honeypot-Feld `website` auf Landing und Public-Join.

@@ -4,6 +4,8 @@ return [
     'common' => [
         'link_hint' => 'Si le bouton ne fonctionne pas, copiez ce lien :',
         'no_account' => 'Aucun compte nécessaire – il suffit d’ouvrir le lien.',
+        'why' => 'Vous recevez cet e-mail parce que vous avez laissé votre adresse pour être informé de « :title ».',
+        'unsubscribe' => 'Ne plus recevoir d’e-mails pour cet événement',
     ],
     'invite' => [
         'subject' => 'Invitation : :title',
@@ -24,6 +26,15 @@ return [
         'heading' => 'L’événement a été annulé',
         'body' => '« :title » n’aura pas lieu.',
         'cta' => 'Voir les détails',
+    ],
+    'changed' => [
+        'subject' => 'Modification : :title',
+        'heading' => 'Il y a un changement',
+    ],
+    'reopened' => [
+        'subject' => 'Finalement maintenu : :title',
+        'heading' => 'Ça a lieu finalement',
+        'body' => '« :title » n’est plus annulé.',
     ],
     'manage_link' => [
         'subject' => 'Votre lien d’administration : :title',

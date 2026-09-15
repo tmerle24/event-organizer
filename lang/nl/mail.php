@@ -4,6 +4,8 @@ return [
     'common' => [
         'link_hint' => 'Werkt de knop niet? Kopieer dan deze link:',
         'no_account' => 'Geen account nodig – gewoon de link openen.',
+        'why' => 'Je krijgt deze mail omdat je je adres voor updates over ‘:title’ hebt achtergelaten.',
+        'unsubscribe' => 'Geen mails meer over dit evenement',
     ],
     'invite' => [
         'subject' => 'Uitnodiging: :title',
@@ -24,6 +26,15 @@ return [
         'heading' => 'Het evenement is afgezegd',
         'body' => '“:title” gaat niet door.',
         'cta' => 'Details bekijken',
+    ],
+    'changed' => [
+        'subject' => 'Wijziging: :title',
+        'heading' => 'Er is iets gewijzigd',
+    ],
+    'reopened' => [
+        'subject' => 'Gaat toch door: :title',
+        'heading' => 'Het gaat toch door',
+        'body' => '‘:title’ is niet meer afgezegd.',
     ],
     'manage_link' => [
         'subject' => 'Je beheerlink: :title',

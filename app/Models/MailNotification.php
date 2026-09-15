@@ -10,8 +10,10 @@ class MailNotification extends Model
 
     protected $fillable = [
         'event_id',
-        'recipient_email',
+        'participant_id',
+        'recipient_hash',
         'type',
+        'fingerprint',
         'dedupe_key',
         'sent_at',
         'error',
@@ -20,6 +22,11 @@ class MailNotification extends Model
     protected $casts = [
         'sent_at' => 'datetime',
     ];
+
+    public function participant()
+    {
+        return $this->belongsTo(Participant::class);
+    }
 
     public function event()
     {

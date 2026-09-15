@@ -112,7 +112,8 @@
       "invite": "Inviter par e-mail",
       "invite_placeholder": "un{'@'}mail.com, deux{'@'}mail.com",
       "invite_send": "Envoyer les invitations",
-      "invited": "Invitation partie | {count} invitations parties"
+      "invited": "Invitation partie | {count} invitations parties",
+      "gets_updates": "Reçoit les nouvelles par e-mail"
     },
     "plan": {
       "title": "Organisation",
@@ -181,7 +182,7 @@
     "name": "Votre nom",
     "name_placeholder": "Comment vous appelez-vous ?",
     "email": "E-mail",
-    "email_hint": "Uniquement pour être prévenu. Facultatif.",
+    "email_hint": "Uniquement pour les nouvelles de l’événement. L’organisateur ne la voit pas.",
     "join": "C'est parti",
     "hello": "Salut, {name}",
     "not_you": "Ce n'est pas vous ?",
@@ -217,5 +218,13 @@
     "imprint": "Mentions légales",
     "rights": "Gratuit, sans inscription.",
     "made_with": "Fait avec"
+  },
+  "unsubscribe": {
+    "title": "Ne plus recevoir d’e-mails pour cet événement ?",
+    "body": "Nous supprimons uniquement votre adresse e-mail. Votre nom, vos réponses et vos tâches restent.",
+    "confirm": "Supprimer l’adresse",
+    "done_title": "C’est fait",
+    "done_body": "Vous ne recevrez plus d’e-mails pour cet événement. Votre adresse est supprimée.",
+    "back": "Voir l’événement"
   }
 }

@@ -112,7 +112,8 @@
       "invite": "Invitar por correo",
       "invite_placeholder": "uno{'@'}correo.com, dos{'@'}correo.com",
       "invite_send": "Enviar invitaciones",
-      "invited": "Invitación de camino | {count} invitaciones de camino"
+      "invited": "Invitación de camino | {count} invitaciones de camino",
+      "gets_updates": "Recibe novedades por correo"
     },
     "plan": {
       "title": "Organización",
@@ -181,7 +182,7 @@
     "name": "Tu nombre",
     "name_placeholder": "¿Cómo te llamas?",
     "email": "Correo",
-    "email_hint": "Solo para avisarte cuándo será. Opcional.",
+    "email_hint": "Solo para novedades del evento. Quien organiza no la ve.",
     "join": "Vamos",
     "hello": "Hola, {name}",
     "not_you": "¿No eres tú?",
@@ -217,5 +218,13 @@
     "imprint": "Aviso legal",
     "rights": "Gratis y sin registro.",
     "made_with": "Hecho con"
+  },
+  "unsubscribe": {
+    "title": "¿No quieres más correos de este evento?",
+    "body": "Solo borramos tu dirección de correo. Tu nombre, tus respuestas y tus tareas se quedan.",
+    "confirm": "Quitar dirección",
+    "done_title": "Hecho",
+    "done_body": "No recibirás más correos de este evento. Tu dirección está borrada.",
+    "back": "Ir al evento"
   }
 }

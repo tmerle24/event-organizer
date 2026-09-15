@@ -4,6 +4,8 @@ return [
     'common' => [
         'link_hint' => 'If the button does not work, copy this link:',
         'no_account' => 'No account needed – just open the link.',
+        'why' => 'You are getting this email because you left your address for updates on “:title”.',
+        'unsubscribe' => 'No more emails about this event',
     ],
     'invite' => [
         'subject' => 'Invitation: :title',
@@ -24,6 +26,15 @@ return [
         'heading' => 'The event was cancelled',
         'body' => '":title" will not take place.',
         'cta' => 'View details',
+    ],
+    'changed' => [
+        'subject' => 'Update: :title',
+        'heading' => 'Something has changed',
+    ],
+    'reopened' => [
+        'subject' => 'Back on: :title',
+        'heading' => 'It is happening after all',
+        'body' => '“:title” is no longer cancelled.',
     ],
     'manage_link' => [
         'subject' => 'Your manage link: :title',

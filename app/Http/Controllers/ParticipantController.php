@@ -22,8 +22,8 @@ class ParticipantController extends Controller
         abort_unless($participant->event_id === $event->id, 404);
 
         $validated = $request->validate([
+            // keine E-Mail: die sieht und setzt nur die Person selbst
             'display_name' => ['sometimes', 'string', 'max:80'],
-            'email' => ['sometimes', 'nullable', 'email', 'max:180'],
             'is_required' => ['sometimes', 'boolean'],
         ]);
 

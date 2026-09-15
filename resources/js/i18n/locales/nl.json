@@ -112,7 +112,8 @@
       "invite": "Per e-mail uitnodigen",
       "invite_placeholder": "een{'@'}mail.com, twee{'@'}mail.com",
       "invite_send": "Uitnodigingen versturen",
-      "invited": "Uitnodiging is onderweg | {count} uitnodigingen zijn onderweg"
+      "invited": "Uitnodiging is onderweg | {count} uitnodigingen zijn onderweg",
+      "gets_updates": "Krijgt updates per mail"
     },
     "plan": {
       "title": "Planning",
@@ -181,7 +182,7 @@
     "name": "Je naam",
     "name_placeholder": "Hoe heet je?",
     "email": "E-mail",
-    "email_hint": "Alleen om te horen wanneer het doorgaat. Vrijwillig.",
+    "email_hint": "Alleen voor updates over het evenement. De organisator ziet het niet.",
     "join": "Aan de slag",
     "hello": "Hoi, {name}",
     "not_you": "Ben jij dit niet?",
@@ -217,5 +218,13 @@
     "imprint": "Colofon",
     "rights": "Gratis en zonder account.",
     "made_with": "Gemaakt met"
+  },
+  "unsubscribe": {
+    "title": "Geen mails meer over dit evenement?",
+    "body": "We verwijderen alleen je e-mailadres. Je naam, antwoorden en taken blijven staan.",
+    "confirm": "Adres verwijderen",
+    "done_title": "Klaar",
+    "done_body": "Je krijgt geen mails meer over dit evenement. Je adres is verwijderd.",
+    "back": "Naar het evenement"
   }
 }
