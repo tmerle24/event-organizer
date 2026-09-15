@@ -137,4 +137,62 @@ class ParticipationTest extends TestCase
 
         $this->get("/e/{$event->public_token}")->assertNotFound();
     }
+
+    public function test_joining_can_bring_the_answers_along(): void
+    {
+        $event = $this->makeEvent();
+        [$first, $second, $third] = $event->dateOptions()->orderBy('sort')->pluck('id')->all();
+
+        $this->postJson("/t/{$event->public_token}/join", [
+            'display_name' => 'Anna',
+            'token' => str_repeat('a', 32),
+            'answers' => [$first => 'yes', $second => 'maybe', $third => null],
+        ])->assertCreated()->assertJsonPath('event.me.display_name', 'Anna');
+
+        $participant = $event->participants()->sole();
+        $this->assertSame(
+            [$first => 'yes', $second => 'maybe'],
+            $participant->availabilities()->orderBy('date_option_id')->pluck('value', 'date_option_id')->all()
+        );
+    }
+
+    public function test_joining_ignores_answers_for_other_events(): void
+    {
+        $event = $this->makeEvent();
+        $foreign = $this->makeEvent()->dateOptions()->first();
+
+        $this->postJson("/t/{$event->public_token}/join", [
+            'display_name' => 'Anna',
+            'token' => str_repeat('a', 32),
+            'answers' => [$foreign->id => 'yes'],
+        ])->assertCreated();
+
+        $this->assertSame(0, Availability::count());
+    }
+
+    public function test_invalid_answers_create_no_participant(): void
+    {
+        $event = $this->makeEvent();
+
+        $this->postJson("/t/{$event->public_token}/join", [
+            'display_name' => 'Anna',
+            'token' => str_repeat('a', 32),
+            'answers' => [$event->dateOptions()->first()->id => 'vielleicht'],
+        ])->assertUnprocessable();
+
+        $this->assertSame(0, $event->participants()->count());
+    }
+
+    public function test_joining_without_a_name_saves_no_answers(): void
+    {
+        $event = $this->makeEvent();
+
+        $this->postJson("/t/{$event->public_token}/join", [
+            'display_name' => '',
+            'token' => str_repeat('a', 32),
+            'answers' => [$event->dateOptions()->first()->id => 'yes'],
+        ])->assertUnprocessable();
+
+        $this->assertSame(0, Availability::count());
+    }
 }

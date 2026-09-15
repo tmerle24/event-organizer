@@ -217,7 +217,10 @@
     "no_dates": "The organizer hasn't added any dates yet.",
     "your_time": "{local} your time · {event} in {zone}",
     "name_hint": "Once you’re in, you’ll see who can make it when – and the others will see you.",
-    "taken": "taken"
+    "taken": "taken",
+    "tap_hint": "Tap when you can make it.",
+    "almost_done": "Almost done – what’s your name?",
+    "email_toggle": "Updates by email"
   },
   "legal": {
     "privacy": "Privacy",

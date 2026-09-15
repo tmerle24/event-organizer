@@ -217,7 +217,10 @@
     "no_dates": "Der Organisator hat noch keine Termine eingetragen.",
     "your_time": "{local} bei dir · {event} in {zone}",
     "name_hint": "Sobald du dabei bist, siehst du, wer wann kann – und die anderen sehen dich.",
-    "taken": "vergeben"
+    "taken": "vergeben",
+    "tap_hint": "Tipp an, wann du kannst.",
+    "almost_done": "Fast fertig – wie heißt du?",
+    "email_toggle": "Updates per Mail"
   },
   "legal": {
     "privacy": "Datenschutz",
