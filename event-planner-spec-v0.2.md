@@ -281,3 +281,163 @@ Kalendersync · native Apps · Zahlungen · externe Buchungen · Chat · Komment
 1. **Account-Pflicht für den Organisator?** Vorschlag ist Magic Link ohne Passwort. Alternative: auch der Organisator ohne Account, nur mit geheimem Admin-Link. Das senkt die Hürde weiter, macht aber „meine Events" und Retention-Warnungen unmöglich.
 2. **E-Mail beim Teilnehmer: Pflicht oder optional?** Optional senkt die Hürde und erhöht die Response Rate; Pflicht ist die Voraussetzung dafür, dass Schritt 3 und 4 überhaupt jemanden erreichen. Ohne Erreichbarkeit der Teilnehmer bricht die Planungsphase – und damit die North Star Metric.
 3. **Zielmarkt DE/EU oder international?** Beeinflusst Aufwand bei Zeitzonen, Sprache der UI (die Spec ist durchgängig englisch getextet) und die rechtliche Prüfung.
+
+## 14. Gästeliste & persönliche Einladungen (Konzept, zurückgestellt)
+
+> **Zurückgestellt (15.09.2026).** Bei privaten Feiern ist das Risiko fremder Gäste klein, die Verwaltungsarbeit (Liste pflegen, Plätze freigeben) widerspricht Abschnitt 10, und weitergeleitete Links machen die Beschränkung ohnehin nicht dicht. Das eigentliche Problem – Doppelanmeldungen und Tippfehler-Namen – wird zuerst gemessen (Anzahl Merges, ähnliche Namen pro Event). Unabhängig davon umsetzen: Stufe 1 aus 14.7 (Einladungsadressen nicht im Klartext speichern).
+
+> Status: Konzept, noch nicht implementiert. Baut auf dem **tatsächlichen** Stand der App auf (kein Account, `manage_token`/`public_token`, Geräte-Token pro Event im LocalStorage) – nicht auf den älteren Annahmen aus Abschnitt 2 und 9.
+
+### 14.1 Problem
+
+* Einladungen per E-Mail landen heute als Klartext-Adresse in `mail_notifications` (`recipient_email`, zusätzlich im `dedupe_key`). Das widerspricht dem Ziel „so einfach und sicher wie möglich".
+* Wer über den allgemeinen Link kommt, tippt einen Namen. Folge: Tippfehler-Namen, Doppelanmeldungen vom Zweitgerät, manuelles Zusammenführen.
+* Partys mit 30–40 Gästen laufen über WhatsApp-Gruppen. Ein persönlicher Link pro Person skaliert dort nicht.
+
+### 14.2 Grundidee
+
+**Ein Platz ist ein Teilnehmer mit Namen, der noch keinem Gerät gehört.**
+
+Der Organisator legt eine Gästeliste an – nur Namen, keine Kontaktdaten. Jeder Platz kann auf zwei Wegen übernommen werden:
+
+| Weg | Wie | Geeignet für |
+| --- | --- | --- |
+| **Gruppenlink** | Allgemeiner Link → „Wer bist du?" → Namen antippen | WhatsApp-Gruppe, viele Gäste |
+| **Persönlicher Link** | Link mit `invite_token` → Platz direkt übernommen, keine Auswahl | E-Mail, einzelne WhatsApp-Nachricht, kleine Runden |
+
+Beides ist optional. Ein Event ohne Gästeliste funktioniert exakt wie heute.
+
+### 14.3 Entscheidungen
+
+**[E] Keine E-Mail-Adressen aus Einladungen speichern.** Die Adresse existiert nur für die Dauer des Versands. Gespeichert wird höchstens ein HMAC-Hash für den Dedupe (siehe 14.7). Die freiwillig *selbst* eingetragene E-Mail beim Join (für „Termin steht"/„Abgesagt") ist davon nicht betroffen – das ist eine eigene Entscheidung (14.10).
+
+**[E] Zuordnung über den Namen, nicht über die Adresse.** Wer per Mail einlädt, gibt Name + E-Mail an. Daraus entsteht ein Platz mit Namen und persönlichem Link; die Adresse wird verworfen.
+
+**[E] Nichts wird beim bloßen Aufruf eingelöst.** Mail-Scanner (Outlook Safe Links, Gmail) und Vorschau-Crawler (WhatsApp) rufen Links vorab ab. Übernahme nur per `POST` aus dem Browser, nie per `GET`.
+
+**[E] Der persönliche Link ist der Schlüssel – auch auf dem Zweitgerät.** Öffnet die Person ihren Link auf einem weiteren Gerät, landet sie beim selben Platz. Weiterleiten lässt sich ohne Login ohnehin nicht verhindern; das wird ehrlich so kommuniziert, statt Scheinsicherheit zu bauen.
+
+**[E] Per Namensauswahl übernommene Plätze sind gerätegebunden.** Ein vergebener Name verschwindet aus der Auswahl. Verklickt oder Gerät gewechselt → der Organisator gibt den Platz frei.
+
+**[E] „Nur Gäste von der Liste" ist ein Schalter pro Event, Default aus.** Aus: unter der Auswahl steht „Ich stehe nicht drauf" mit freier Namenseingabe wie heute. An: freie Eingabe entfällt.
+
+**[E] Kein automatischer WhatsApp-Versand.** Die WhatsApp Business API kostet pro Nachricht, braucht Meta-Verifizierung, freigegebene Templates und Telefonnummern. Stattdessen `wa.me`-Deeplink bzw. Web Share API – der Organisator sendet selbst.
+
+**[E] Keine Telefonnummern speichern.** Die Contact Picker API (nur Chrome/Android) darf Namen vorbefüllen; übernommen wird nur der Name.
+
+### 14.4 Datenmodell
+
+```text
+participants    + token            nullable   (NULL = Platz noch frei)
+                + invite_token(32) nullable, UNIQUE
+                + claimed_at       nullable
+                  UNIQUE(event_id, token) bleibt – PostgreSQL erlaubt mehrere NULL
+
+events          + guest_list_only  boolean, default false
+
+mail_notifications
+                - recipient_email
+                + recipient_hash   HMAC-SHA256(lower(email), APP_KEY)
+                  dedupe_key enthält nur noch den Hash
+```
+
+* `invite_token` entsteht beim Anlegen eines Platzes (wie die Event-Tokens im `creating`-Hook).
+* Ein Platz ohne `token` zählt **nicht** in `open_count` und nicht ins Quorum, solange er nicht übernommen ist. Sonst drückt eine lange Gästeliste die Anzeige in „20 offen" – genau das falsche Vollständigkeitsgefühl in die andere Richtung.
+* Migration: vorhandene `recipient_email` in Hashes umrechnen, Spalte löschen.
+
+### 14.5 Routen
+
+```text
+# Organisator
+POST   /e/{event}/guests                          {names: [...]}         (max 100)
+POST   /e/{event}/guests/mail                     {guests: [{name, email}]}  (10/min, max 50)
+POST   /e/{event}/participants/{participant}/release   → token = NULL, neuer invite_token
+PATCH  /e/{event}                                 + guest_list_only
+
+# Teilnehmer
+GET    /t/{event}?i={invite_token}                → Public.vue, löst NICHTS ein
+POST   /t/{event}/claim                           {participant_id | invite_token, token}  (20/min)
+```
+
+`/e/{event}/data` liefert pro Platz zusätzlich `claimed` und die persönliche `invite_url`. `/t/{event}/state` liefert die **freien Namen** (nur `id` + `display_name`) für die Auswahl – nie `invite_token`.
+
+### 14.6 Abläufe
+
+**Gästeliste anlegen (Organisator)**
+
+1. Teilnehmer-Bereich → „Gästeliste": Textfeld, ein Name pro Zeile (Einfügen aus einer Notiz geht).
+2. Doppelte Namen im selben Event werden zusammengefasst (Groß-/Kleinschreibung egal).
+3. Liste zeigt pro Platz: Name · „noch frei" / „dabei" · Aktionen *Link kopieren*, *per WhatsApp*, *freigeben*, *entfernen*.
+
+**Gruppenlink (30–40 Gäste)**
+
+1. Ein Link in die Gruppe.
+2. Public-Seite, noch kein Platz auf diesem Gerät → „Wer bist du?" mit freien Namen als Buttons, alphabetisch; ab ~15 Namen mit Suchfeld.
+3. Tipp auf den Namen → kurze Bestätigung „Du bist Anna?" (gegen Verklicken) → `POST /claim` mit `participant_id` + Geräte-Token.
+4. Server prüft `token IS NULL` in derselben Transaktion (`UPDATE … WHERE token IS NULL`), sonst „Den Namen hat gerade jemand genommen." – zwei Gäste gleichzeitig dürfen nicht denselben Platz bekommen.
+
+**Persönlicher Link per E-Mail**
+
+1. Organisator gibt Zeilen `Name, E-Mail` ein.
+2. Server legt pro Zeile einen Platz an (oder nutzt einen freien Platz mit gleichem Namen), verschickt die Mail mit `…/t/{public_token}?i={invite_token}`, verwirft die Adresse.
+3. Empfänger öffnet → Seite zeigt „Hallo Anna" → erste Aktion (oder ein Button „Das bin ich") löst `POST /claim` mit `invite_token` aus.
+
+**Persönlicher Link per WhatsApp (kleine Runden)**
+
+1. Pro Platz „per WhatsApp" → `https://wa.me/?text=…` mit vorbereitetem Text und persönlichem Link; auf Mobilgeräten alternativ `navigator.share`.
+2. Für mehrere Gäste ein Durchklick-Modus: „Nächste: Ben →" öffnet direkt die nächste Nachricht.
+
+**Claim-Regeln**
+
+| Situation | Ergebnis |
+| --- | --- |
+| Platz frei | Geräte-Token wird gesetzt, `claimed_at = now()` |
+| Per `invite_token`, Platz schon übernommen | Server gibt den Token des Platzes zurück, Client schreibt ihn in `od_participant_{public_token}` → Zweitgerät landet beim selben Platz |
+| Per `participant_id`, Platz schon übernommen | abgelehnt, Name war nicht mehr in der Auswahl |
+| Gerät hat in diesem Event schon einen eigenen Teilnehmer | wird in den Platz zusammengeführt (bestehende Merge-Logik, Platz gewinnt bei Konflikten) |
+| `guest_list_only` an, kein Platz | nur Lesen, kein Join |
+
+### 14.7 E-Mail ohne Speicherung
+
+* `EventNotifier::send()` bekommt die Adresse nur noch als Parameter; persistiert werden `recipient_hash`, `type`, `dedupe_key`, `sent_at`.
+* `error` wird vor dem Speichern bereinigt – SMTP-Fehlermeldungen enthalten oft die Adresse. Im Zweifel nur die Exception-Klasse speichern.
+* Log-Einträge (`Log::warning('Mail failed', …)`) ohne Adresse.
+* Versand bleibt synchron. Ein Queue-Job würde die Adresse in `jobs`/`failed_jobs` im Klartext ablegen.
+* Datenschutzerklärung anpassen: Einladungsadressen werden nicht gespeichert.
+
+### 14.8 Texte (Tonalität)
+
+* „Wer bist du?" · „Du bist Anna?" · „Ich stehe nicht drauf"
+* „Hallo Anna – schön, dass du dabei bist."
+* Organisator: „7 sind schon dabei" – **nicht** „7 von 32" (keine Quote) und kein „25 fehlen noch".
+* Vergeben: „Den Namen hat gerade jemand genommen. Frag kurz in der Gruppe nach."
+* WhatsApp-Vorlage: „Hey Anna, ich plane {Titel}. Trag hier ein, wann du kannst: {Link}"
+
+### 14.9 Grenzen (bewusst akzeptiert)
+
+* Jemand kann in der Auswahl einen fremden Namen antippen. In einer Gruppe, die sich kennt, fällt das auf; der Organisator gibt frei.
+* Ein weitergeleiteter persönlicher Link gibt vollen Teilnehmerzugriff auf diesen Platz. Freigeben erzeugt einen neuen `invite_token`, der alte Link ist danach wirkungslos.
+* Die Namen auf der Gästeliste sind für alle mit dem Gruppenlink sichtbar. Hinweis im Organisator-UI: „Die Namen sehen alle, die den Link haben."
+* Die Link-Vorschau eines persönlichen Links darf den Vornamen zeigen – der Crawler sieht ihn dann auch.
+
+### 14.10 Umsetzung in Stufen
+
+1. **E-Mail ohne Speicherung** (14.7) – unabhängig vom Rest, reine Verbesserung.
+2. **Plätze + persönliche Links** (14.4, 14.5, Claim per `invite_token`, Mail mit Name).
+3. **Gästeliste + „Wer bist du?"** (Gruppenlink, WhatsApp-Deeplink, Durchklick-Modus).
+4. **Schalter „Nur Gäste von der Liste".**
+
+**Tests (Pflicht):**
+
+* `GET /t/{event}?i=…` verändert nichts (kein `token`, kein `claimed_at`).
+* `/state` enthält nie `invite_token`.
+* Zwei gleichzeitige Claims auf denselben Platz → genau einer gewinnt.
+* Nach dem Versand einer Einladung steht die Adresse in keiner Tabelle (`mail_notifications`, `participants`, `jobs`, `failed_jobs`).
+* Freie Plätze zählen nicht in `open_count` und nicht ins Quorum.
+* `guest_list_only`: Join ohne Platz wird abgelehnt.
+
+**Offene Fragen (PO):**
+
+1. Bleibt die freiwillig beim Join eingetragene E-Mail (für „Termin steht"/„Abgesagt")? Sie ist eine Einwilligung der Person selbst, aber eben doch eine gespeicherte Adresse.
+2. Soll ein freier Platz nach dem Termin-Entscheid noch übernehmbar sein, oder friert die Liste dann ein?
+3. Obergrenze für die Gästeliste – 100 Plätze pro Event?
