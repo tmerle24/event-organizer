@@ -165,6 +165,14 @@
       "midday": "Middag",
       "afternoon": "Namiddag",
       "evening": "Avond"
+    },
+    "print": {
+      "button": "Lijst afdrukken",
+      "coming": "{count} komt | {count} komen",
+      "maybe": "{count} misschien",
+      "present": "{count} doet mee | {count} doen mee",
+      "free": "Nog vrij",
+      "as_of": "Stand {date}"
     }
   },
   "public": {

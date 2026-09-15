@@ -169,19 +169,44 @@ button { cursor: pointer; }
   .od-settle, .od-bar > span { animation: none; }
 }
 
+/* Druck-Zettel (PrintSheet.vue) — Hex statt var(), im Druck nicht zuverlaessig */
+#od-report { display: none; }
+
 @media print {
-  body * { visibility: hidden; }
-  #od-report, #od-report * { visibility: visible; }
+  @page { margin: 15mm; }
+  body { background: #fff !important; }
+  body > *:not(#od-report) { display: none !important; }
   #od-report {
     display: block !important;
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 100%;
-    padding: 2rem 12%;
+    font-family: 'Outfit', system-ui, sans-serif;
+    color: #14122B;
+    font-size: 11pt;
   }
-  * {
-    -webkit-print-color-adjust: exact !important;
-    print-color-adjust: exact !important;
+  .od-print-head { border-bottom: 1.5pt solid #14122B; padding-bottom: 4mm; margin-bottom: 3mm; }
+  .od-print-title { font-size: 20pt; font-weight: 600; line-height: 1.2; }
+  .od-print-meta { margin-top: 1mm; }
+  .od-print-counts { margin-top: 1.5mm; font-weight: 500; }
+  .od-print-row {
+    display: flex;
+    align-items: baseline;
+    gap: 3mm;
+    padding: 2mm 0;
+    border-bottom: 0.5pt solid #C9C7D9;
+    break-inside: avoid;
   }
+  .od-print-box {
+    flex: none;
+    width: 4mm;
+    height: 4mm;
+    border: 1pt solid #14122B;
+    border-radius: 0.8mm;
+    transform: translateY(0.6mm);
+  }
+  .od-print-name { flex: 0 0 42%; font-weight: 500; }
+  .od-print-note { font-weight: 400; color: #6E6B85; }
+  .od-print-tasks { flex: 1; color: #6E6B85; }
+  .od-print-free { margin-top: 6mm; break-inside: avoid; }
+  .od-print-subtitle { font-size: 11pt; font-weight: 600; margin-bottom: 1mm; }
+  .od-print-footer { margin-top: 6mm; font-size: 8pt; color: #6E6B85; }
 }
+

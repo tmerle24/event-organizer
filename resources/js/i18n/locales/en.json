@@ -165,6 +165,14 @@
       "midday": "Midday",
       "afternoon": "Afternoon",
       "evening": "Evening"
+    },
+    "print": {
+      "button": "Print list",
+      "coming": "{count} coming | {count} coming",
+      "maybe": "{count} maybe",
+      "present": "{count} signed up",
+      "free": "Still up for grabs",
+      "as_of": "As of {date}"
     }
   },
   "public": {

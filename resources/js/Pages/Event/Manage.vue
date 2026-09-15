@@ -9,6 +9,7 @@ import ShareBox from '@/Components/ShareBox.vue'
 import EventFieldRow from '@/Components/EventFieldRow.vue'
 import DateOptionsPanel from '@/Components/DateOptionsPanel.vue'
 import ParticipantsPanel from '@/Components/ParticipantsPanel.vue'
+import PrintSheet from '@/Components/PrintSheet.vue'
 import PlanPanel from '@/Components/PlanPanel.vue'
 import ConfirmModal from '@/Components/ConfirmModal.vue'
 import Toast from '@/Components/Toast.vue'
@@ -199,6 +200,8 @@ async function deleteEvent() {
         @error="flash(t('common.error'), 'error')"
         @flash="flash"
       />
+
+      <PrintSheet v-if="event.participants.length" :event="event" />
 
       <!-- Verwaltungslink sichern -->
       <section class="od-card p-4 sm:p-5">

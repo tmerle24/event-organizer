@@ -55,6 +55,10 @@ async function merge(participant, targetId) {
   mergeSource.value = null
 }
 
+function print() {
+  window.print()
+}
+
 async function invite() {
   const emails = inviteInput.value
     .split(/[,;\s]+/)
@@ -73,7 +77,23 @@ async function invite() {
 
 <template>
   <section class="od-card p-4 sm:p-5">
-    <h2 class="font-display font-semibold">{{ t('manage.participants.title') }}</h2>
+    <div class="flex items-center justify-between gap-2">
+      <h2 class="font-display font-semibold">{{ t('manage.participants.title') }}</h2>
+      <button
+        v-if="event.participants.length"
+        type="button"
+        class="-my-1 flex h-9 w-9 items-center justify-center rounded-lg text-[var(--od-slate)] hover:bg-[var(--od-mist)] hover:text-[var(--od-violet)]"
+        :title="t('manage.print.button')"
+        :aria-label="t('manage.print.button')"
+        @click="print"
+      >
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M7 9V3h10v6" />
+          <rect x="3" y="9" width="18" height="8" rx="2" />
+          <path d="M7 14h10v7H7z" />
+        </svg>
+      </button>
+    </div>
 
     <p v-if="!event.participants.length" class="mt-3 text-sm text-[var(--od-slate)]">
       {{ t('manage.participants.empty') }}

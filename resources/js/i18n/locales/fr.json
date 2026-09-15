@@ -165,6 +165,14 @@
       "midday": "À midi",
       "afternoon": "L'après-midi",
       "evening": "Le soir"
+    },
+    "print": {
+      "button": "Imprimer la liste",
+      "coming": "{count} vient | {count} viennent",
+      "maybe": "{count} peut-être",
+      "present": "{count} inscrit | {count} inscrits",
+      "free": "Encore libre",
+      "as_of": "État au {date}"
     }
   },
   "public": {
