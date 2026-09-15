@@ -111,6 +111,21 @@ button { cursor: pointer; }
   font-size: 16px;
   outline: none;
 }
+/* iOS Safari: date/time inputs ignore width:100% (intrinsic min width) */
+.od-input[type='date'],
+.od-input[type='time'],
+.od-input[type='datetime-local'] {
+  -webkit-appearance: none;
+  appearance: none;
+  display: block;
+  min-width: 0;
+  max-width: 100%;
+  min-height: calc(1.5em + 1.25rem + 2px);
+  text-align: left;
+}
+.od-input::-webkit-date-and-time-value {
+  text-align: left;
+}
 .od-input:focus {
   border-color: var(--od-violet);
   box-shadow: 0 0 0 3px var(--od-violet-tint);
