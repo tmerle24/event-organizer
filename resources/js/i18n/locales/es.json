@@ -217,10 +217,7 @@
     "no_dates": "El organizador aún no ha propuesto fechas.",
     "your_time": "{local} donde estás · {event} en {zone}",
     "name_hint": "En cuanto te apuntes, verás quién puede cuándo, y los demás te verán a ti.",
-    "taken": "asignada",
-    "tap_hint": "Marca cuándo puedes.",
-    "almost_done": "Casi listo: ¿cómo te llamas?",
-    "email_toggle": "Novedades por correo"
+    "taken": "asignada"
   },
   "legal": {
     "privacy": "Privacidad",

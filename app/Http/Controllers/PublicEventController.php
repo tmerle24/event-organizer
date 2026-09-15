@@ -56,25 +56,15 @@ class PublicEventController extends Controller
             'display_name' => ['required', 'string', 'max:80'],
             'email' => ['nullable', 'email', 'max:180'],
             'token' => ['required', 'string', 'min:16', 'max:64'],
-            // erst antworten, dann Name: Antworten kommen beim Eintragen gleich mit
-            'answers' => ['nullable', 'array'],
-            'answers.*' => ['nullable', 'in:yes,no,maybe'],
         ]);
 
-        // Teilnehmer und Antworten zusammen — kein Teilnehmer ohne Antworten, wenn dazwischen etwas scheitert
-        $participant = DB::transaction(function () use ($event, $validated) {
-            $participant = $event->participants()->updateOrCreate(
-                ['token' => $validated['token']],
-                [
-                    'display_name' => $validated['display_name'],
-                    'email' => $validated['email'] ?? null,
-                ]
-            );
-
-            $this->applyAnswers($event, $participant, $validated['answers'] ?? []);
-
-            return $participant;
-        });
+        $participant = $event->participants()->updateOrCreate(
+            ['token' => $validated['token']],
+            [
+                'display_name' => $validated['display_name'],
+                'email' => $validated['email'] ?? null,
+            ]
+        );
 
         $event->touchActivity();
 
@@ -99,8 +89,26 @@ class PublicEventController extends Controller
         ]);
 
         $participant = $event->participants()->where('token', $validated['token'])->firstOrFail();
+        $optionIds = $event->dateOptions()->pluck('id')->all();
 
-        DB::transaction(fn () => $this->applyAnswers($event, $participant, $validated['answers']));
+        DB::transaction(function () use ($validated, $participant, $optionIds) {
+            foreach ($validated['answers'] as $optionId => $value) {
+                if (! in_array((int) $optionId, $optionIds, true)) {
+                    continue;
+                }
+
+                if ($value === null) {
+                    $participant->availabilities()->where('date_option_id', $optionId)->delete();
+
+                    continue;
+                }
+
+                Availability::updateOrCreate(
+                    ['date_option_id' => (int) $optionId, 'participant_id' => $participant->id],
+                    ['value' => $value]
+                );
+            }
+        });
 
         $event->touchActivity();
 
@@ -123,31 +131,6 @@ class PublicEventController extends Controller
         $event->touchActivity();
 
         return response()->json(['event' => $this->presenter->forPublic($event->fresh(), null)]);
-    }
-
-    /**
-     * Nur Optionen dieses Events; null loescht die Antwort ("offen").
-     */
-    private function applyAnswers(Event $event, Participant $participant, array $answers): void
-    {
-        $optionIds = $event->dateOptions()->pluck('id')->all();
-
-        foreach ($answers as $optionId => $value) {
-            if (! in_array((int) $optionId, $optionIds, true)) {
-                continue;
-            }
-
-            if ($value === null) {
-                $participant->availabilities()->where('date_option_id', $optionId)->delete();
-
-                continue;
-            }
-
-            Availability::updateOrCreate(
-                ['date_option_id' => (int) $optionId, 'participant_id' => $participant->id],
-                ['value' => $value]
-            );
-        }
     }
 
     private function resolveParticipant(Request $request, Event $event): ?Participant

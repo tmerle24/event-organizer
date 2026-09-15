@@ -73,18 +73,6 @@ const otherCount = computed(
 
 const dateListVisible = computed(() => !decided.value || showDateList.value)
 
-/*
- * Erst antworten, dann Name — solange abgestimmt wird. Die Termin-Buttons sind
- * dann selbst die Aufforderung; der Name kommt nach dem ersten Tipp.
- * Bei Mitbringliste und festem Termin bleibt das Formular vorne.
- */
-const answerFirst = computed(
-  () => !me.value && !readOnly.value && !resolving.value && showDates.value && !decided.value && event.value.date_options.length > 0
-)
-
-const hasDraftAnswer = computed(() => Object.values(answers.value).some(Boolean))
-const showEmail = ref(false)
-
 let poller = null
 
 onMounted(async () => {
@@ -149,21 +137,15 @@ async function join() {
   busy.value = true
 
   try {
-    const draft = Object.fromEntries(Object.entries(answers.value).filter(([, value]) => value))
     const { data } = await window.axios.post(`${baseUrl.value}/join`, {
       display_name: form.value.display_name.trim(),
       email: form.value.email.trim() || null,
       token,
       website: form.value.website,
-      answers: draft,
     })
     event.value = data.event
     me.value = data.event.me
     rememberName(form.value.display_name.trim())
-    if (Object.keys(draft).length) {
-      answers.value = {}
-      flash(t('public.answers_saved'))
-    }
   } catch (e) {
     flash(t('common.error'), 'error')
   } finally {
@@ -205,6 +187,19 @@ async function leave() {
   } finally {
     busy.value = false
   }
+}
+
+/** Steht > Passt allen > Passt am besten — gleiche Logik wie auf der Verwaltungsseite */
+function markerFor(option) {
+  if (option.id === event.value.decided_option_id) {
+    return { label: t('manage.dates.confirmed'), dot: 'var(--od-apricot)', text: 'var(--od-ink)' }
+  }
+  if (option.id === event.value.best_match_id && !decided.value) {
+    return fitsEveryone(option)
+      ? { label: t('manage.dates.best'), dot: 'var(--od-mint)', text: 'var(--od-mint)' }
+      : { label: t('manage.dates.best_partial'), dot: 'var(--od-violet)', text: 'var(--od-violet)' }
+  }
+  return null
 }
 
 function note(option) {
@@ -287,7 +282,7 @@ function note(option) {
       </div>
 
       <!-- Eintragen: erste Antwort erzeugt den Teilnehmer -->
-      <form v-if="!me && !readOnly && !resolving && !answerFirst" class="od-card p-4 sm:p-5" @submit.prevent="join">
+      <form v-if="!me && !readOnly && !resolving" class="od-card p-4 sm:p-5" @submit.prevent="join">
         <p class="text-sm">{{ showDates ? t('public.intro') : t('public.intro_list') }}</p>
 
         <label class="mt-3 block text-xs font-semibold text-[var(--od-slate)]" for="p-name">
@@ -326,10 +321,7 @@ function note(option) {
       <!-- Verfuegbarkeit -->
       <section v-if="showDates" class="od-card p-4 sm:p-5">
         <header class="flex items-center justify-between gap-3">
-          <div class="min-w-0">
-            <h2 class="font-display font-semibold">{{ t('public.who') }}</h2>
-            <p v-if="answerFirst" class="od-meta mt-0.5">{{ t('public.tap_hint') }}</p>
-          </div>
+          <h2 class="font-display font-semibold">{{ t('public.who') }}</h2>
           <button
             v-if="me && event.answered_count > 0 && dateListVisible"
             type="button"
@@ -369,19 +361,12 @@ function note(option) {
           >
             <div class="flex flex-wrap items-center justify-between gap-2">
               <div class="min-w-0">
-                <p class="od-h3 flex items-center gap-2" :class="{ 'opacity-60': option.blocked }">
-                  <span
-                    v-if="option.id === event.decided_option_id || option.id === event.best_match_id"
-                    class="inline-block h-2.5 w-2.5 shrink-0 rounded-full"
-                    :style="{
-                      background:
-                        option.id === event.decided_option_id
-                          ? 'var(--od-apricot)'
-                          : fitsEveryone(option)
-                            ? 'var(--od-mint)'
-                            : 'var(--od-violet)',
-                    }"
-                  />
+                <!-- Markierung als eigene Zeile ueber dem Datum, damit die Daten buendig bleiben -->
+                <p v-if="markerFor(option)" class="flex items-center gap-1.5 text-[13px] font-medium" :style="{ color: markerFor(option).text }">
+                  <span class="inline-block h-2 w-2 shrink-0 rounded-full" :style="{ background: markerFor(option).dot }" />
+                  {{ markerFor(option).label }}
+                </p>
+                <p class="od-h3" :class="{ 'opacity-60': option.blocked }">
                   {{ formatFull(option) }}
                 </p>
                 <p v-if="note(option)" class="od-meta">
@@ -391,7 +376,7 @@ function note(option) {
 
               <!-- ml-auto: bricht die Zeile um, bleiben die Buttons trotzdem rechts -->
               <AvailabilityButtons
-                v-if="(me || answerFirst) && !readOnly"
+                v-if="me && !readOnly"
                 class="ml-auto"
                 :value="currentValue(option.id)"
                 @update:value="setValue(option.id, $event)"
@@ -418,49 +403,6 @@ function note(option) {
         >
           {{ t('public.save_answers') }}
         </button>
-
-        <!-- Nach dem ersten Tipp: Name, dann ist man dabei -->
-        <form
-          v-if="answerFirst && hasDraftAnswer"
-          class="od-settle mt-4 border p-4"
-          style="border-color: var(--od-line); border-radius: var(--od-radius-md)"
-          @submit.prevent="join"
-        >
-          <label class="od-h3 block" for="p-name-first">{{ t('public.almost_done') }}</label>
-          <input
-            id="p-name-first"
-            v-model="form.display_name"
-            class="od-input mt-2"
-            maxlength="80"
-            required
-            :placeholder="t('public.name_placeholder')"
-            @focus="editing = true"
-            @blur="editing = false"
-          />
-          <p class="mt-1 text-xs text-[var(--od-slate)]">{{ t('public.name_hint') }}</p>
-
-          <button
-            v-if="!showEmail"
-            type="button"
-            class="mt-2 text-xs text-[var(--od-violet)] hover:underline"
-            @click="showEmail = true"
-          >
-            + {{ t('public.email_toggle') }}
-          </button>
-          <template v-else>
-            <label class="mt-3 block text-xs font-semibold text-[var(--od-slate)]" for="p-email-first">
-              {{ t('public.email') }} <span class="font-normal">({{ t('common.optional') }})</span>
-            </label>
-            <input id="p-email-first" v-model="form.email" type="email" class="od-input mt-1" maxlength="180" />
-            <p class="mt-1 text-xs text-[var(--od-slate)]">{{ t('public.email_hint') }}</p>
-          </template>
-
-          <input v-model="form.website" type="text" name="website" tabindex="-1" autocomplete="off" class="hidden" aria-hidden="true" />
-
-          <button type="submit" class="od-btn od-btn-primary mt-4 w-full py-2.5" :disabled="busy || !form.display_name.trim()">
-            {{ t('public.save_answers') }}
-          </button>
-        </form>
       </section>
 
       <!-- Planung: erscheint erst, wenn sie relevant ist -->

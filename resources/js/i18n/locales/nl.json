@@ -217,10 +217,7 @@
     "no_dates": "De organisator heeft nog geen data toegevoegd.",
     "your_time": "{local} bij jou · {event} in {zone}",
     "name_hint": "Zodra je meedoet, zie je wie wanneer kan – en zien de anderen jou.",
-    "taken": "bezet",
-    "tap_hint": "Tik aan wanneer je kunt.",
-    "almost_done": "Bijna klaar – hoe heet je?",
-    "email_toggle": "Updates per mail"
+    "taken": "bezet"
   },
   "legal": {
     "privacy": "Privacy",
