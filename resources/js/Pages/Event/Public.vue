@@ -42,6 +42,8 @@ const toast = ref('')
 const toastTone = ref('ok')
 const confirmLeave = ref(false)
 const saved = ref(false)
+// ein "Wer?" klappt alle Termine auf
+const showNames = ref(false)
 const askName = ref(false)
 let saveTimer = null
 // was beim ersten Klick gemeint war — wird nach dem Eintragen nachgeholt
@@ -370,8 +372,10 @@ function note(option) {
       <section v-if="showDates" class="od-card p-4 sm:p-5">
         <header class="flex items-baseline justify-between gap-3">
           <div class="min-w-0">
-            <h2 class="font-display font-semibold">{{ t('public.who') }}</h2>
-            <p v-if="!me && !readOnly && !resolving" class="od-meta mt-0.5">{{ t('public.intro') }}</p>
+            <!-- Vor dem Eintragen die Aufforderung, danach die Beschreibung -->
+            <h2 class="font-display font-semibold">
+              {{ !me && !readOnly && !resolving ? t('public.who_ask') : t('public.who') }}
+            </h2>
           </div>
           <!-- "Gespeichert" sitzt in der Kopfzeile: kein reservierter Platz, kein Sprung -->
           <span v-if="saved" class="od-meta od-settle shrink-0" style="color: var(--od-violet)">{{ t('public.saved') }}</span>
@@ -430,6 +434,8 @@ function note(option) {
               :highlighted="option.id === event.best_match_id && !decided && fitsEveryone(option)"
               :participants="me ? event.participants : null"
               :show-declined="false"
+              :open="showNames"
+              @toggle="showNames = !showNames"
             />
 
             <!-- Handy: immer ganz unten rechts, egal ob es schon einen Balken gibt -->

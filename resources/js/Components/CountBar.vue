@@ -20,15 +20,33 @@ const props = defineProps({
   showDeclined: { type: Boolean, default: true },
   // Schalter "Namen zeigen" im Kopf des Panels
   expandAll: { type: Boolean, default: false },
+  /*
+   * Gesteuert von aussen (Teilnehmerseite): ein "Wer?" klappt alle Termine auf
+   * — bei drei Terminen will man ohnehin alle sehen. null = eigener Zustand.
+   */
+  open: { type: Boolean, default: null },
 })
 
+const emit = defineEmits(['toggle'])
 const { t } = useI18n()
 
-const expanded = ref(props.expandAll)
+const localExpanded = ref(props.expandAll)
 watch(
   () => props.expandAll,
-  (value) => (expanded.value = value)
+  (value) => (localExpanded.value = value)
 )
+
+const expanded = computed(() => (props.open === null ? localExpanded.value : props.open))
+
+function toggle() {
+  if (props.open === null) {
+    localExpanded.value = !localExpanded.value
+
+    return
+  }
+
+  emit('toggle')
+}
 
 const total = computed(
   () => props.option.yes_count + props.option.maybe_count + props.option.no_count + props.option.open_count
@@ -84,7 +102,7 @@ const segments = computed(() => [
         type="button"
         class="-my-1 shrink-0 rounded-lg px-1.5 py-1 text-[13px] text-[var(--od-slate)] hover:text-[var(--od-violet)]"
         :aria-expanded="expanded"
-        @click="expanded = !expanded"
+        @click="toggle"
       >
         {{ t('manage.dates.who') }} <span aria-hidden="true">{{ expanded ? '▴' : '▾' }}</span>
       </button>

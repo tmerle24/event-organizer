@@ -219,7 +219,8 @@
     "taken": "asignada",
     "email_toggle": "Aviso por correo",
     "saved": "Guardado",
-    "modal_title": "¿Cómo te llamas?"
+    "modal_title": "¿Cómo te llamas?",
+    "who_ask": "¿Cuándo puedes?"
   },
   "legal": {
     "privacy": "Privacidad",

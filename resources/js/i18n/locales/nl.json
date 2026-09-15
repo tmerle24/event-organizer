@@ -219,7 +219,8 @@
     "taken": "bezet",
     "email_toggle": "Melding per mail",
     "saved": "Opgeslagen",
-    "modal_title": "Hoe heet je?"
+    "modal_title": "Hoe heet je?",
+    "who_ask": "Wanneer kun jij?"
   },
   "legal": {
     "privacy": "Privacy",

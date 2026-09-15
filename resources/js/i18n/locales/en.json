@@ -219,7 +219,8 @@
     "taken": "taken",
     "email_toggle": "Email notification",
     "saved": "Saved",
-    "modal_title": "What’s your name?"
+    "modal_title": "What’s your name?",
+    "who_ask": "When can you make it?"
   },
   "legal": {
     "privacy": "Privacy",

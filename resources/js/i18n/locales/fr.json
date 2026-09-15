@@ -219,7 +219,8 @@
     "taken": "déjà prise",
     "email_toggle": "Notification par e-mail",
     "saved": "Enregistré",
-    "modal_title": "Comment vous appelez-vous ?"
+    "modal_title": "Comment vous appelez-vous ?",
+    "who_ask": "Quand êtes-vous disponible ?"
   },
   "legal": {
     "privacy": "Confidentialité",

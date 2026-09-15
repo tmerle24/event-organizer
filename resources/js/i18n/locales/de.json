@@ -219,7 +219,8 @@
     "taken": "vergeben",
     "email_toggle": "E-Mail-Benachrichtigung",
     "saved": "Gespeichert",
-    "modal_title": "Wie heißt du?"
+    "modal_title": "Wie heißt du?",
+    "who_ask": "Wann kannst du?"
   },
   "legal": {
     "privacy": "Datenschutz",
