@@ -221,11 +221,7 @@
     "name_first": "Primero tu nombre y luego cuenta tu respuesta.",
     "join_first": "Pulsa «Vamos» y cuenta tu respuesta.",
     "names_teaser": "Pon tu nombre y verás quién puede cuándo.",
-    "email_ask_date": "¿Quieres un aviso cuando la fecha esté fijada?",
-    "email_ask": "¿Quieres un aviso si algo cambia?",
-    "email_yes": "Sí",
-    "email_no": "No, gracias",
-    "email_saved": "Hecho, te avisaremos."
+    "email_toggle": "Aviso por correo"
   },
   "legal": {
     "privacy": "Privacidad",

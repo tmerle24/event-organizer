@@ -221,11 +221,7 @@
     "name_first": "Eerst even je naam, dan telt je keuze.",
     "join_first": "Tik nog even op ‘Aan de slag’, dan telt je keuze.",
     "names_teaser": "Vul je naam in, dan zie je wie wanneer kan.",
-    "email_ask_date": "Bericht krijgen als de datum staat?",
-    "email_ask": "Bericht krijgen als er iets verandert?",
-    "email_yes": "Ja",
-    "email_no": "Nee, dank je",
-    "email_saved": "Top, je krijgt bericht."
+    "email_toggle": "Melding per mail"
   },
   "legal": {
     "privacy": "Privacy",

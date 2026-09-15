@@ -221,11 +221,7 @@
     "name_first": "Erst kurz deinen Namen, dann zählt dein Tipp.",
     "join_first": "Noch kurz auf „Los geht's“, dann zählt dein Tipp.",
     "names_teaser": "Trag deinen Namen ein, dann siehst du, wer wann kann.",
-    "email_ask_date": "Bescheid bekommen, wenn der Termin steht?",
-    "email_ask": "Bescheid bekommen, wenn sich etwas ändert?",
-    "email_yes": "Ja",
-    "email_no": "Nein danke",
-    "email_saved": "Gut, du bekommst Bescheid."
+    "email_toggle": "E-Mail-Benachrichtigung"
   },
   "legal": {
     "privacy": "Datenschutz",

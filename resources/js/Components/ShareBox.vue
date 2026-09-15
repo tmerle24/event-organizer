@@ -70,11 +70,12 @@ async function share() {
         aria-label="Link"
         @focus="$event.target.select()"
       />
-      <div class="flex gap-2">
-        <button type="button" class="od-btn od-btn-primary whitespace-nowrap" @click="copy">
+      <!-- Handy: halbe/halbe unter dem Link, Desktop: rechts daneben -->
+      <div class="flex gap-2 sm:shrink-0">
+        <button type="button" class="od-btn od-btn-primary w-full whitespace-nowrap sm:w-auto" @click="copy">
           {{ copied ? t('common.copied') : t('common.copy') }}
         </button>
-        <button v-if="canShare" type="button" class="od-btn od-btn-ghost whitespace-nowrap" @click="share">
+        <button v-if="canShare" type="button" class="od-btn od-btn-ghost w-full whitespace-nowrap sm:w-auto" @click="share">
           {{ t('common.share') }}
         </button>
       </div>

@@ -221,11 +221,7 @@
     "name_first": "Add your name first, then your tap counts.",
     "join_first": "Tap “Let's go” and your answer counts.",
     "names_teaser": "Add your name to see who can make it when.",
-    "email_ask_date": "Want a heads-up when the date is set?",
-    "email_ask": "Want a heads-up when something changes?",
-    "email_yes": "Yes",
-    "email_no": "No thanks",
-    "email_saved": "Done, you’ll get a heads-up."
+    "email_toggle": "Email notification"
   },
   "legal": {
     "privacy": "Privacy",

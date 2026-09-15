@@ -226,23 +226,23 @@ async function deleteEvent() {
 
       <section class="od-card p-4 sm:p-5">
         <h2 class="font-display font-semibold">{{ t('manage.danger.title') }}</h2>
-        <div class="mt-3 flex flex-wrap gap-2">
+        <div class="mt-3 flex flex-col gap-2 sm:flex-row sm:flex-wrap">
           <button
             v-if="event.status !== 'cancelled'"
             type="button"
-            class="od-btn od-btn-ghost text-sm"
+            class="od-btn od-btn-ghost w-full text-sm sm:w-auto"
             :disabled="busy"
             @click="ask(t('manage.danger.cancel_confirm'), cancelEvent, true)"
           >
             {{ t('manage.danger.cancel') }}
           </button>
-          <button v-else type="button" class="od-btn od-btn-ghost text-sm" :disabled="busy" @click="reopenEvent">
+          <button v-else type="button" class="od-btn od-btn-ghost w-full text-sm sm:w-auto" :disabled="busy" @click="reopenEvent">
             {{ t('manage.danger.reopen') }}
           </button>
 
           <button
             type="button"
-            class="od-btn text-sm text-white"
+            class="od-btn w-full text-sm text-white sm:w-auto"
             style="background: var(--od-slate)"
             :disabled="busy"
             @click="ask(t('manage.danger.delete_confirm'), deleteEvent, true)"
