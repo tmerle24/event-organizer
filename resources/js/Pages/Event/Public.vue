@@ -64,9 +64,26 @@ const decided = computed(
   () => event.value.date_options.find((option) => option.id === event.value.decided_option_id) || null
 )
 
+/*
+ * Reihenfolge kommt vom Server (Spec Abschnitt 5), wird aber eingefroren,
+ * solange die Seite offen ist: sonst rutscht der gerade angetippte Termin
+ * nach oben und die Liste springt unter dem Finger weg. Neu aufgebaut wird
+ * sie nur, wenn Termine dazukommen oder wegfallen.
+ */
+const orderIds = ref([...props.event.ranking])
+
+watch(
+  () => event.value.date_options.map((option) => option.id).join(','),
+  () => (orderIds.value = [...event.value.ranking]),
+  { immediate: true }
+)
+
 const ordered = computed(() => {
   const byId = new Map(event.value.date_options.map((option) => [option.id, option]))
-  return event.value.ranking.map((id) => byId.get(id)).filter(Boolean)
+  const known = orderIds.value.map((id) => byId.get(id)).filter(Boolean)
+  const rest = event.value.date_options.filter((option) => !orderIds.value.includes(option.id))
+
+  return [...known, ...rest]
 })
 
 /** Nur Optionen, bei denen sich die eigene Antwort geaendert hat, werden gesendet. */
@@ -198,6 +215,17 @@ async function join({ display_name, email, website }) {
   }
 }
 
+/*
+ * Nur die Werte verwerfen, die noch so dastehen wie abgeschickt. Wer waehrend
+ * des Speicherns denselben Termin nochmal antippt, verliert den Klick sonst,
+ * sobald die alte Antwort zurueckkommt.
+ */
+function dropSent(sending) {
+  answers.value = Object.fromEntries(
+    Object.entries(answers.value).filter(([optionId, value]) => !(optionId in sending) || value !== sending[optionId])
+  )
+}
+
 async function saveAnswers() {
   if (!me.value || !dirty.value) return
   clearTimeout(saveTimer)
@@ -212,17 +240,12 @@ async function saveAnswers() {
     })
     event.value = data.event
     me.value = data.event.me
-    // nur die gesendeten Antworten verwerfen — waehrenddessen kann getippt worden sein
-    answers.value = Object.fromEntries(
-      Object.entries(answers.value).filter(([optionId]) => !(optionId in sending))
-    )
+    dropSent(sending)
     saved.value = true
     setTimeout(() => (saved.value = false), 2000)
   } catch (e) {
     // Antwort faellt auf den Serverstand zurueck
-    answers.value = Object.fromEntries(
-      Object.entries(answers.value).filter(([optionId]) => !(optionId in sending))
-    )
+    dropSent(sending)
     flash(t('common.error'), 'error')
   } finally {
     busy.value = false
@@ -349,8 +372,11 @@ function note(option) {
         <header class="flex items-center justify-between gap-3">
           <div class="min-w-0">
             <h2 class="font-display font-semibold">{{ t('public.who') }}</h2>
+            <!-- Platz bleibt reserviert, sonst springt die Liste beim Speichern -->
             <p v-if="!me && !readOnly && !resolving" class="od-meta mt-0.5">{{ t('public.intro') }}</p>
-            <p v-else-if="saved" class="od-meta mt-0.5 od-settle" style="color: var(--od-violet)">{{ t('public.saved') }}</p>
+            <p v-else class="od-meta mt-0.5 min-h-[1.4em]" style="color: var(--od-violet)">
+              <span v-if="saved" class="od-settle inline-block">{{ t('public.saved') }}</span>
+            </p>
           </div>
           <button
             v-if="me && event.answered_count > 0 && dateListVisible"

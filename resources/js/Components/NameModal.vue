@@ -38,7 +38,7 @@ function confirm() {
 </script>
 
 <template>
-  <div v-if="open" class="fixed inset-0 z-50 flex items-end justify-center bg-black/40 px-4 py-4 sm:items-center" @click.self="emit('cancel')">
+  <div v-if="open" class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4 py-4" @click.self="emit('cancel')">
     <form class="od-card w-full max-w-sm p-5" role="dialog" aria-modal="true" @submit.prevent="confirm">
       <label class="block font-display font-semibold" for="m-name">{{ t('public.modal_title') }}</label>
 
