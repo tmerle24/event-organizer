@@ -396,16 +396,23 @@ function note(option) {
           {{ t('public.no_dates') }}
         </p>
 
-        <ul v-else-if="dateListVisible" class="mt-3 space-y-2">
+        <!-- Termine nur durch Linien getrennt; einen Rahmen bekommt nur der
+             markierte Termin, damit er heraussticht. -->
+        <ul v-else-if="dateListVisible" class="mt-2">
           <li
             v-for="option in ordered"
             :key="option.id"
-            class="border p-3.5"
-            :style="{
-              borderColor: option.id === event.decided_option_id ? 'var(--od-apricot)' : 'var(--od-line)',
-              borderRadius: 'var(--od-radius-md)',
-              background: option.id === event.decided_option_id ? 'var(--od-sand)' : 'var(--od-white)',
-            }"
+            class="border border-transparent px-1 py-3.5"
+            :class="markerFor(option) ? 'mt-2 px-3.5' : 'border-b-[var(--od-line)]! last:border-b-transparent!'"
+            :style="
+              markerFor(option)
+                ? {
+                    borderColor: option.id === event.decided_option_id ? 'var(--od-apricot)' : markerFor(option).dot,
+                    borderRadius: 'var(--od-radius-md)',
+                    background: option.id === event.decided_option_id ? 'var(--od-sand)' : 'var(--od-white)',
+                  }
+                : {}
+            "
           >
             <div class="flex flex-wrap items-center justify-between gap-2">
               <div class="min-w-0">
