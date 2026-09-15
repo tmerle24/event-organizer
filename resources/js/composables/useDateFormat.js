@@ -23,6 +23,14 @@ export function formatDay(option) {
   return new Intl.DateTimeFormat(locale(), opts).format(date)
 }
 
+/** Kurz fuer enge Zeilen: "Sa., 26.9." */
+export function formatShort(option) {
+  const date = option.all_day && option.day ? new Date(`${option.day}T12:00:00`) : new Date(option.starts_at_utc)
+  const opts = { weekday: 'short', day: 'numeric', month: 'numeric' }
+  if (!option.all_day) opts.timeZone = viewerTimezone()
+  return new Intl.DateTimeFormat(locale(), opts).format(date)
+}
+
 export function formatTime(option, timeZone = viewerTimezone()) {
   if (option.all_day) return null
   return new Intl.DateTimeFormat(locale(), {

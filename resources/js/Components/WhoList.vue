@@ -2,6 +2,7 @@
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { currentLocale } from '@/i18n'
+import { ANSWERS } from '@/composables/useMatch'
 
 /**
  * Wer hat zu einem Termin wie geantwortet. Pflicht-Personen zuerst, damit bei
@@ -16,12 +17,7 @@ const props = defineProps({
 
 const { t } = useI18n()
 
-const GROUPS = [
-  { key: 'yes', icon: '✓', color: 'var(--od-violet)' },
-  { key: 'maybe', icon: '~', color: 'var(--od-violet-soft)' },
-  { key: 'no', icon: '✕', color: 'var(--od-slate)' },
-  { key: 'open', icon: '○', color: 'var(--od-slate)' },
-]
+const GROUPS = ['yes', 'maybe', 'no', 'open'].map((key) => ({ key, ...ANSWERS[key] }))
 
 function byImportance(a, b) {
   if (a.is_required !== b.is_required) return a.is_required ? -1 : 1

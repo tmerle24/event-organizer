@@ -1,6 +1,8 @@
 <script setup>
 import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { formatShort } from '@/composables/useDateFormat'
+import { ANSWERS } from '@/composables/useMatch'
 
 const props = defineProps({
   event: { type: Object, required: true },
@@ -17,6 +19,38 @@ const busy = ref(false)
 const hasPolling = computed(() => ['dates', 'both'].includes(props.event.mode))
 const inviteInput = ref('')
 const mergeSource = ref(null)
+
+// ab so vielen Terminen nur noch Summen, sonst wird die Zeile zu lang
+const MAX_INLINE_DATES = 4
+
+const chronological = computed(() =>
+  [...props.event.date_options].sort((a, b) => (a.starts_at_utc ?? a.day).localeCompare(b.starts_at_utc ?? b.day))
+)
+
+const decidedOption = computed(
+  () => props.event.date_options.find((option) => option.id === props.event.decided_option_id) ?? null
+)
+
+function answerOf(option, participant) {
+  return option.votes?.[participant.id] ?? 'open'
+}
+
+function answerLine(participant) {
+  if (decidedOption.value) {
+    return { type: 'decided', answer: answerOf(decidedOption.value, participant) }
+  }
+
+  if (chronological.value.length <= MAX_INLINE_DATES) {
+    return {
+      type: 'dates',
+      items: chronological.value.map((option) => ({ id: option.id, label: formatShort(option), answer: answerOf(option, participant) })),
+    }
+  }
+
+  const sums = { yes: 0, maybe: 0, no: 0, open: 0 }
+  chronological.value.forEach((option) => sums[answerOf(option, participant)]++)
+  return { type: 'sums', items: Object.entries(sums).filter(([, count]) => count).map(([answer, count]) => ({ answer, count })) }
+}
 
 async function call(method, url, payload) {
   busy.value = true
@@ -148,14 +182,51 @@ async function invite() {
           </button>
         </div>
 
-        <p v-if="participant.has_email || hasPolling" class="mt-0.5 pl-1.5 text-xs text-[var(--od-slate)]">
-          <span v-if="participant.has_email" :title="t('manage.participants.gets_updates')">
-            ✉ <span class="sr-only">{{ t('manage.participants.gets_updates') }}</span>
+        <p
+          v-if="participant.has_email || (hasPolling && event.date_options.length)"
+          class="mt-0.5 flex flex-wrap items-center gap-x-1.5 pl-1.5 text-xs text-[var(--od-slate)]"
+        >
+          <span
+            v-if="participant.has_email"
+            class="inline-flex"
+            :title="t('manage.participants.gets_updates')"
+          >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <rect x="3" y="5" width="18" height="14" rx="2" />
+              <path d="m3.5 6.5 8.5 6.5 8.5-6.5" />
+            </svg>
+            <span class="sr-only">{{ t('manage.participants.gets_updates') }}</span>
           </span>
-          <span v-if="participant.has_email && hasPolling"> · </span>
-          <span v-if="hasPolling">
-            {{ t('manage.participants.answered', { count: participant.answered_count, total: event.date_options.length }) }}
-          </span>
+          <span v-if="participant.has_email && hasPolling && event.date_options.length" aria-hidden="true">·</span>
+
+          <template v-if="hasPolling && event.date_options.length">
+            <!-- nach der Festlegung zaehlt nur noch: kommt die Person? -->
+            <span
+              v-if="answerLine(participant).type === 'decided'"
+              :style="{ color: ANSWERS[answerLine(participant).answer].color }"
+            >
+              {{ t(`manage.participants.decided_answer.${answerLine(participant).answer}`) }}
+            </span>
+
+            <template v-else-if="answerLine(participant).type === 'dates'">
+              <template v-for="(item, index) in answerLine(participant).items" :key="item.id">
+                <span v-if="index" aria-hidden="true">·</span>
+                <span class="whitespace-nowrap">
+                  {{ item.label }}
+                  <span :style="{ color: ANSWERS[item.answer].color }" :title="t(`manage.counts.${item.answer}`, 1)">{{ ANSWERS[item.answer].icon }}</span>
+                </span>
+              </template>
+            </template>
+
+            <template v-else>
+              <template v-for="(item, index) in answerLine(participant).items" :key="item.answer">
+                <span v-if="index" aria-hidden="true">·</span>
+                <span class="whitespace-nowrap" :title="t(`manage.counts.${item.answer}`, item.count)">
+                  {{ item.count }} <span :style="{ color: ANSWERS[item.answer].color }">{{ ANSWERS[item.answer].icon }}</span>
+                </span>
+              </template>
+            </template>
+          </template>
         </p>
 
         <div v-if="mergeSource === participant.id" class="mt-2 pl-1.5">

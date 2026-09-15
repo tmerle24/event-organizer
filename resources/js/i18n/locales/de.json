@@ -97,7 +97,8 @@
       "names_show": "Namen zeigen",
       "names_hide": "Namen ausblenden",
       "still_open": "Noch offen",
-      "best_partial": "Passt am besten"
+      "best_partial": "Passt am besten",
+      "confirm_short": "Nehmen"
     },
     "counts": {
       "yes": "kann | können",
@@ -113,12 +114,17 @@
       "merge": "Zusammenführen mit …",
       "merge_hint": "Doppelte Einträge derselben Person zusammenlegen.",
       "remove": "Entfernen",
-      "answered": "{count} von {total} beantwortet",
       "invite": "Per E-Mail einladen",
       "invite_placeholder": "eine{'@'}mail.de, zwei{'@'}mail.de",
       "invite_send": "Einladungen senden",
       "invited": "Einladung ist unterwegs | {count} Einladungen sind unterwegs",
-      "gets_updates": "Bekommt Updates per Mail"
+      "gets_updates": "Bekommt Updates per Mail",
+      "decided_answer": {
+        "yes": "kommt",
+        "maybe": "vielleicht",
+        "no": "kann nicht",
+        "open": "noch offen"
+      }
     },
     "plan": {
       "title": "Planung",

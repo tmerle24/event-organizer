@@ -97,7 +97,8 @@
       "names_show": "Show names",
       "names_hide": "Hide names",
       "still_open": "No answer yet",
-      "best_partial": "Best fit"
+      "best_partial": "Best fit",
+      "confirm_short": "Take"
     },
     "counts": {
       "yes": "can",
@@ -113,12 +114,17 @@
       "merge": "Merge with …",
       "merge_hint": "Combine duplicate entries of the same person.",
       "remove": "Remove",
-      "answered": "{count} of {total} answered",
       "invite": "Invite by email",
       "invite_placeholder": "one{'@'}mail.com, two{'@'}mail.com",
       "invite_send": "Send invitations",
       "invited": "Invitation is on its way | {count} invitations are on their way",
-      "gets_updates": "Gets updates by email"
+      "gets_updates": "Gets updates by email",
+      "decided_answer": {
+        "yes": "coming",
+        "maybe": "maybe",
+        "no": "can’t make it",
+        "open": "no answer yet"
+      }
     },
     "plan": {
       "title": "Planning",

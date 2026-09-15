@@ -97,7 +97,8 @@
       "names_show": "Namen tonen",
       "names_hide": "Namen verbergen",
       "still_open": "Nog open",
-      "best_partial": "Past het best"
+      "best_partial": "Past het best",
+      "confirm_short": "Nemen"
     },
     "counts": {
       "yes": "kan | kunnen",
@@ -113,12 +114,17 @@
       "merge": "Samenvoegen met …",
       "merge_hint": "Dubbele invoer van dezelfde persoon samenvoegen.",
       "remove": "Verwijderen",
-      "answered": "{count} van {total} ingevuld",
       "invite": "Per e-mail uitnodigen",
       "invite_placeholder": "een{'@'}mail.com, twee{'@'}mail.com",
       "invite_send": "Uitnodigingen versturen",
       "invited": "Uitnodiging is onderweg | {count} uitnodigingen zijn onderweg",
-      "gets_updates": "Krijgt updates per mail"
+      "gets_updates": "Krijgt updates per mail",
+      "decided_answer": {
+        "yes": "komt",
+        "maybe": "misschien",
+        "no": "kan niet",
+        "open": "nog open"
+      }
     },
     "plan": {
       "title": "Planning",

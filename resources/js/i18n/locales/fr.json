@@ -97,7 +97,8 @@
       "names_show": "Afficher les noms",
       "names_hide": "Masquer les noms",
       "still_open": "Pas encore de réponse",
-      "best_partial": "Convient le mieux"
+      "best_partial": "Convient le mieux",
+      "confirm_short": "Prendre"
     },
     "counts": {
       "yes": "dispo | dispos",
@@ -113,12 +114,17 @@
       "merge": "Fusionner avec …",
       "merge_hint": "Regrouper les doublons de la même personne.",
       "remove": "Retirer",
-      "answered": "{count} sur {total} ont répondu",
       "invite": "Inviter par e-mail",
       "invite_placeholder": "un{'@'}mail.com, deux{'@'}mail.com",
       "invite_send": "Envoyer les invitations",
       "invited": "Invitation partie | {count} invitations parties",
-      "gets_updates": "Reçoit les nouvelles par e-mail"
+      "gets_updates": "Reçoit les nouvelles par e-mail",
+      "decided_answer": {
+        "yes": "vient",
+        "maybe": "peut-être",
+        "no": "ne peut pas",
+        "open": "pas encore répondu"
+      }
     },
     "plan": {
       "title": "Organisation",

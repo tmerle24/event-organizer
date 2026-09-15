@@ -201,52 +201,38 @@ function toggleWeekday(day) {
           opacity: option.blocked ? 0.7 : 1,
         }"
       >
-        <!-- Handy: Aktionen unter dem Datum, sonst wird es in schmale Zeilen gequetscht -->
-        <div class="flex flex-wrap items-start justify-between gap-x-3 gap-y-2">
-          <div class="min-w-0 basis-full sm:basis-0 sm:flex-1">
-            <p
-              v-if="isBest(option)"
-              class="flex items-center gap-1.5 text-[13px] font-medium"
-              :style="{ color: isMint(option) ? 'var(--od-mint)' : 'var(--od-violet)' }"
-            >
-              <span
-                class="inline-block h-2 w-2 rounded-full"
-                :style="{ background: isMint(option) ? 'var(--od-mint)' : 'var(--od-violet)' }"
-              />
-              {{ isMint(option) ? t('manage.dates.best') : t('manage.dates.best_partial') }}
-            </p>
-            <p class="od-h3 flex items-center gap-2">
-              <span
-                v-if="option.id === event.decided_option_id"
-                class="inline-block h-2.5 w-2.5 shrink-0 rounded-full"
-                style="background: var(--od-apricot)"
-                :aria-label="t('manage.dates.confirmed')"
-              />
-              {{ localizedFull(option) }}
-            </p>
-            <p v-if="note(option)" class="od-meta">
-              {{ t('public.your_time', note(option)) }}
-            </p>
-            <p v-if="option.blocked" class="od-meta mt-0.5">
-              {{ t('manage.dates.blocked') }}
-            </p>
-          </div>
+        <!-- Aktionen rechts oben, Datum darunter in voller Breite (sonst am Handy gequetscht) -->
+        <div class="flex min-h-8 items-center justify-between gap-3">
+          <p
+            v-if="isBest(option)"
+            class="flex min-w-0 items-center gap-1.5 whitespace-nowrap text-[13px] font-medium"
+            :style="{ color: isMint(option) ? 'var(--od-mint)' : 'var(--od-violet)' }"
+          >
+            <span
+              class="inline-block h-2 w-2 shrink-0 rounded-full"
+              :style="{ background: isMint(option) ? 'var(--od-mint)' : 'var(--od-violet)' }"
+            />
+            {{ isMint(option) ? t('manage.dates.best') : t('manage.dates.best_partial') }}
+          </p>
+          <span v-else />
 
-          <div class="flex shrink-0 gap-1">
+          <div class="-mr-1.5 flex shrink-0 gap-1">
             <!--
-              Eine Primäraktion pro Screen (Brand Guide Abschnitt 7): nur die
-              Zeile, die allen passt, bekommt den gefüllten Button. Alle anderen
-              Termine bleiben als leise Aktion wählbar.
+              Eine Primäraktion pro Screen (Brand Guide Abschnitt 7): nur der
+              beste Termin bekommt den gefüllten Button, alle anderen bleiben
+              als leise Aktion wählbar.
             -->
             <button
               v-if="!readOnly && option.id !== event.decided_option_id"
               type="button"
-              class="od-btn px-3 py-1.5 text-[13px]"
+              class="od-btn whitespace-nowrap px-3 py-1.5 text-[13px]"
               :class="isPrimaryChoice(option) ? 'od-btn-primary' : 'od-btn-quiet'"
               :disabled="busy"
               @click="decide(option)"
             >
-              {{ t('manage.dates.confirm') }}
+              <!-- kurze Beschriftung am Handy, sonst bricht das Label daneben um -->
+              <span class="sm:hidden">{{ t('manage.dates.confirm_short') }}</span>
+              <span class="hidden sm:inline">{{ t('manage.dates.confirm') }}</span>
             </button>
             <button
               v-if="!readOnly"
@@ -260,6 +246,22 @@ function toggleWeekday(day) {
             </button>
           </div>
         </div>
+
+        <p class="od-h3 flex items-center gap-2">
+          <span
+            v-if="option.id === event.decided_option_id"
+            class="inline-block h-2.5 w-2.5 shrink-0 rounded-full"
+            style="background: var(--od-apricot)"
+            :aria-label="t('manage.dates.confirmed')"
+          />
+          {{ localizedFull(option) }}
+        </p>
+        <p v-if="note(option)" class="od-meta">
+          {{ t('public.your_time', note(option)) }}
+        </p>
+        <p v-if="option.blocked" class="od-meta mt-0.5">
+          {{ t('manage.dates.blocked') }}
+        </p>
 
         <CountBar
           class="mt-2"
