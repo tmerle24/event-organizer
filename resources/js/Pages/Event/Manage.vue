@@ -25,7 +25,7 @@ const event = ref(props.event)
 const toast = ref('')
 const toastTone = ref('ok')
 const editing = ref(false)
-const email = ref(props.event.organizer_email || '')
+const email = ref('')
 const busy = ref(false)
 const confirm = ref({ open: false, message: '', danger: false, action: null })
 
@@ -219,7 +219,7 @@ async function deleteEvent() {
             @blur="editing = false"
           />
           <button type="button" class="od-btn od-btn-ghost whitespace-nowrap text-sm" :disabled="busy || !email" @click="sendManageLink">
-            {{ t('common.save') }}
+            {{ t('manage.send_link') }}
           </button>
         </div>
       </section>

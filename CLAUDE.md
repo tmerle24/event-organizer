@@ -73,9 +73,11 @@ passend zum SimpleVoter-Muster.
 
 Tokens entstehen im `booted()`-Hook (`static::creating`) des `Event`-Models.
 
-**Preis dieser Entscheidung:** „Meine Events" existiert nur im LocalStorage, und
-Retention-Warnungen erreichen nur Organisatoren, die freiwillig eine E-Mail
-hinterlegt haben (Manage-Screen, „Verwaltungslink sichern").
+**Preis dieser Entscheidung:** „Meine Events" existiert nur im LocalStorage.
+„Verwaltungslink per E-Mail sichern" **verschickt nur, speichert die Adresse
+nicht** — `events.organizer_email` bleibt leer, bis es die Lösch-Warnung
+tatsächlich gibt. Erst dann darf die Adresse wieder gespeichert werden, mit
+Hinweis im UI.
 
 **Der `manage_token` darf niemals über eine Public-Route ausgeliefert werden.**
 `EventPresenter::forPublic()` baut die JSON-Shape deshalb explizit auf, statt das
@@ -559,8 +561,8 @@ vernichten.
 - Teilnehmer-Mails verweisen auf `participant_id` — die Adresse existiert nur
   einmal, am Teilnehmer. Wird sie entfernt, bleibt nichts zurück.
 - Einladung und Verwaltungslink speichern nur `recipient_hash`
-  (HMAC mit `APP_KEY`). **Einladungsadressen werden nie gespeichert**, nur für
-  den einen Versand benutzt.
+  (HMAC mit `APP_KEY`). **Einladungs- und Verwaltungslink-Adressen werden nie
+  gespeichert**, nur für den einen Versand benutzt.
 - SMTP-Fehler landen ohne Adresse in `error` und im Log (`EventNotifier::scrub`).
 - Versand bleibt synchron — ein Queue-Job legte die Adresse in `jobs`/`failed_jobs` ab.
 
@@ -774,7 +776,8 @@ eines dieser Verhalten, muss der Text mitgeändert werden.
       (Drittlandübermittlung an Anthropic)
 - [ ] Erinnerungs-Mail 24h vorher (Spec: bewusst hinter der Cut-Line)
 - [ ] Retention-Warnmail 14 Tage vor Löschung (`retention_warned_at` ist im
-      Schema, der Versand fehlt)
+      Schema, der Versand fehlt). Braucht wieder eine gespeicherte
+      Organisator-Adresse — dann mit ausdrücklichem Hinweis beim Eingeben.
 - [ ] `orgdate-symbol-confirmed.svg` in `brand/logo/make_logos.py` aufnehmen
       (Guide Abschnitt 3 nennt den Zustand, das gelieferte Set enthält ihn nicht)
 - [ ] `safari-pinned-tab.svg` fehlt — verlangt eine einfarbige, strichlose

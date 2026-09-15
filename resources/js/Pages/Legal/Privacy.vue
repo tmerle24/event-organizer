@@ -104,9 +104,9 @@ onMounted(() => {
             Link, über den die eigene Adresse sofort gelöscht wird.
           </p>
           <p class="od-small mt-2" style="color: var(--od-slate)">
-            Adressen, an die über ORGDATE eine Einladung verschickt wird, verwenden wir nur für
-            diesen einen Versand und speichern sie nicht. Damit dieselbe Einladung nicht zweimal
-            verschickt wird, bleibt lediglich ein nicht umkehrbarer Prüfwert (Hash) zurück, aus dem
+            Adressen, an die über ORGDATE eine Einladung oder der Verwaltungslink verschickt wird,
+            verwenden wir nur für diesen einen Versand und speichern sie nicht. Damit dieselbe
+            Einladung nicht zweimal verschickt wird, bleibt lediglich ein nicht umkehrbarer Prüfwert (Hash) zurück, aus dem
             sich die Adresse nicht wiederherstellen lässt. Auch im Versandprotokoll der übrigen
             Mails steht keine Adresse.
           </p>

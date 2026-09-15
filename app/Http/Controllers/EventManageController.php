@@ -56,7 +56,6 @@ class EventManageController extends Controller
             'mode' => ['sometimes', 'in:dates,list,both'],
             'planning_template' => ['sometimes', 'in:barbecue,dinner,party,trip,meeting,generic'],
             'participant_count_hint' => ['sometimes', 'nullable', 'integer', 'min:1', 'max:500'],
-            'organizer_email' => ['sometimes', 'nullable', 'email', 'max:180'],
             'organizer_name' => ['sometimes', 'nullable', 'string', 'max:80'],
             // Fester Termin einer Organisationsliste. Leeres Datum entfernt ihn.
             'fixed_date' => ['sometimes', 'nullable', 'date'],
@@ -309,7 +308,7 @@ class EventManageController extends Controller
             'email' => ['required', 'email', 'max:180'],
         ]);
 
-        $event->update(['organizer_email' => $validated['email']]);
+        // nur versenden, nicht speichern — erst die Loesch-Warnung wuerde die Adresse brauchen
         $sent = $this->notifier->sendManageLink($event, $validated['email']);
 
         return response()->json(['sent' => $sent]);

@@ -185,7 +185,8 @@
       "present": "{count} doet mee | {count} doen mee",
       "free": "Nog vrij",
       "as_of": "Stand {date}"
-    }
+    },
+    "send_link": "Link versturen"
   },
   "public": {
     "intro": "Geef aan wanneer je kunt.",

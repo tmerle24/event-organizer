@@ -22,7 +22,7 @@
   },
   "landing": {
     "tagline": "Trouvez une date. Faites un plan. C'est réglé.",
-    "sub": "Sans inscription. Tu envoies un lien, chacun remplit.",
+    "sub": "Sans inscription. Vous envoyez un lien, chacun remplit.",
     "placeholder": "Qu'est-ce que vous organisez ?",
     "example": "ex. « Barbecue d'équipe à 8 en septembre, vendredi ou samedi soir »",
     "mode": {
@@ -54,7 +54,7 @@
     "title": "Gérer l'événement",
     "your_link": "Votre lien de partage",
     "link_hint": "Envoyez ce lien à tout le monde. Toute personne qui l'a peut répondre.",
-    "manage_warning": "L’adresse de cette page est ton lien d’administration – garde-la pour toi.",
+    "manage_warning": "L’adresse de cette page est votre lien d’administration – mieux vaut la garder pour vous.",
     "save_link": "M'envoyer le lien d'administration",
     "save_link_hint": "Au cas où vous changiez de navigateur ou effaciez l'historique.",
     "email_placeholder": "vous{'@'}mail.com",
@@ -185,7 +185,8 @@
       "present": "{count} inscrit | {count} inscrits",
       "free": "Encore libre",
       "as_of": "État au {date}"
-    }
+    },
+    "send_link": "Envoyer le lien"
   },
   "public": {
     "intro": "Indiquez quand vous êtes disponible.",
@@ -201,7 +202,7 @@
     "leave_confirm": "Vos réponses et tâches seront supprimées. Continuer ?",
     "your_answer": "Votre réponse",
     "save_answers": "Ça me va",
-    "answers_saved": "C’est noté. Tu peux changer quand tu veux.",
+    "answers_saved": "C’est noté. Vous pouvez changer quand vous voulez.",
     "who": "Qui est disponible",
     "decided_banner": "La date est fixée",
     "cancelled_banner": "Cet événement a été annulé.",
@@ -210,7 +211,7 @@
     "tasks_intro": "Reste à organiser :",
     "take": "Je m'en occupe",
     "release": "Finalement non",
-    "mine": "Toi",
+    "mine": "Vous",
     "taken_by": "{name}",
     "add_own": "Ajouter ma propre tâche",
     "no_dates": "L'organisateur n'a pas encore proposé de dates.",

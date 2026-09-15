@@ -24,7 +24,6 @@ class EventPresenter
         return [
             ...$this->common($event),
             'manage_token' => $event->manage_token,
-            'organizer_email' => $event->organizer_email,
             'organizer_name' => $event->organizer_name,
             'ai_meta' => $event->ai_meta,
             'manage_url' => $event->manageUrl(),

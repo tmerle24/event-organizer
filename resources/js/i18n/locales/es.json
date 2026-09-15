@@ -185,7 +185,8 @@
       "present": "{count} apuntado | {count} apuntados",
       "free": "Todavía libre",
       "as_of": "Actualizado {date}"
-    }
+    },
+    "send_link": "Enviar enlace"
   },
   "public": {
     "intro": "Marca cuándo puedes.",

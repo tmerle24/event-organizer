@@ -7,6 +7,7 @@ use App\Mail\EventChangedMail;
 use App\Mail\EventDecidedMail;
 use App\Mail\EventInviteMail;
 use App\Mail\EventReopenedMail;
+use App\Mail\ManageLinkMail;
 use App\Models\Event;
 use App\Models\MailNotification;
 use App\Models\Participant;
@@ -117,6 +118,27 @@ class MailNotificationTest extends TestCase
         $record = MailNotification::sole();
         $this->assertStringContainsString('[address]', $record->error);
         $this->assertStringNotContainsString('gast@example.org', json_encode($record->getAttributes()));
+    }
+
+    public function test_the_manage_link_address_is_not_stored(): void
+    {
+        Mail::fake();
+        $event = $this->makeEvent();
+
+        $this->postJson("/e/{$event->manage_token}/email", ['email' => 'orga@example.org'])
+            ->assertOk()->assertJsonPath('sent', true);
+
+        Mail::assertSent(ManageLinkMail::class, fn ($mail) => $mail->hasTo('orga@example.org'));
+        $this->assertNull($event->fresh()->organizer_email);
+
+        foreach (['mail_notifications', 'events'] as $table) {
+            $this->assertStringNotContainsString('orga@example.org', json_encode(DB::table($table)->get()), "Adresse in {$table}");
+        }
+
+        // auch nicht über das Bearbeiten-Formular
+        $this->patchJson("/e/{$event->manage_token}", ['organizer_email' => 'orga@example.org'])->assertOk();
+        $this->assertNull($event->fresh()->organizer_email);
+        $this->assertStringNotContainsString('organizer_email', $this->getJson("/e/{$event->manage_token}/data")->getContent());
     }
 
     // --- Updates ------------------------------------------------------------

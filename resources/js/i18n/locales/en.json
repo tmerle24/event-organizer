@@ -185,7 +185,8 @@
       "present": "{count} signed up",
       "free": "Still up for grabs",
       "as_of": "As of {date}"
-    }
+    },
+    "send_link": "Send link"
   },
   "public": {
     "intro": "Mark when you're available.",

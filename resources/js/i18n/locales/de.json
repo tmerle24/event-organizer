@@ -185,7 +185,8 @@
       "present": "{count} dabei",
       "free": "Noch frei",
       "as_of": "Stand {date}"
-    }
+    },
+    "send_link": "Link senden"
   },
   "public": {
     "intro": "Trag ein, wann du kannst.",
