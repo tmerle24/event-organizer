@@ -51,7 +51,6 @@ let pending = null
  * das, was noch zu tun ist, nicht unter sechs abgehakten Terminen liegt.
  */
 const showDateList = ref(false)
-const expandAll = ref(false)
 
 const baseUrl = computed(() => `/t/${event.value.public_token}`)
 const readOnly = computed(() => ['closed', 'cancelled'].includes(event.value.status))
@@ -369,24 +368,13 @@ function note(option) {
 
       <!-- Verfuegbarkeit -->
       <section v-if="showDates" class="od-card p-4 sm:p-5">
-        <header class="flex items-center justify-between gap-3">
+        <header class="flex items-baseline justify-between gap-3">
           <div class="min-w-0">
             <h2 class="font-display font-semibold">{{ t('public.who') }}</h2>
-            <!-- Platz bleibt reserviert, sonst springt die Liste beim Speichern -->
             <p v-if="!me && !readOnly && !resolving" class="od-meta mt-0.5">{{ t('public.intro') }}</p>
-            <p v-else class="od-meta mt-0.5 min-h-[1.4em]" style="color: var(--od-violet)">
-              <span v-if="saved" class="od-settle inline-block">{{ t('public.saved') }}</span>
-            </p>
           </div>
-          <button
-            v-if="me && event.answered_count > 0 && dateListVisible"
-            type="button"
-            class="od-meta whitespace-nowrap hover:text-[var(--od-violet)]!"
-            :aria-pressed="expandAll"
-            @click="expandAll = !expandAll"
-          >
-            {{ expandAll ? t('manage.dates.names_hide') : t('manage.dates.names_show') }}
-          </button>
+          <!-- "Gespeichert" sitzt in der Kopfzeile: kein reservierter Platz, kein Sprung -->
+          <span v-if="saved" class="od-meta od-settle shrink-0" style="color: var(--od-violet)">{{ t('public.saved') }}</span>
         </header>
 
         <button
@@ -442,7 +430,6 @@ function note(option) {
               :highlighted="option.id === event.best_match_id && !decided && fitsEveryone(option)"
               :participants="me ? event.participants : null"
               :show-declined="false"
-              :expand-all="expandAll"
             />
 
             <!-- Handy: immer ganz unten rechts, egal ob es schon einen Balken gibt -->
