@@ -197,10 +197,10 @@ function toggleWeekday(day) {
     <ul v-else-if="optionsVisible" class="mt-4 space-y-2">
       <!-- Wie auf der Teilnehmerseite: Rahmen nur um den markierten Termin -->
       <li
-        v-for="option in ordered"
+        v-for="(option, index) in ordered"
         :key="option.id"
         class="border border-transparent px-3.5 py-3.5"
-        :class="marked(option) ? '' : 'border-b-[var(--od-line)]! last:border-b-transparent!'"
+        :class="marked(option) || marked(ordered[index + 1] ?? {}) ? '' : 'border-b-[var(--od-line)]! last:border-b-transparent!'"
         :style="{
           ...(marked(option)
             ? { borderColor: borderFor(option), borderRadius: 'var(--od-radius-md)', background: 'var(--od-white)' }

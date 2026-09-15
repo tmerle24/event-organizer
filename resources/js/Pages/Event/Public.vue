@@ -400,10 +400,10 @@ function note(option) {
              markierte Termin, damit er heraussticht. -->
         <ul v-else-if="dateListVisible" class="mt-2">
           <li
-            v-for="option in ordered"
+            v-for="(option, index) in ordered"
             :key="option.id"
             class="border border-transparent px-3.5 py-3.5"
-            :class="markerFor(option) ? '' : 'border-b-[var(--od-line)]! last:border-b-transparent!'"
+            :class="markerFor(option) || markerFor(ordered[index + 1] ?? {}) ? '' : 'border-b-[var(--od-line)]! last:border-b-transparent!'"
             :style="
               markerFor(option)
                 ? {
@@ -416,10 +416,17 @@ function note(option) {
           >
             <div class="flex flex-wrap items-center justify-between gap-2">
               <div class="min-w-0">
-                <!-- Markierung als eigene Zeile ueber dem Datum, damit die Daten buendig bleiben -->
-                <p v-if="markerFor(option)" class="flex items-center gap-1.5 text-[13px] font-medium" :style="{ color: markerFor(option).text }">
-                  <span class="inline-block h-2 w-2 shrink-0 rounded-full" :style="{ background: markerFor(option).dot }" />
-                  {{ markerFor(option).label }}
+                <!-- Eigene Zeile ueber dem Datum, damit die Daten buendig bleiben.
+                     Der Platz bleibt immer frei, sonst springt die Liste, wenn die
+                     Markierung zu einem anderen Termin wandert. -->
+                <p
+                  class="flex min-h-[1.25rem] items-center gap-1.5 text-[13px] font-medium"
+                  :style="{ color: markerFor(option)?.text }"
+                >
+                  <template v-if="markerFor(option)">
+                    <span class="inline-block h-2 w-2 shrink-0 rounded-full" :style="{ background: markerFor(option).dot }" />
+                    {{ markerFor(option).label }}
+                  </template>
                 </p>
                 <p class="od-h3" :class="{ 'opacity-60': option.blocked }">
                   {{ formatFull(option) }}
