@@ -402,8 +402,8 @@ function note(option) {
           <li
             v-for="option in ordered"
             :key="option.id"
-            class="border border-transparent px-1 py-3.5"
-            :class="markerFor(option) ? 'mt-2 px-3.5' : 'border-b-[var(--od-line)]! last:border-b-transparent!'"
+            class="border border-transparent px-3.5 py-3.5"
+            :class="markerFor(option) ? '' : 'border-b-[var(--od-line)]! last:border-b-transparent!'"
             :style="
               markerFor(option)
                 ? {

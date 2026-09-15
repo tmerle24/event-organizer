@@ -69,6 +69,11 @@ function isMint(option) {
   return isBest(option) && fitsEveryone(option)
 }
 
+/** Markiert = bestaetigt oder bester Termin; nur die bekommen einen Rahmen */
+function marked(option) {
+  return option.id === props.event.decided_option_id || isBest(option)
+}
+
 function borderFor(option) {
   if (option.id === props.event.decided_option_id) return 'var(--od-apricot)'
   if (isMint(option)) return 'var(--od-mint)'
@@ -190,14 +195,16 @@ function toggleWeekday(day) {
     </p>
 
     <ul v-else-if="optionsVisible" class="mt-4 space-y-2">
+      <!-- Wie auf der Teilnehmerseite: Rahmen nur um den markierten Termin -->
       <li
         v-for="option in ordered"
         :key="option.id"
-        class="border p-3.5"
+        class="border border-transparent px-3.5 py-3.5"
+        :class="marked(option) ? '' : 'border-b-[var(--od-line)]! last:border-b-transparent!'"
         :style="{
-          borderColor: borderFor(option),
-          borderRadius: 'var(--od-radius-md)',
-          background: 'var(--od-white)',
+          ...(marked(option)
+            ? { borderColor: borderFor(option), borderRadius: 'var(--od-radius-md)', background: 'var(--od-white)' }
+            : {}),
           opacity: option.blocked ? 0.7 : 1,
         }"
       >
