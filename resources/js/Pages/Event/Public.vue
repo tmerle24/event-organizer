@@ -41,6 +41,9 @@ const editing = ref(false)
 const toast = ref('')
 const toastTone = ref('ok')
 const confirmLeave = ref(false)
+const showEmail = ref(false)
+const joinForm = ref(null)
+const nameInput = ref(null)
 /*
  * Steht der Termin, ist die Abstimmung erledigt: die Liste klappt zu, damit
  * das, was noch zu tun ist, nicht unter sechs abgehakten Terminen liegt.
@@ -107,6 +110,23 @@ function currentValue(optionId) {
 
 function setValue(optionId, value) {
   answers.value = { ...answers.value, [optionId]: value }
+  if (!me.value) nudgeToName()
+}
+
+/*
+ * Buttons sind schon vor dem Eintragen da. Der Tipp bleibt stehen, aber ohne
+ * Namen geht nichts raus — also zum Namensfeld und kurz sagen, warum.
+ */
+function nudgeToName() {
+  const input = nameInput.value
+  if (!input || form.value.display_name.trim()) {
+    joinForm.value?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+    flash(t('public.join_first'))
+    return
+  }
+  joinForm.value?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+  input.focus({ preventScroll: true })
+  flash(t('public.name_first'))
 }
 
 /**
@@ -148,9 +168,13 @@ async function join() {
     rememberName(form.value.display_name.trim())
   } catch (e) {
     flash(t('common.error'), 'error')
+    return
   } finally {
     busy.value = false
   }
+
+  // vorher angetippte Termine gleich mitspeichern
+  await saveAnswers()
 }
 
 async function saveAnswers() {
@@ -282,33 +306,52 @@ function note(option) {
       </div>
 
       <!-- Eintragen: erste Antwort erzeugt den Teilnehmer -->
-      <form v-if="!me && !readOnly && !resolving" class="od-card p-4 sm:p-5" @submit.prevent="join">
-        <p class="text-sm">{{ showDates ? t('public.intro') : t('public.intro_list') }}</p>
+      <!-- Kompakt, damit die Termine am Handy ohne Scrollen darunter sichtbar sind -->
+      <form v-if="!me && !readOnly && !resolving" ref="joinForm" class="od-card p-4 sm:p-5" @submit.prevent="join">
+        <label class="block text-sm" for="p-name">{{ showDates ? t('public.intro') : t('public.intro_list') }}</label>
+        <div class="mt-2 flex gap-2">
+          <input
+            id="p-name"
+            ref="nameInput"
+            v-model="form.display_name"
+            class="od-input min-w-0 flex-1"
+            maxlength="80"
+            required
+            :placeholder="t('public.name_placeholder')"
+          />
+          <button type="submit" class="od-btn od-btn-primary shrink-0 whitespace-nowrap" :disabled="busy || !form.display_name.trim()">
+            {{ t('public.join') }}
+          </button>
+        </div>
+        <!-- aufklappbar wie "Wer?", links unter dem Namen -->
+        <button
+          type="button"
+          class="-mx-1.5 mt-1 flex items-center gap-1 rounded-lg px-1.5 py-1 text-[13px] text-[var(--od-slate)] hover:text-[var(--od-violet)]"
+          :aria-expanded="showEmail"
+          aria-controls="p-email-block"
+          @click="showEmail = !showEmail"
+        >
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <rect x="3" y="5" width="18" height="14" rx="2" />
+            <path d="m3.5 6.5 8.5 6.5 8.5-6.5" />
+          </svg>
+          {{ t('public.email_toggle') }} <span aria-hidden="true">{{ showEmail ? '▴' : '▾' }}</span>
+        </button>
 
-        <label class="mt-3 block text-xs font-semibold text-[var(--od-slate)]" for="p-name">
-          {{ t('public.name') }}
-        </label>
-        <input
-          id="p-name"
-          v-model="form.display_name"
-          class="od-input mt-1"
-          maxlength="80"
-          required
-          :placeholder="t('public.name_placeholder')"
-        />
-        <p class="mt-1 text-xs text-[var(--od-slate)]">{{ t('public.name_hint') }}</p>
-
-        <label class="mt-3 block text-xs font-semibold text-[var(--od-slate)]" for="p-email">
-          {{ t('public.email') }} <span class="font-normal">({{ t('common.optional') }})</span>
-        </label>
-        <input id="p-email" v-model="form.email" type="email" class="od-input mt-1" maxlength="180" />
-        <p class="mt-1 text-xs text-[var(--od-slate)]">{{ t('public.email_hint') }}</p>
+        <div v-if="showEmail" id="p-email-block">
+          <input
+            id="p-email"
+            v-model="form.email"
+            type="email"
+            class="od-input mt-1"
+            maxlength="180"
+            :aria-label="t('public.email')"
+            :placeholder="t('manage.email_placeholder')"
+          />
+          <p class="mt-1 text-xs text-[var(--od-slate)]">{{ t('public.email_hint') }}</p>
+        </div>
 
         <input v-model="form.website" type="text" name="website" tabindex="-1" autocomplete="off" class="hidden" aria-hidden="true" />
-
-        <button type="submit" class="od-btn od-btn-primary mt-4 w-full py-2.5" :disabled="busy || !form.display_name.trim()">
-          {{ t('public.join') }}
-        </button>
       </form>
 
       <div v-else-if="me" class="flex items-center justify-between px-1 text-sm">
@@ -321,7 +364,10 @@ function note(option) {
       <!-- Verfuegbarkeit -->
       <section v-if="showDates" class="od-card p-4 sm:p-5">
         <header class="flex items-center justify-between gap-3">
-          <h2 class="font-display font-semibold">{{ t('public.who') }}</h2>
+          <div class="min-w-0">
+            <h2 class="font-display font-semibold">{{ t('public.who') }}</h2>
+            <p v-if="!me && !readOnly && !resolving" class="od-meta mt-0.5">{{ t('public.names_teaser') }}</p>
+          </div>
           <button
             v-if="me && event.answered_count > 0 && dateListVisible"
             type="button"
@@ -376,7 +422,7 @@ function note(option) {
 
               <!-- ml-auto: bricht die Zeile um, bleiben die Buttons trotzdem rechts -->
               <AvailabilityButtons
-                v-if="me && !readOnly"
+                v-if="(me || !resolving) && !readOnly"
                 class="ml-auto"
                 :value="currentValue(option.id)"
                 @update:value="setValue(option.id, $event)"
