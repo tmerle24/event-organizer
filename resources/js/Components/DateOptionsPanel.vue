@@ -202,7 +202,7 @@ function toggleWeekday(day) {
         }"
       >
         <!-- Aktionen rechts oben, Datum darunter in voller Breite (sonst am Handy gequetscht) -->
-        <div class="flex min-h-8 items-center justify-between gap-3">
+        <div class="-mt-1 flex min-h-8 items-center justify-between gap-3">
           <p
             v-if="isBest(option)"
             class="flex min-w-0 items-center gap-1.5 whitespace-nowrap text-[13px] font-medium"
@@ -220,12 +220,13 @@ function toggleWeekday(day) {
             <!--
               Eine Primäraktion pro Screen (Brand Guide Abschnitt 7): nur der
               beste Termin bekommt den gefüllten Button, alle anderen bleiben
-              als leise Aktion wählbar.
+              als leise Aktion wählbar. px/py mit !, weil .od-btn ausserhalb
+              der Tailwind-Layer steht und Utilities sonst ueberschreibt.
             -->
             <button
               v-if="!readOnly && option.id !== event.decided_option_id"
               type="button"
-              class="od-btn whitespace-nowrap px-3 py-1.5 text-[13px]"
+              class="od-btn whitespace-nowrap px-3! py-1.5! text-[13px]"
               :class="isPrimaryChoice(option) ? 'od-btn-primary' : 'od-btn-quiet'"
               :disabled="busy"
               @click="decide(option)"
@@ -247,7 +248,7 @@ function toggleWeekday(day) {
           </div>
         </div>
 
-        <p class="od-h3 flex items-center gap-2">
+        <p class="od-h3 mt-1.5 flex items-center gap-2">
           <span
             v-if="option.id === event.decided_option_id"
             class="inline-block h-2.5 w-2.5 shrink-0 rounded-full"
