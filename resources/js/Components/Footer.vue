@@ -21,8 +21,8 @@ defineProps({
            beschnitten, es bringt also keine eigene Luft mehr mit. -->
       <a v-if="poweredBy" href="/" class="flex items-center gap-3 opacity-60 transition hover:opacity-100">
         <span class="od-meta">{{ t('footer.made_with') }}</span>
-        <!-- 2px tiefer: optisch auf die Textzeile ausgerichtet -->
-        <Logo size="sm" class="relative top-[2px]" />
+        <!-- 2px tiefer, aber nur ab sm: am Handy sitzt die Zeile sonst zu tief -->
+        <Logo size="sm" class="relative sm:top-[2px]" />
       </a>
       <span v-else class="od-small">
         © {{ year }} <a href="/" class="hover:underline">ORGDATE</a> — {{ t('footer.rights') }}
