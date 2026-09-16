@@ -145,6 +145,18 @@ async function invite() {
             @keyup.enter="$event.target.blur()"
           />
 
+          <span
+            v-if="participant.has_email"
+            class="inline-flex px-1 text-[var(--od-slate)]"
+            :title="t('manage.participants.gets_updates')"
+          >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <rect x="3" y="5" width="18" height="14" rx="2" />
+              <path d="m3.5 6.5 8.5 6.5 8.5-6.5" />
+            </svg>
+            <span class="sr-only">{{ t('manage.participants.gets_updates') }}</span>
+          </span>
+
           <button
             v-if="hasPolling"
             type="button"
@@ -183,22 +195,9 @@ async function invite() {
         </div>
 
         <p
-          v-if="participant.has_email || (hasPolling && event.date_options.length)"
+          v-if="hasPolling && event.date_options.length"
           class="mt-0.5 flex flex-wrap items-center gap-x-1.5 pl-1.5 text-xs text-[var(--od-slate)]"
         >
-          <span
-            v-if="participant.has_email"
-            class="inline-flex"
-            :title="t('manage.participants.gets_updates')"
-          >
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <rect x="3" y="5" width="18" height="14" rx="2" />
-              <path d="m3.5 6.5 8.5 6.5 8.5-6.5" />
-            </svg>
-            <span class="sr-only">{{ t('manage.participants.gets_updates') }}</span>
-          </span>
-          <span v-if="participant.has_email && hasPolling && event.date_options.length" aria-hidden="true">·</span>
-
           <template v-if="hasPolling && event.date_options.length">
             <!-- nach der Festlegung zaehlt nur noch: kommt die Person? -->
             <span
@@ -245,7 +244,8 @@ async function invite() {
       </li>
     </ul>
 
-    <div class="mt-4 border-t border-[var(--od-line)] pt-4">
+    <!-- Linie direkt unter der Liste, sonst doppelter Abstand zur letzten Zeile -->
+    <div class="border-t border-[var(--od-line)] pt-4" :class="{ 'mt-4': !event.participants.length }">
       <label class="text-xs font-semibold text-[var(--od-slate)]" for="p-invite">
         {{ t('manage.participants.invite') }}
       </label>
