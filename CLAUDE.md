@@ -259,6 +259,7 @@ resources/js/
     CountBar.vue               # Balken + Zahlen, nie eine Quote; Mint nur bei „passt allen"
     WhoList.vue                # Namen pro Termin, gruppiert nach Antwort
     ConfirmModal.vue           # statt window.confirm()
+    IconTip.vue                # Hinweis über Icon-Buttons, nur Hover/Tastatur
     Toast.vue
   Pages/
     Landing.vue

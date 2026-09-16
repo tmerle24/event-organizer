@@ -1,6 +1,7 @@
 <script setup>
 import { ref, computed, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
+import IconTip from '@/Components/IconTip.vue'
 
 /**
  * Planungsbereich. Wird nur gerendert, wenn Event.status es erlaubt — das
@@ -202,15 +203,16 @@ async function removeSection(section) {
           @keyup.esc="$event.target.value = section.title; $event.target.blur()"
         />
         <h3 v-else class="od-h3" style="color: var(--od-slate)">{{ section.title }}</h3>
-        <button
-          v-if="canManage && !readOnly"
-          type="button"
-          class="text-xs text-[var(--od-slate)] hover:text-[var(--od-slate)]"
-          :aria-label="t('common.delete')"
-          @click="removeSection(section)"
-        >
-          ✕
-        </button>
+        <IconTip v-if="canManage && !readOnly" :text="t('manage.tips.remove_section')" align="end">
+          <button
+            type="button"
+            class="text-xs text-[var(--od-slate)] hover:text-[var(--od-ink)]"
+            :aria-label="t('manage.tips.remove_section')"
+            @click="removeSection(section)"
+          >
+            ✕
+          </button>
+        </IconTip>
       </div>
 
       <!-- Zeilen statt Kaesten: sonst sehen Aufgaben wie Buttons aus -->
@@ -287,15 +289,16 @@ async function removeSection(section) {
             </button>
           </template>
 
-          <button
-            v-if="canManage && !readOnly"
-            type="button"
-            class="text-xs text-[var(--od-slate)] hover:text-[var(--od-slate)]"
-            :aria-label="t('common.delete')"
-            @click="removeTask(task)"
-          >
-            ✕
-          </button>
+          <IconTip v-if="canManage && !readOnly" :text="t('manage.tips.remove_task')" align="end">
+            <button
+              type="button"
+              class="text-xs text-[var(--od-slate)] hover:text-[var(--od-ink)]"
+              :aria-label="t('manage.tips.remove_task')"
+              @click="removeTask(task)"
+            >
+              ✕
+            </button>
+          </IconTip>
         </li>
       </ul>
 
@@ -414,15 +417,16 @@ async function removeSection(section) {
             </button>
           </template>
 
-          <button
-            v-if="canManage && !readOnly"
-            type="button"
-            class="text-xs text-[var(--od-slate)] hover:text-[var(--od-slate)]"
-            :aria-label="t('common.delete')"
-            @click="removeTask(task)"
-          >
-            ✕
-          </button>
+          <IconTip v-if="canManage && !readOnly" :text="t('manage.tips.remove_task')" align="end">
+            <button
+              type="button"
+              class="text-xs text-[var(--od-slate)] hover:text-[var(--od-ink)]"
+              :aria-label="t('manage.tips.remove_task')"
+              @click="removeTask(task)"
+            >
+              ✕
+            </button>
+          </IconTip>
         </li>
       </ul>
 

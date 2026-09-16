@@ -98,7 +98,8 @@
       "names_hide": "Namen verbergen",
       "still_open": "Nog open",
       "best_partial": "Past het best",
-      "confirm_short": "Vastleggen"
+      "confirm_short": "Vastleggen",
+      "remove_confirm": "Deze datum verwijderen? De antwoorden gaan mee."
     },
     "counts": {
       "yes": "kan | kunnen",
@@ -124,7 +125,8 @@
         "maybe": "misschien",
         "no": "kan niet",
         "open": "nog open"
-      }
+      },
+      "remove_confirm": "{name} verwijderen? De antwoorden gaan mee, taken komen weer vrij."
     },
     "plan": {
       "title": "Te doen",
@@ -186,7 +188,14 @@
       "free": "Nog vrij",
       "as_of": "Stand {date}"
     },
-    "send_link": "Link versturen"
+    "send_link": "Link versturen",
+    "tips": {
+      "merge": "Samenvoegen met andere invoer",
+      "remove_participant": "Uit de lijst verwijderen",
+      "remove_date": "Datum verwijderen",
+      "remove_section": "Onderdeel verwijderen – taken blijven",
+      "remove_task": "Taak verwijderen"
+    }
   },
   "public": {
     "intro": "Geef aan wanneer je kunt.",

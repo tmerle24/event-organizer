@@ -1,7 +1,9 @@
 <script setup>
 import { ref, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
+import ConfirmModal from '@/Components/ConfirmModal.vue'
 import CountBar from '@/Components/CountBar.vue'
+import IconTip from '@/Components/IconTip.vue'
 import WhoList from '@/Components/WhoList.vue'
 import { formatCompact, formatFull, isoDay, timezoneNote } from '@/composables/useDateFormat'
 import { fitsEveryone } from '@/composables/useMatch'
@@ -125,7 +127,16 @@ async function addOption() {
   newDate.value = { day: '', time: newDate.value.time, all_day: newDate.value.all_day }
 }
 
+// ohne Antworten geht nichts verloren, dann ohne Nachfrage
+const removingOption = ref(null)
+
+function askRemoveOption(option) {
+  if (Object.keys(option.votes ?? {}).length) removingOption.value = option
+  else removeOption(option)
+}
+
 async function removeOption(option) {
+  removingOption.value = null
   await call('delete', `${props.baseUrl}/options/${option.id}`)
 }
 
@@ -243,16 +254,17 @@ function toggleWeekday(day) {
               <span class="sm:hidden">{{ t('manage.dates.confirm_short') }}</span>
               <span class="hidden sm:inline">{{ t('manage.dates.confirm') }}</span>
             </button>
-            <button
-              v-if="!readOnly"
-              type="button"
-              class="rounded-lg px-2 py-1.5 text-xs text-[var(--od-slate)] hover:text-[var(--od-slate)]"
-              :disabled="busy"
-              :aria-label="t('common.delete')"
-              @click="removeOption(option)"
-            >
-              ✕
-            </button>
+            <IconTip v-if="!readOnly" :text="t('manage.tips.remove_date')" align="end">
+              <button
+                type="button"
+                class="rounded-lg px-2 py-1.5 text-xs text-[var(--od-slate)] hover:text-[var(--od-ink)]"
+                :disabled="busy"
+                :aria-label="t('manage.tips.remove_date')"
+                @click="askRemoveOption(option)"
+              >
+                ✕
+              </button>
+            </IconTip>
           </div>
         </div>
 
@@ -383,5 +395,13 @@ function toggleWeekday(day) {
         {{ t('manage.dates.notify') }}
       </label>
     </div>
+
+    <ConfirmModal
+      :open="!!removingOption"
+      :message="t('manage.dates.remove_confirm')"
+      danger
+      @confirm="removeOption(removingOption)"
+      @cancel="removingOption = null"
+    />
   </section>
 </template>

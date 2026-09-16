@@ -3,6 +3,8 @@ import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { formatShort } from '@/composables/useDateFormat'
 import { ANSWERS } from '@/composables/useMatch'
+import ConfirmModal from '@/Components/ConfirmModal.vue'
+import IconTip from '@/Components/IconTip.vue'
 
 const props = defineProps({
   event: { type: Object, required: true },
@@ -19,6 +21,8 @@ const busy = ref(false)
 const hasPolling = computed(() => ['dates', 'both'].includes(props.event.mode))
 const inviteInput = ref('')
 const mergeSource = ref(null)
+// am Handy gibt es keinen Hover-Hinweis, deshalb fragt Entfernen nach
+const removing = ref(null)
 // Eingabe beim Umbenennen, damit das Feld mitwaechst
 const drafts = ref({})
 // offener Mail-Hinweis (Tippen statt Hover, fuer Touch)
@@ -91,8 +95,10 @@ async function rename(participant, event) {
   delete drafts.value[participant.id]
 }
 
-async function remove(participant) {
-  await call('delete', `${props.baseUrl}/participants/${participant.id}`)
+async function remove() {
+  const participant = removing.value
+  removing.value = null
+  if (participant) await call('delete', `${props.baseUrl}/participants/${participant.id}`)
 }
 
 async function merge(participant, targetId) {
@@ -127,20 +133,20 @@ async function invite() {
   <section class="od-card p-4 sm:p-5">
     <div class="flex items-center justify-between gap-2">
       <h2 class="font-display font-semibold">{{ t('manage.participants.title') }}</h2>
-      <button
-        v-if="event.participants.length"
-        type="button"
-        class="-my-1 flex h-9 w-9 items-center justify-center rounded-lg text-[var(--od-slate)] hover:bg-[var(--od-mist)] hover:text-[var(--od-violet)]"
-        :title="t('manage.print.button')"
-        :aria-label="t('manage.print.button')"
-        @click="print"
-      >
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <path d="M7 9V3h10v6" />
-          <rect x="3" y="9" width="18" height="8" rx="2" />
-          <path d="M7 14h10v7H7z" />
-        </svg>
-      </button>
+      <IconTip v-if="event.participants.length" :text="t('manage.print.button')" align="end">
+        <button
+          type="button"
+          class="-my-1 flex h-9 w-9 items-center justify-center rounded-lg text-[var(--od-slate)] hover:bg-[var(--od-mist)] hover:text-[var(--od-violet)]"
+          :aria-label="t('manage.print.button')"
+          @click="print"
+        >
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M7 9V3h10v6" />
+            <rect x="3" y="9" width="18" height="8" rx="2" />
+            <path d="M7 14h10v7H7z" />
+          </svg>
+        </button>
+      </IconTip>
     </div>
 
     <p v-if="!event.participants.length" class="mt-3 text-sm text-[var(--od-slate)]">
@@ -209,25 +215,29 @@ async function invite() {
             ★ {{ t('manage.participants.required') }}
           </button>
 
-          <button
-            type="button"
-            class="rounded-lg px-2 py-1 text-xs text-[var(--od-slate)] hover:text-[var(--od-violet)]"
-            :title="t('manage.participants.merge_hint')"
-            :aria-label="t('manage.participants.merge_hint')"
-            @click="mergeSource = mergeSource === participant.id ? null : participant.id"
-          >
-            ⇄
-          </button>
+          <IconTip :text="t('manage.tips.merge')" align="end">
+            <button
+              type="button"
+              class="rounded-lg px-2 py-1 text-xs text-[var(--od-slate)] hover:text-[var(--od-violet)]"
+              :aria-label="t('manage.tips.merge')"
+              :aria-expanded="mergeSource === participant.id"
+              @click="mergeSource = mergeSource === participant.id ? null : participant.id"
+            >
+              ⇄
+            </button>
+          </IconTip>
 
-          <button
-            type="button"
-            class="rounded-lg px-2 py-1 text-xs text-[var(--od-slate)] hover:text-[var(--od-slate)]"
-            :disabled="busy"
-            :aria-label="t('manage.participants.remove')"
-            @click="remove(participant)"
-          >
-            ✕
-          </button>
+          <IconTip :text="t('manage.tips.remove_participant')" align="end">
+            <button
+              type="button"
+              class="rounded-lg px-2 py-1 text-xs text-[var(--od-slate)] hover:text-[var(--od-ink)]"
+              :disabled="busy"
+              :aria-label="t('manage.tips.remove_participant')"
+              @click="removing = participant"
+            >
+              ✕
+            </button>
+          </IconTip>
         </div>
 
         <p
@@ -299,5 +309,13 @@ async function invite() {
         </button>
       </div>
     </div>
+
+    <ConfirmModal
+      :open="!!removing"
+      :message="removing ? t('manage.participants.remove_confirm', { name: removing.display_name }) : ''"
+      danger
+      @confirm="remove"
+      @cancel="removing = null"
+    />
   </section>
 </template>

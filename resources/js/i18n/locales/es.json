@@ -98,7 +98,8 @@
       "names_hide": "Ocultar nombres",
       "still_open": "Sin responder aún",
       "best_partial": "El que mejor encaja",
-      "confirm_short": "Fijar"
+      "confirm_short": "Fijar",
+      "remove_confirm": "¿Quitar esta fecha? Las respuestas se van también."
     },
     "counts": {
       "yes": "puede | pueden",
@@ -124,7 +125,8 @@
         "maybe": "quizá",
         "no": "no puede",
         "open": "sin responder aún"
-      }
+      },
+      "remove_confirm": "¿Quitar a {name}? Sus respuestas se van también y sus tareas quedan libres."
     },
     "plan": {
       "title": "Por hacer",
@@ -186,7 +188,14 @@
       "free": "Todavía libre",
       "as_of": "Actualizado {date}"
     },
-    "send_link": "Enviar enlace"
+    "send_link": "Enviar enlace",
+    "tips": {
+      "merge": "Unir con otra entrada",
+      "remove_participant": "Quitar de la lista",
+      "remove_date": "Quitar fecha",
+      "remove_section": "Borrar sección – las tareas se quedan",
+      "remove_task": "Borrar tarea"
+    }
   },
   "public": {
     "intro": "Marca cuándo puedes.",

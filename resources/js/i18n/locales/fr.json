@@ -98,7 +98,8 @@
       "names_hide": "Masquer les noms",
       "still_open": "Pas encore de réponse",
       "best_partial": "Convient le mieux",
-      "confirm_short": "Fixer"
+      "confirm_short": "Fixer",
+      "remove_confirm": "Retirer cette date ? Les réponses associées partent aussi."
     },
     "counts": {
       "yes": "dispo | dispos",
@@ -124,7 +125,8 @@
         "maybe": "peut-être",
         "no": "ne peut pas",
         "open": "pas encore répondu"
-      }
+      },
+      "remove_confirm": "Retirer {name} ? Ses réponses partent aussi, ses tâches redeviennent libres."
     },
     "plan": {
       "title": "À faire",
@@ -186,7 +188,14 @@
       "free": "Encore libre",
       "as_of": "État au {date}"
     },
-    "send_link": "Envoyer le lien"
+    "send_link": "Envoyer le lien",
+    "tips": {
+      "merge": "Fusionner avec une autre entrée",
+      "remove_participant": "Retirer de la liste",
+      "remove_date": "Retirer la date",
+      "remove_section": "Supprimer la section – les tâches restent",
+      "remove_task": "Supprimer la tâche"
+    }
   },
   "public": {
     "intro": "Indiquez quand vous êtes disponible.",

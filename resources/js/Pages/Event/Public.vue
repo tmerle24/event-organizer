@@ -7,6 +7,7 @@ import Footer from '@/Components/Footer.vue'
 import LanguageSwitcher from '@/Components/LanguageSwitcher.vue'
 import AvailabilityButtons from '@/Components/AvailabilityButtons.vue'
 import CountBar from '@/Components/CountBar.vue'
+import IconTip from '@/Components/IconTip.vue'
 import WhoList from '@/Components/WhoList.vue'
 import PlanPanel from '@/Components/PlanPanel.vue'
 import ConfirmModal from '@/Components/ConfirmModal.vue'
@@ -303,22 +304,22 @@ function note(option) {
           <h1 class="od-h1 min-w-0 flex-1">{{ event.title }}</h1>
 
           <!-- Nur das Symbol, kein Knopf. Erscheint bei bestätigtem Termin. -->
-          <a
-            v-if="decided && !readOnly"
-            :href="`${baseUrl}/event.ics`"
-            class="shrink-0 p-1 transition"
-            style="color: var(--od-slate)"
-            :title="t('public.add_to_calendar')"
-            :aria-label="t('public.add_to_calendar')"
-            @mouseenter="$event.currentTarget.style.color = 'var(--od-violet)'"
-            @mouseleave="$event.currentTarget.style.color = 'var(--od-slate)'"
-          >
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-              <rect x="3" y="5" width="18" height="16" rx="3" stroke="currentColor" stroke-width="1.8" />
-              <path d="M8 3v4M16 3v4M3 10h18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
-              <path d="M12 14v4M10 16h4" stroke="var(--od-violet)" stroke-width="1.8" stroke-linecap="round" />
-            </svg>
-          </a>
+          <IconTip v-if="decided && !readOnly" class="shrink-0" :text="t('public.add_to_calendar')" align="end">
+            <a
+              :href="`${baseUrl}/event.ics`"
+              class="p-1 transition"
+              style="color: var(--od-slate)"
+              :aria-label="t('public.add_to_calendar')"
+              @mouseenter="$event.currentTarget.style.color = 'var(--od-violet)'"
+              @mouseleave="$event.currentTarget.style.color = 'var(--od-slate)'"
+            >
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <rect x="3" y="5" width="18" height="16" rx="3" stroke="currentColor" stroke-width="1.8" />
+                <path d="M8 3v4M16 3v4M3 10h18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+                <path d="M12 14v4M10 16h4" stroke="var(--od-violet)" stroke-width="1.8" stroke-linecap="round" />
+              </svg>
+            </a>
+          </IconTip>
         </div>
 
         <p v-if="!showDates && decided" class="od-h3 mt-1">

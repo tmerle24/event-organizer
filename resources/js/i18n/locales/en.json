@@ -98,7 +98,8 @@
       "names_hide": "Hide names",
       "still_open": "No answer yet",
       "best_partial": "Best fit",
-      "confirm_short": "Set"
+      "confirm_short": "Set",
+      "remove_confirm": "Remove this date? The answers for it go too."
     },
     "counts": {
       "yes": "can",
@@ -124,7 +125,8 @@
         "maybe": "maybe",
         "no": "can’t make it",
         "open": "no answer yet"
-      }
+      },
+      "remove_confirm": "Remove {name}? Their answers go too, and their tasks become free again."
     },
     "plan": {
       "title": "To do",
@@ -186,7 +188,14 @@
       "free": "Still up for grabs",
       "as_of": "As of {date}"
     },
-    "send_link": "Send link"
+    "send_link": "Send link",
+    "tips": {
+      "merge": "Merge with another entry",
+      "remove_participant": "Remove from the list",
+      "remove_date": "Remove date",
+      "remove_section": "Delete section – tasks stay",
+      "remove_task": "Delete task"
+    }
   },
   "public": {
     "intro": "Mark when you're available.",

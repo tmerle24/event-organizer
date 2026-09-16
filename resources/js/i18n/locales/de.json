@@ -98,7 +98,8 @@
       "names_hide": "Namen ausblenden",
       "still_open": "Noch offen",
       "best_partial": "Passt am besten",
-      "confirm_short": "Festlegen"
+      "confirm_short": "Festlegen",
+      "remove_confirm": "Termin entfernen? Die Antworten dazu verschwinden mit."
     },
     "counts": {
       "yes": "kann | können",
@@ -124,7 +125,8 @@
         "maybe": "vielleicht",
         "no": "kann nicht",
         "open": "noch offen"
-      }
+      },
+      "remove_confirm": "{name} entfernen? Die Antworten verschwinden mit, übernommene Aufgaben werden wieder frei."
     },
     "plan": {
       "title": "Zu erledigen",
@@ -186,7 +188,14 @@
       "free": "Noch frei",
       "as_of": "Stand {date}"
     },
-    "send_link": "Link senden"
+    "send_link": "Link senden",
+    "tips": {
+      "merge": "Mit anderem Eintrag zusammenführen",
+      "remove_participant": "Aus der Liste entfernen",
+      "remove_date": "Termin entfernen",
+      "remove_section": "Bereich löschen – Aufgaben bleiben",
+      "remove_task": "Aufgabe löschen"
+    }
   },
   "public": {
     "intro": "Trag ein, wann du kannst.",
