@@ -1,5 +1,5 @@
 <script setup>
-import { computed, ref } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { formatShort } from '@/composables/useDateFormat'
 import { ANSWERS } from '@/composables/useMatch'
@@ -21,6 +21,15 @@ const inviteInput = ref('')
 const mergeSource = ref(null)
 // Eingabe beim Umbenennen, damit das Feld mitwaechst
 const drafts = ref({})
+// offener Mail-Hinweis (Tippen statt Hover, fuer Touch)
+const mailTip = ref(null)
+
+function closeMailTip(event) {
+  if (!event.target.closest('[data-mail-tip]')) mailTip.value = null
+}
+
+onMounted(() => document.addEventListener('click', closeMailTip))
+onBeforeUnmount(() => document.removeEventListener('click', closeMailTip))
 
 // ab so vielen Terminen nur noch Summen, sonst wird die Zeile zu lang
 const MAX_INLINE_DATES = 4
@@ -139,7 +148,7 @@ async function invite() {
     </p>
 
     <ul v-else class="mt-3 divide-y divide-[var(--od-line)]">
-      <li v-for="participant in event.participants" :key="participant.id" class="py-2.5">
+      <li v-for="participant in event.participants" :key="participant.id" class="relative py-2.5">
         <div class="flex flex-wrap items-center gap-2">
           <!-- Feld so breit wie der Name (w-0: Input-Eigenbreite zaehlt nicht), Mail-Symbol direkt dahinter -->
           <label class="flex min-w-0 flex-1 cursor-text items-center gap-1">
@@ -160,16 +169,27 @@ async function invite() {
               />
             </div>
 
-            <span
-              v-if="participant.has_email"
-              class="inline-flex shrink-0 text-[var(--od-slate)]"
-              :title="t('manage.participants.gets_updates')"
-            >
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                <rect x="3" y="5" width="18" height="14" rx="2" />
-                <path d="m3.5 6.5 8.5 6.5 8.5-6.5" />
-              </svg>
-              <span class="sr-only">{{ t('manage.participants.gets_updates') }}</span>
+            <!-- Hinweis haengt am li, damit er am Rand nicht aus der Karte laeuft -->
+            <span v-if="participant.has_email" class="group inline-flex shrink-0" data-mail-tip>
+              <button
+                type="button"
+                class="inline-flex rounded p-0.5 text-[var(--od-slate)]"
+                :aria-label="t('manage.participants.gets_updates')"
+                :aria-expanded="mailTip === participant.id"
+                @click.prevent="mailTip = mailTip === participant.id ? null : participant.id"
+              >
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <rect x="3" y="5" width="18" height="14" rx="2" />
+                  <path d="m3.5 6.5 8.5 6.5 8.5-6.5" />
+                </svg>
+              </button>
+              <span
+                role="tooltip"
+                class="pointer-events-none absolute top-[calc(100%-0.5rem)] left-0 z-20 whitespace-nowrap rounded-lg bg-[var(--od-ink)] px-2 py-1 text-xs text-white pointer-fine:group-hover:block"
+                :class="mailTip === participant.id ? 'block' : 'hidden'"
+              >
+                {{ t('manage.participants.gets_updates') }}
+              </span>
             </span>
           </label>
 
