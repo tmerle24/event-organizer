@@ -19,6 +19,8 @@ const busy = ref(false)
 const hasPolling = computed(() => ['dates', 'both'].includes(props.event.mode))
 const inviteInput = ref('')
 const mergeSource = ref(null)
+// Eingabe beim Umbenennen, damit das Feld mitwaechst
+const drafts = ref({})
 
 // ab so vielen Terminen nur noch Summen, sonst wird die Zeile zu lang
 const MAX_INLINE_DATES = 4
@@ -73,8 +75,11 @@ async function toggleRequired(participant) {
 
 async function rename(participant, event) {
   const name = event.target.value.trim()
-  if (!name || name === participant.display_name) return
-  await call('patch', `${props.baseUrl}/participants/${participant.id}`, { display_name: name })
+  if (name && name !== participant.display_name) {
+    await call('patch', `${props.baseUrl}/participants/${participant.id}`, { display_name: name })
+  }
+  // erst nach der Antwort, sonst springt kurz der alte Name zurueck
+  delete drafts.value[participant.id]
 }
 
 async function remove(participant) {
@@ -136,26 +141,37 @@ async function invite() {
     <ul v-else class="mt-3 divide-y divide-[var(--od-line)]">
       <li v-for="participant in event.participants" :key="participant.id" class="py-2.5">
         <div class="flex flex-wrap items-center gap-2">
-          <input
-            :value="participant.display_name"
-            class="min-w-0 flex-1 rounded-lg border border-transparent px-1.5 py-1 text-sm hover:border-[var(--od-line)] focus:border-[var(--od-violet)] focus:outline-none"
-            maxlength="80"
-            @focus="emit('focus-change', true)"
-            @blur="emit('focus-change', false); rename(participant, $event)"
-            @keyup.enter="$event.target.blur()"
-          />
+          <!-- Feld so breit wie der Name (w-0: Input-Eigenbreite zaehlt nicht), Mail-Symbol direkt dahinter -->
+          <label class="flex min-w-0 flex-1 cursor-text items-center gap-1">
+            <div class="grid min-w-0 grid-cols-[minmax(0,auto)]">
+              <span
+                class="invisible col-start-1 row-start-1 min-w-12 overflow-hidden whitespace-pre border border-transparent px-1.5 py-1 text-sm pointer-coarse:text-base"
+                aria-hidden="true"
+              >{{ drafts[participant.id] ?? participant.display_name }}</span>
+              <!-- Draft auch im value, sonst setzt das Re-Render die Eingabe zurueck -->
+              <input
+                :value="drafts[participant.id] ?? participant.display_name"
+                class="col-start-1 row-start-1 w-0 min-w-full rounded-lg border border-transparent px-1.5 py-1 text-sm hover:border-[var(--od-line)] focus:border-[var(--od-violet)] focus:outline-none"
+                maxlength="80"
+                @input="drafts[participant.id] = $event.target.value"
+                @focus="emit('focus-change', true)"
+                @blur="emit('focus-change', false); rename(participant, $event)"
+                @keyup.enter="$event.target.blur()"
+              />
+            </div>
 
-          <span
-            v-if="participant.has_email"
-            class="inline-flex px-1 text-[var(--od-slate)]"
-            :title="t('manage.participants.gets_updates')"
-          >
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <rect x="3" y="5" width="18" height="14" rx="2" />
-              <path d="m3.5 6.5 8.5 6.5 8.5-6.5" />
-            </svg>
-            <span class="sr-only">{{ t('manage.participants.gets_updates') }}</span>
-          </span>
+            <span
+              v-if="participant.has_email"
+              class="inline-flex shrink-0 text-[var(--od-slate)]"
+              :title="t('manage.participants.gets_updates')"
+            >
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <rect x="3" y="5" width="18" height="14" rx="2" />
+                <path d="m3.5 6.5 8.5 6.5 8.5-6.5" />
+              </svg>
+              <span class="sr-only">{{ t('manage.participants.gets_updates') }}</span>
+            </span>
+          </label>
 
           <button
             v-if="hasPolling"
