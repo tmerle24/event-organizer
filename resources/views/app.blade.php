@@ -25,8 +25,6 @@
         <link rel="manifest" href="/site.webmanifest" />
         <meta name="theme-color" content="#5B4BE8" />
 
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-
         {{--
             Serverseitiger Titel. Inertia setzt ihn im Browser über <Head>, aber
             ein Crawler führt kein JavaScript aus und sah bisher auf jeder Seite

@@ -3,7 +3,6 @@ import { useI18n } from 'vue-i18n'
 import Logo from '@/Components/Logo.vue'
 
 const { t } = useI18n()
-const year = new Date().getFullYear()
 
 defineProps({
   // Auf der Teilnehmer-Seite steht die Marke dezent unter dem Inhalt.
@@ -24,9 +23,7 @@ defineProps({
         <!-- 2px tiefer, aber nur ab sm: am Handy sitzt die Zeile sonst zu tief -->
         <Logo size="sm" class="relative sm:top-[2px]" />
       </a>
-      <span v-else class="od-small">
-        © {{ year }} <a href="/" class="hover:underline">ORGDATE</a> — {{ t('footer.rights') }}
-      </span>
+      <span v-else class="od-small text-center">{{ t('footer.rights') }}</span>
 
       <nav class="od-meta flex items-center gap-4">
         <a href="/" class="hover:text-[var(--od-violet)]">{{ t('footer.home') }}</a>

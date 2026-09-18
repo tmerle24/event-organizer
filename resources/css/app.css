@@ -1,4 +1,8 @@
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600&display=swap');
+/* Outfit lokal (fontsource), kein Google Fonts: sonst geht jede IP an Google und "kein Tracking" stimmt nicht mehr */
+@import '@fontsource/outfit/300.css';
+@import '@fontsource/outfit/400.css';
+@import '@fontsource/outfit/500.css';
+@import '@fontsource/outfit/600.css';
 @import "tailwindcss";
 
 /*

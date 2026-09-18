@@ -54,7 +54,16 @@ einmal und läuft weiter, sodass der Client unbemerkt auf der lokalen Datenbank
 landet. Das sieht dann nach `password authentication failed` vom Server aus.
 
 **Eine Schrift:** Outfit für alles (300/400/500/600). **Bold 700 wird nicht
-benutzt** — zu laut für den Markencharakter.
+benutzt** - zu laut für den Markencharakter. Selbst gehostet über
+`@fontsource/outfit`, **nie über Google Fonts** (siehe „Kein Tracking“).
+
+**Kein Tracking.** Der Footer verspricht „ohne Tracking“, die
+Datenschutzerklärung belegt es. Das gilt nur, solange keine Seite etwas von
+fremden Servern nachlädt: keine Analyse-Tools, keine CDNs, keine externen
+Schriften, Skripte oder Bilder. Eine Google-Schrift reicht schon, damit jede IP
+bei Google landet, und dann wäre die Aussage irreführende Werbung.
+`NoTrackingTest` prüft das ausgelieferte HTML und die CSS-/Blade-Quellen.
+Links, die erst beim Klick etwas öffnen (Google Maps, solvedapps), sind in Ordnung.
 
 ---
 

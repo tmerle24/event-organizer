@@ -78,6 +78,9 @@ onMounted(() => {
             Dazu kommen deine Sprachwahl, eine Liste der von dir erstellten Events und der Name,
             mit dem du dich zuletzt eingetragen hast, damit er beim nächsten Event schon im Feld
             steht – all das verlässt dein Gerät nicht. Es werden keine Analyse- oder Werbe-Cookies gesetzt.
+            ORGDATE nutzt kein Tracking und bindet keine Inhalte von Drittanbietern ein: keine
+            Analyse-Tools, keine Werbenetzwerke, keine externen Schriften oder Skripte. Die Schrift
+            wird von unserem eigenen Server geladen.
           </p>
         </section>
 
